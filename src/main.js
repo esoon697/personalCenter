@@ -63,6 +63,9 @@ Vue.prototype.$echarts = echarts
 
 Vue.config.productionTip = false
 
+const base = 'http://182.148.48.236:54321/source/personalCenter/'
+Vue.prototype.base = base
+
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
