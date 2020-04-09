@@ -74,15 +74,51 @@ export default {
           ]
         },
         {
-          title: 'Echart',
-          icon: 'el-icon-document',
-          path: '/echart',
-          name: 'Echart',
-          children: []
+          title: '学习中心',
+          path: '/studyCenter',
+          name: 'StudyCenter',
+          icon: 'el-icon-menu',
+          children: [
+            {
+              title: '课前预习',
+              path: '/preview',
+              name: 'Preview',
+              children: []
+            },
+            {
+              title: '课堂互动',
+              path: '/interaction',
+              name: 'Interaction',
+              children: []
+            },
+            {
+              title: '课后任务',
+              path: '/courseTask',
+              name: 'CourseTask',
+              children: []
+            },
+            {
+              title: '课程评价',
+              path: '/courseEvaluation',
+              name: 'CourseEvaluation ',
+              children: []
+            },
+            {
+              title: '学习反馈',
+              path: '/studyFeedback',
+              name: 'StudyFeedback',
+              children: []
+            },
+            {
+              title: '我的作业',
+              path: '/myWork',
+              name: 'MyWork',
+              children: []
+            }
+          ]
         },
         {
           title: 'Tree',
-          icon: 'el-icon-location',
           path: '/tree',
           name: 'Tree',
           children: []
