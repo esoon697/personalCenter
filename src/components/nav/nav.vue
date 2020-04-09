@@ -139,6 +139,9 @@ export default {
 <style lang="less" scoped>
 .nav-wrapper{
     display: flex;
+    // flex-direction: column;
+    justify-content: center;
+    align-items: center;
     // width: 240px;
     .nav-box{
       display: flex;
@@ -190,6 +193,8 @@ export default {
       }
     }
     .nav-btn{
+        height: 100%;
+        cursor: pointer;
         display: flex;
         justify-content: center;
         align-items: center;

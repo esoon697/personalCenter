@@ -1,11 +1,11 @@
 <template>
   <div class="header-wrapper">
     <div class="header-left">
-      yazhuojiaoyu
+      <img :src="base + 'header-logo.png'" alt="">
     </div>
     <div class="header-right">
       <div class="search-wrap">
-        <input type="text" placeholder="请输入关键词" class="search-input">
+        <input type="text" placeholder="搜索功能" class="search-input">
         <i class=" el-icon-search"></i>
       </div>
       <img class="avatar" src="../../assets/photo.jpeg">
@@ -39,6 +39,10 @@ export default {
   .header-left{
     width:440px;
     height:29px;
+    img{
+      width: 440px;
+      height: 30px;
+    }
   }
   .header-right{
     display: flex;
