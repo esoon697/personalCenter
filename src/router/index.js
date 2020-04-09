@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import StudyCenter from '@/views/StudyCenter/StudyCenter'
+import CenterIndex from '@/views/CenterIndex/CenterIndex'
 import Preview from '@/views/Preview/Preview'
 import Interaction from '@/views/Interaction/Interaction'
 import CourseTask from '@/views/CourseTask/CourseTask'
@@ -14,16 +15,23 @@ Vue.use(Router)
 export default new Router({
   mode: 'history',
   routes: [
-    // { path: '/', redirect: '/studyCenter' },
+    { path: '/', redirect: '/studyCenter/centerIndex' },
     {
-      title: '学习中心',
       path: '/studyCenter',
       name: 'StudyCenter',
       component: StudyCenter,
       children: [
+        { path: '/studyCenter', redirect: '/studyCenter/centerIndex' },
+        {
+          title: '学习中心',
+          path: 'centerIndex',
+          name: 'CenterIndex',
+          component: CenterIndex,
+          children: []
+        },
         {
           title: '课前预习',
-          path: '/studyCenter/preview',
+          path: 'preview',
           name: 'Preview',
           component: Preview,
           children: []

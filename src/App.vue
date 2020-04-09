@@ -1,19 +1,23 @@
 <template>
   <div id="app">
-    <Nav/>
-    <router-view/>
+    <Header/>
+    <div class="main">
+      <Nav/>
+      <router-view/>
+    </div>
   </div>
 </template>
 
 <script>
+import Header from './components/Header/Header'
 import Nav from './components/nav/nav'
 export default {
   name: 'App',
-  components: {Nav}
+  components: {Header, Nav}
 }
 </script>
 
-<style>
+<style lang="less" scoped>
 #app {
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -21,5 +25,9 @@ export default {
   /* text-align: center; */
   color: #2c3e50;
   display: flex;
+  flex-direction: column;
+  .main{
+    display: flex;
+  }
 }
 </style>

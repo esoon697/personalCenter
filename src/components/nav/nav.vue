@@ -1,6 +1,18 @@
 <template>
   <div class="nav-wrapper">
-    <el-menu default-active="/home"
+    <div class="nav-header">
+      <img class="header-left" src="../../assets/photo.jpeg">
+      <div class="header-right">
+        <p class="uname">天高任鸟飞</p>
+        <p class="uid">
+          <span>ID:</span>
+          <span>yzteacher100</span>
+          </p>
+      </div>
+      <div></div>
+    </div>
+    <el-menu
+    default-active="centerIndex"
     class="el-nav"
     @open="handleOpen"
     @close="handleClose"
@@ -9,13 +21,13 @@
     router
     >
         <template v-for="(routerList, index) in routerLists">
-            <el-submenu :index="index+''" :key="index" v-if="!routerList.path">
+            <el-submenu :index="index+''" :key="index" v-if="routerList.children.length">
                 <template slot="title">
                     <i :class="routerList.icon"></i>
                     <span slot="title">{{routerList.title}}</span>
                 </template>
                 <template v-for="(routers, index) in routerList.children">
-                    <el-submenu :index="index+''" :key="index" v-if="!routers.path">
+                    <el-submenu :index="index+''" :key="index" v-if="routers.children.length">
                         <span slot="title">{{routers.title}}</span>
                         <el-menu-item :index="routerItem.path" v-for="(routerItem, index) in routers.children" :key="index">{{routerItem.title}}</el-menu-item>
                     </el-submenu>
@@ -47,71 +59,50 @@ export default {
       isCollapse: false,
       routerLists: [
         {
-          title: '首页',
-          //   path: '/',
-          icon: 'el-icon-menu',
-          name: 'Home1',
-          children: [
-            {
-              title: '首页1',
-              path: '/home',
-              name: 'Home',
-              children: []
-            },
-            {
-              title: '首页2',
-              //   path: '/home/2',
-              name: 'Home2',
-              children: [
-                {
-                  title: '首页2-1',
-                  path: '/home/2/1',
-                  name: 'Home',
-                  children: []
-                }
-              ]
-            }
-          ]
-        },
-        {
           title: '学习中心',
           path: '/studyCenter',
           name: 'StudyCenter',
           icon: 'el-icon-menu',
           children: [
             {
+              title: '个人中心',
+              path: 'centerIndex',
+              name: 'CenterIndex',
+              children: []
+            },
+            {
               title: '课前预习',
-              path: '/preview',
+              path: '/studyCenter/preview',
               name: 'Preview',
               children: []
             },
             {
               title: '课堂互动',
-              path: '/interaction',
+              path: 'interaction',
               name: 'Interaction',
               children: []
             },
             {
               title: '课后任务',
-              path: '/courseTask',
+              path: 'courseTask',
               name: 'CourseTask',
               children: []
             },
             {
               title: '课程评价',
-              path: '/courseEvaluation',
+              path: 'courseEvaluation',
               name: 'CourseEvaluation ',
               children: []
             },
             {
               title: '学习反馈',
-              path: '/studyFeedback',
+              path: 'studyFeedback',
               name: 'StudyFeedback',
               children: []
             },
             {
               title: '我的作业',
-              path: '/myWork',
+              path: 'myWork',
               name: 'MyWork',
               children: []
             }
@@ -143,8 +134,44 @@ export default {
 <style lang="less" scoped>
 .nav-wrapper{
     display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 240px;
+    .nav-header{
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding-bottom: 10px;
+      border-bottom: 1px solid rgba(221,221,221,1);
+      .header-left{
+        display: block;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        margin-right: 10px;
+      }
+      .header-right{
+        .uname{
+          width:76px;
+          height:15px;
+          font-size:14px;
+          font-family:Microsoft YaHei;
+          font-weight:400;
+          color:rgba(51,51,51,1);
+        }
+        .uid{
+          width:108px;
+          height:14px;
+          font-size:12px;
+          font-family:Microsoft YaHei;
+          font-weight:400;
+          color:rgba(51,51,51,1);
+        }
+      }
+    }
     .el-nav:not(.el-menu--collapse) {
-        width: 200px;
+        width: 186px;
         min-height: 100vh;
     }
     .el-menu--collapse{
