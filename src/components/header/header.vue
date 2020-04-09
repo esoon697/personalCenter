@@ -4,9 +4,9 @@
       yazhuojiaoyu
     </div>
     <div class="header-right">
-      <div class="search-wrap flex-between">
+      <div class="search-wrap">
         <input type="text" placeholder="请输入关键词" class="search-input">
-        <i class="search-icon el-icon-search"></i>
+        <i class=" el-icon-search"></i>
       </div>
       <img class="avatar" src="../../assets/photo.jpeg">
     </div>
@@ -30,6 +30,7 @@ export default {
 </script>
 <style lang="less" scoped>
 .header-wrapper{
+  height: 60px;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -48,13 +49,16 @@ export default {
       height: 30px;
       line-height: 30px;
       border-radius: 20px;
-      background-color: #fff;
+      background-color: #ECECEC;
       padding: 0 10px;
       box-sizing: border-box;
       .search-input {
         height: 30px;
         line-height: 30px;
-        border-radius: 20px;
+        background-color: #ECECEC;
+        border-radius: 30px;
+        border: none;
+        outline: none;
         width: 350px;
         font-size: 14px;
         padding-left: 5px;

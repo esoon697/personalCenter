@@ -137,7 +137,7 @@ export default {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    width: 240px;
+    // width: 240px;
     .nav-header{
       display: flex;
       justify-content: center;
@@ -171,7 +171,7 @@ export default {
       }
     }
     .el-nav:not(.el-menu--collapse) {
-        width: 186px;
+        // width: 186px;
         min-height: 100vh;
     }
     .el-menu--collapse{
