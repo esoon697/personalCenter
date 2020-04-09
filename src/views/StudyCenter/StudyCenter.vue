@@ -24,5 +24,7 @@ export default {
 <style lang="less" scoped>
 .wrapper{
   width: calc(100vw - 240px);
+  padding-right: 40px;
+  box-sizing: border-box;
 }
 </style>

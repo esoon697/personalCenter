@@ -34,6 +34,6 @@ export default {
 </script>
 <style lang="less" scoped>
   .main{
-    background: #fff;
+    background: #F4F5FC;
   }
 </style>

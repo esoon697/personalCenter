@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <Header/>
-    <div class="main">
+    <div class="app-main">
       <Nav/>
       <router-view/>
     </div>
@@ -17,17 +17,22 @@ export default {
 }
 </script>
 
-<style lang="less" scoped>
+<style lang="less">
+@import url("./assets/css/common.css");
 #app {
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   /* text-align: center; */
+  font-size: 16px;
   color: #2c3e50;
   display: flex;
   flex-direction: column;
-  .main{
+  .app-main{
     display: flex;
+    background: #F4F5FC;
+    padding-top: 10px;
+    box-sizing: border-box;
   }
 }
 </style>
