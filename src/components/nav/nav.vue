@@ -1,47 +1,49 @@
 <template>
   <div class="nav-wrapper">
-    <div class="nav-header">
-      <img class="header-left" src="../../assets/photo.jpeg">
-      <div class="header-right">
-        <p class="uname">天高任鸟飞</p>
-        <p class="uid">
-          <span>ID:</span>
-          <span>yzteacher100</span>
-          </p>
+    <div>
+      <div class="nav-header">
+        <img class="header-left" src="../../assets/photo.jpeg">
+        <div class="header-right">
+          <p class="uname">天高任鸟飞</p>
+          <p class="uid">
+            <span>ID:</span>
+            <span>yzteacher100</span>
+            </p>
+        </div>
+        <div></div>
       </div>
-      <div></div>
+      <el-menu
+      default-active="centerIndex"
+      class="el-nav"
+      @open="handleOpen"
+      @close="handleClose"
+      :collapse="isCollapse"
+      :default-openeds="openeds"
+      router
+      >
+          <template v-for="(routerList, index) in routerLists">
+              <el-submenu :index="index+''" :key="index" v-if="routerList.children.length">
+                  <template slot="title">
+                      <i :class="routerList.icon"></i>
+                      <span slot="title">{{routerList.title}}</span>
+                  </template>
+                  <template v-for="(routers, index) in routerList.children">
+                      <el-submenu :index="index+''" :key="index" v-if="routers.children.length">
+                          <span slot="title">{{routers.title}}</span>
+                          <el-menu-item :index="routerItem.path" v-for="(routerItem, index) in routers.children" :key="index">{{routerItem.title}}</el-menu-item>
+                      </el-submenu>
+                      <el-menu-item :index="routers.path" :key="index" v-else>
+                          <span slot="title">{{routers.title}}</span>
+                      </el-menu-item>
+                  </template>
+              </el-submenu>
+              <el-menu-item :index="routerList.path" :key="index" v-else>
+                  <i :class="routerList.icon"></i>
+                  <span slot="title">{{routerList.title}}</span>
+              </el-menu-item>
+          </template>
+      </el-menu>
     </div>
-    <el-menu
-    default-active="centerIndex"
-    class="el-nav"
-    @open="handleOpen"
-    @close="handleClose"
-    :collapse="isCollapse"
-    :default-openeds="openeds"
-    router
-    >
-        <template v-for="(routerList, index) in routerLists">
-            <el-submenu :index="index+''" :key="index" v-if="routerList.children.length">
-                <template slot="title">
-                    <i :class="routerList.icon"></i>
-                    <span slot="title">{{routerList.title}}</span>
-                </template>
-                <template v-for="(routers, index) in routerList.children">
-                    <el-submenu :index="index+''" :key="index" v-if="routers.children.length">
-                        <span slot="title">{{routers.title}}</span>
-                        <el-menu-item :index="routerItem.path" v-for="(routerItem, index) in routers.children" :key="index">{{routerItem.title}}</el-menu-item>
-                    </el-submenu>
-                    <el-menu-item :index="routers.path" :key="index" v-else>
-                        <span slot="title">{{routers.title}}</span>
-                    </el-menu-item>
-                </template>
-            </el-submenu>
-            <el-menu-item :index="routerList.path" :key="index" v-else>
-                <i :class="routerList.icon"></i>
-                <span slot="title">{{routerList.title}}</span>
-            </el-menu-item>
-        </template>
-    </el-menu>
     <div class="nav-btn" @click="isCollapse = !isCollapse">
         <i class="el-icon-arrow-right" v-if="isCollapse"></i>
         <i class="el-icon-arrow-left" v-else></i>
@@ -134,7 +136,7 @@ export default {
 <style lang="less" scoped>
 .nav-wrapper{
     display: flex;
-    flex-direction: column;
+    // flex-direction: column;
     justify-content: center;
     align-items: center;
     // width: 240px;
@@ -178,6 +180,8 @@ export default {
         min-height: 100vh;
     }
     .nav-btn{
+        height: 100%;
+        cursor: pointer;
         display: flex;
         justify-content: center;
         align-items: center;
