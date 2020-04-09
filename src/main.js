@@ -3,18 +3,8 @@
 import Vue from 'vue'
 import App from './App'
 import router from './router'
-import 'element-ui/lib/theme-chalk/index.css'
-// import {
-//   Button,
-//   Message,
-//   MessageBox,
-//   Loading,
-//   Dialog,
-//   Popover,
-//   Submenu,
-//   MenuItem,
-//   Menu
-// } from 'element-ui'
+// import 'element-ui/lib/theme-chalk/index.css'
+// 引入element-ui相关组件
 import {
   Button,
   Message,
@@ -32,7 +22,19 @@ import {
   RadioButton,
   Tree
 } from 'element-ui'
-// Vue.use(Message)
+
+// 引入ECharts 主模块
+var echarts = require('echarts/lib/echarts')
+// 引入折线图/柱状图等组件
+require('echarts/lib/chart/bar')
+require('echarts/lib/chart/line')
+require('echarts/lib/chart/radar')
+require('echarts/lib/chart/pie')
+// 引入提示框和title组件，图例
+require('echarts/lib/component/tooltip')
+require('echarts/lib/component/title')
+require('echarts/lib/component/legend')
+
 Vue.component(Button.name, Button)
 Vue.component(Message.name, Message)
 Vue.component(MessageBox.name, MessageBox)
@@ -54,6 +56,9 @@ Vue.prototype.$alert = MessageBox.alert
 Vue.prototype.$confirm = MessageBox.confirm
 Vue.prototype.$prompt = MessageBox.prompt
 // Vue.prototype.$loading = Loading.service
+
+// vue全局注入echarts
+Vue.prototype.$echarts = echarts
 
 Vue.config.productionTip = false
 

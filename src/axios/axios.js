@@ -1,10 +1,10 @@
-import axios from "axios";
+import axios from 'axios'
 // import store from "../store";
 // import qs from 'qs'
 import router from '../router'
 import Vue from 'vue'
-import { Message } from 'ant-design-vue';
-Vue.use(Message);
+import { Message } from 'ant-design-vue'
+Vue.use(Message)
 Vue.prototype.$message = Message
 
 let config = {
@@ -51,7 +51,7 @@ _axios.interceptors.response.use(
   function (response) {
     if (response.data.code == 200) {
       // 接口状态正常
-      return Promise.resolve(response);
+      return Promise.resolve(response)
     } else if (response.data.code == 402) {
       self.$message.warning('登录已过期，请重新登录')
       localStorage.removeItem('token')
@@ -61,11 +61,10 @@ _axios.interceptors.response.use(
           query: { redirect: router.currentRoute.fullPath } // 登录成功后跳入浏览的当前页面
         }
       )
-
     } else {
       // 接口状态异常
       self.$message.error(response.data.message)
-      return Promise.resolve(response);
+      return Promise.resolve(response)
     }
   },
   function (err) {
@@ -81,7 +80,7 @@ _axios.interceptors.response.use(
  * @returns {Promise}
  */
 
-export function get(url, params = {}) {
+export function get (url, params = {}) {
   return new Promise((resolve, reject) => {
     _axios.get(url, {
       params: params

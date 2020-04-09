@@ -1,7 +1,6 @@
 <template>
   <div class="tree-wrapper">
     <div class="block">
-        <p>使用 scoped slot</p>
         <el-tree
         :data="data"
         node-key="id"
