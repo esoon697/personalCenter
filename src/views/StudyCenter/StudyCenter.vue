@@ -1,5 +1,5 @@
 <template>
-  <div class="echart-wrapper">
+  <div class="wrapper">
     <router-view></router-view>
   </div>
 </template>
@@ -22,4 +22,7 @@ export default {
 }
 </script>
 <style lang="less" scoped>
+.wrapper{
+  width: calc(100vw - 240px);
+}
 </style>
