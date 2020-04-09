@@ -3,7 +3,7 @@
     <Header/>
     <div class="main">
       <Nav/>
-      <router-view/>
+      <router-view class="router-view"/>
     </div>
   </div>
 </template>
@@ -28,6 +28,9 @@ export default {
   flex-direction: column;
   .main{
     display: flex;
+    .router-view{
+      width: calc(100vh-200px);
+    }
   }
 }
 </style>
