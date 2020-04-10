@@ -3,7 +3,7 @@
     <Header/>
     <div class="app-main">
       <Nav/>
-      <!-- <router-view/> -->
+      <router-view/>
     </div>
   </div>
 </template>
@@ -31,7 +31,8 @@ export default {
   .app-main{
     display: flex;
     background: #F4F5FC;
-    padding-top: 10px;
+    // padding-top: 10px;
+    // margin-top: 10px;
     box-sizing: border-box;
   }
 }

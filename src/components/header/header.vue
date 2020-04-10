@@ -36,6 +36,7 @@ export default {
   align-items: center;
   padding: 0 20px 0;
   box-shadow:0px 5px 17px 1px rgba(230,239,253,1);
+  z-index: 1;
   .header-left{
     width:440px;
     height:29px;

@@ -65,13 +65,13 @@ export default {
       routerLists: [
         {
           title: '学习中心',
-          path: '/studyCenter',
+          path: '/studyCenter/studyCenter',
           name: 'StudyCenter',
           icon: 'el-icon-menu',
           children: [
             {
               title: '个人中心',
-              path: 'centerIndex',
+              path: '/studyCenter/centerIndex',
               name: 'CenterIndex',
               children: []
             },
@@ -83,31 +83,31 @@ export default {
             },
             {
               title: '课堂互动',
-              path: 'interaction',
+              path: '/studyCenter/interaction',
               name: 'Interaction',
               children: []
             },
             {
               title: '课后任务',
-              path: 'courseTask',
+              path: '/studyCenter/courseTask',
               name: 'CourseTask',
               children: []
             },
             {
               title: '课程评价',
-              path: 'courseEvaluation',
+              path: '/studyCenter/courseEvaluation',
               name: 'CourseEvaluation ',
               children: []
             },
             {
               title: '学习反馈',
-              path: 'studyFeedback',
+              path: '/studyCenter/studyFeedback',
               name: 'StudyFeedback',
               children: []
             },
             {
               title: '我的作业',
-              path: 'myWork',
+              path: '/studyCenter/myWork',
               name: 'MyWork',
               children: []
             }
@@ -148,12 +148,13 @@ export default {
       flex-direction: column;
       justify-content: center;
       align-items: center;
+      background-color: #fff;
       box-shadow: 0px 5px 17px -2px rgba(240,240,240,1);
       .nav-header{
         display: flex;
         justify-content: center;
         align-items: center;
-        padding-bottom: 10px;
+        padding: 15px 0;
         border-bottom: 1px solid rgba(221,221,221,1);
         .header-left{
           display: block;
