@@ -21,7 +21,11 @@ import {
   Col,
   RadioGroup,
   RadioButton,
-  Tree
+  Tree,
+  Table,
+  TableColumn,
+  Select,
+  Option
 } from 'element-ui'
 
 // 引入ECharts 主模块
@@ -51,6 +55,10 @@ Vue.component(Col.name, Col)
 Vue.component(RadioGroup.name, RadioGroup)
 Vue.component(RadioButton.name, RadioButton)
 Vue.component(Tree.name, Tree)
+Vue.component(Table.name, Table)
+Vue.component(TableColumn.name, TableColumn)
+Vue.component(Select.name, Select)
+Vue.component(Option.name, Option)
 Vue.prototype.$message = Message
 Vue.prototype.$msgbox = MessageBox
 Vue.prototype.$alert = MessageBox.alert
