@@ -1,5 +1,5 @@
 <template>
-  <div class="main flex">
+  <div class="grades-main flex">
     <!-- 成绩表 -->
     <div class="grades-left">
       <!-- 标题栏 -->
@@ -20,11 +20,13 @@
         </div>
       </div>
       <!-- echarts图表展示 -->
-      <echart-bar v-show="leftActive == 0"></echart-bar>
+      <echart-bar v-show="leftActive == 0"  :leftActive="leftActive"></echart-bar>
+      <echart-line v-show="leftActive == 1" :leftActive="leftActive"></echart-line>
     </div>
     <!-- 我的作业、我的考试 -->
     <div class="grades-right">
       <div class="title-item flex-between">
+        <!-- 我的作业和我的考试选择区域 -->
         <div class="work-test">
           <span
             v-for="(item, index) in work" :key="index"
@@ -34,35 +36,55 @@
             {{item}}
           </span>
         </div>
-        <!-- 页码 -->
-        <div class="page-num">
+        <!-- 作业页码 -->
+        <div class="page-num" v-if="workActive == 0">
           <span
           v-for="(item, index) in page" :key="index"
-          :class="['page-num-item', rightActive == index ? 'page-num-item-active' : '']"
-          @click="rightChoose(index)"
+          :class="['page-num-item', workPage == index ? 'page-num-item-active' : '']"
+          @click="workPageChoose(index)"
+          >
+          {{item}}
+          </span>
+        </div>
+        <!-- 考试页码 -->
+        <div class="page-num" v-else>
+          <span
+          v-for="(item, index) in page" :key="index"
+          :class="['page-num-item', testPage == index ? 'page-num-item-active' : '']"
+          @click="testPageChoose(index)"
           >
           {{item}}
           </span>
         </div>
       </div>
+      <!-- 作业和考试内容展示区域 -->
+      <my-work :page="workPage" :workActive="workActive" v-if="workActive == 0"></my-work>
+      <my-test :page="testPage" :workActive="workActive" v-else></my-test>
     </div>
   </div>
 </template>
 
 <script>
 import echartBar from './components/echartBar'
+import echartLine from './components/echartLine'
+import myWork from './components/myWork'
+import myTest from './components/myTest'
 export default {
   data () {
     return {
       page: ['1', '2', '3'], // 页码
       work: ['我的作业', '我的考试'],
       leftActive: 0, // 左当前页码
-      rightActive: 0, // 右当前页码
+      workPage: 0, // 我的作业当前页码
+      testPage: 0, // 我的考试当前页码
       workActive: 0
     }
   },
   components: {
-    echartBar
+    echartBar,
+    echartLine,
+    myWork,
+    myTest
   },
   mounted () {},
   methods: {
@@ -70,20 +92,26 @@ export default {
     leftChoose (index) {
       this.leftActive = index
     },
-    // 右页码选择
-    rightChoose (index) {
-      this.rightActive = index
+    // 我的作业页码选择
+    workPageChoose (index) {
+      this.workPage = index
+    },
+    // 我的考试页码选择
+    testPageChoose (index) {
+      this.testPage = index
     },
     // 我的作业，我的考试选择
     workChoose (index) {
       this.workActive = index
+      // 重置页码
+      this.rightActive = 0
     }
   }
 }
 </script>
 
-<style style="less" scoped>
-  .main{
+<style lang="less" scoped>
+  .grades-main{
     background: #fff;
     height: 440px;
     margin-bottom: 20px;
@@ -116,6 +144,7 @@ export default {
   .my-grade p{
     font-size: 18px;
     color: #333;
+    font-weight: 700;
   }
   .page-num-item{
     color: #666;
