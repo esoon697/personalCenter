@@ -11,6 +11,14 @@ export default {
 
     }
   },
+  props: ['leftActive'],
+  watch: {
+    leftActive () {
+      if (this.leftActive === 0) {
+        this.init()
+      }
+    }
+  },
   mounted () {
     this.init()
   },
@@ -120,7 +128,7 @@ export default {
               ),
               barBorderRadius: [5, 5, 0, 0]
             },
-            data: [40, 80, 50, 54, 90, 100]
+            data: [48, 95, 50, 34, 64, 65]
           }
         ]
       }
@@ -130,13 +138,13 @@ export default {
 }
 </script>
 
-<style style="less" scoped>
+<style lang="less" scoped>
   .bar-main{
     width: 100%;
     height: 340px;
   }
   .echarts-size{
-    width: 100%;
-    height: 100%;
+    min-width: 100%;
+    min-height: 100%;
   }
 </style>

@@ -4,9 +4,9 @@
       <img :src="base + 'header-logo.png'" alt="">
     </div>
     <div class="header-right">
-      <div class="search-wrap">
+      <div class="search-wrap flex-center-y">
         <input type="text" placeholder="搜索功能" class="search-input">
-        <i class=" el-icon-search"></i>
+        <img :src="base + 'header-search.png'" alt="">
       </div>
       <img class="avatar" src="../../assets/photo.jpeg">
     </div>
@@ -34,15 +34,16 @@ export default {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0 20px 0;
+  padding: 0 20px;
+  box-sizing: border-box;
   box-shadow:0px 5px 17px 1px rgba(230,239,253,1);
   z-index: 1;
   .header-left{
-    width:440px;
-    height:29px;
+    width:380px;
+    height:20px;
     img{
-      width: 440px;
-      height: 30px;
+      width: 100%;
+      height: 100%;
     }
   }
   .header-right{
@@ -50,13 +51,18 @@ export default {
     justify-content: center;
     align-items: center;
     .search-wrap {
-      width: 400px;
+      width: 340px;
       height: 30px;
       line-height: 30px;
       border-radius: 20px;
       background-color: #ECECEC;
       padding: 0 10px;
       box-sizing: border-box;
+      img{
+        width: 21px;
+        height: 21px;
+        cursor: pointer;
+      }
       .search-input {
         height: 30px;
         line-height: 30px;
@@ -80,6 +86,8 @@ export default {
       width: 40px;
       height: 40px;
       border-radius: 50%;
+      margin: 0 20px 0 70px;
+      cursor: pointer;
     }
   }
 }
