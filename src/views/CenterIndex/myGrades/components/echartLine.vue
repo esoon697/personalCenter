@@ -20,10 +20,12 @@ export default {
     }
   },
   mounted () {
+    // this.init()
   },
   methods: {
     init () {
       let echartLine = this.$echarts.init(document.getElementById('line-box'))
+      this.$echartLine = echartLine
       // 绘制图表
       var lineOption = {
         grid: {
@@ -127,6 +129,12 @@ export default {
       }
       // 加载配置项
       echartLine.setOption(lineOption)
+      // 通过resize方法来重设图表宽度
+      window.addEventListener('resize', this.repaint)
+    },
+    repaint () {
+      let echartLine = this.$echarts.init(document.getElementById('line-box'))
+      echartLine.resize()
     }
   }
 }

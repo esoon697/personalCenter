@@ -86,7 +86,8 @@ export default {
     myWork,
     myTest
   },
-  mounted () {},
+  mounted () {
+  },
   methods: {
     // 左页码选择
     leftChoose (index) {

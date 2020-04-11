@@ -26,6 +26,7 @@ export default {
     // 加载图表
     init () {
       let echartBar = this.$echarts.init(document.getElementById('bar-box'))
+      this.$echartBar = echartBar
       let barOption = {
         color: ['#3398DB'],
         tooltip: {
@@ -133,6 +134,12 @@ export default {
         ]
       }
       echartBar.setOption(barOption)
+      // 通过resize方法来重设图表宽度
+      window.addEventListener('resize', this.repaint)
+    },
+    repaint () {
+      let echartBar = this.$echarts.init(document.getElementById('bar-box'))
+      echartBar.resize()
     }
   }
 }
