@@ -23,7 +23,8 @@ export default {
 </script>
 <style lang="less" scoped>
 .wrapper{
-  width: calc(100vw - 240px);
+  // width: calc(100vw - 240px);
+  width: 100%;
   padding-right: 40px;
   box-sizing: border-box;
 }

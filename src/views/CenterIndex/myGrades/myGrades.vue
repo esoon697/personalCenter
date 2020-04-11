@@ -112,6 +112,10 @@ export default {
 </script>
 
 <style lang="less" scoped>
+@media screen and (max-width: 1460px){
+  table tr td{font-size: 14px!important;}
+  table th{font-size: 14px!important;}
+}
   .grades-main{
     background: #fff;
     height: 440px;

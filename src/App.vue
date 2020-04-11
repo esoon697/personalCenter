@@ -34,6 +34,8 @@ export default {
     // padding-top: 10px;
     // margin-top: 10px;
     box-sizing: border-box;
+    overflow: hidden;
+    min-width: 1200px;
   }
 }
 </style>

@@ -69,7 +69,9 @@
           <el-table-column
             prop="state"
             label="状态"
-            align="center">
+            align="center"
+            min-width="110"
+            fixed="right">
             <template slot-scope="scope">
                 <button class="table-btn" @click="startToLearn(scope.$index, scope.row)">开始学习</button>
             </template>
@@ -86,7 +88,7 @@ export default {
   props: {},
   data () {
     return {
-      courseTypeVal: '',
+      courseTypeVal: '', // 课程分类当前值
       courseTypes: [
         {
           id: 1,
@@ -100,9 +102,9 @@ export default {
           id: 3,
           value: '英语'
         }
-      ],
+      ], // 课程分类列表
       page: ['1', '2', '3'], // 页码
-      active: 0,
+      active: 0, // 当前页码
       tableData: [{
         courseInfo: '职业生涯规划',
         courseCount: '10',
@@ -131,90 +133,105 @@ export default {
         date: '2019-12-04',
         score: '20分',
         state: '开始学习'
-      }]
+      }] // 课程table数据
     }
   },
   created () {},
   mounted () {
-    var echartPie = this.$echarts.init(document.getElementById('pie-box'))
-    var pieOption = {
-      tooltip: {
-        trigger: 'item',
-        formatter: '{a} <br/>{b}: {c} ({d}%)'
-      },
-      legend: {
-        left: 10,
-        data: ['已完成', '未完成', '进行中']
-      },
-      series: [
-        {
-          name: '访问来源',
-          type: 'pie',
-          radius: ['15%', '60%'],
-          // right: 30,
-          label: {
-            formatter: '{title|{b}} ({d}%)',
-            rich: {
-              title: {
-                color: '#989898',
-                lineHeight: 10
-              }
-            }
-          },
-          emphasis: {
-            label: {
-              show: true,
-              fontSize: '16',
-              fontWeight: 'bold'
-            }
-          },
-          data: [
-            {
-              value: 335,
-              name: '已完成',
-              itemStyle: {
-                color: '#FF7A8E'
-              }
-            },
-            {
-              value: 310,
-              name: '未完成',
-              itemStyle: {
-                color: '#FFCC33'
-              }
-            },
-            {
-              value: 234,
-              name: '进行中',
-              itemStyle: {
-                color: '#1DEAAD'
-              }
-            }
-          ]
-        }
-      ]
-    }
-    echartPie.setOption(pieOption)
+    this.initEchart() // 初始化饼形图
   },
   computed: {},
   methods: {
+    initEchart () {
+      var echartPie = this.$echarts.init(document.getElementById('pie-box'))
+      var pieOption = {
+        tooltip: {
+          trigger: 'item',
+          formatter: '{a} <br/>{b}: {c} ({d}%)'
+        },
+        legend: {
+          left: 10,
+          data: ['已完成', '未完成', '进行中']
+        },
+        series: [
+          {
+            name: '访问来源',
+            type: 'pie',
+            radius: ['15%', '60%'],
+            // right: 30,
+            label: {
+              formatter: '{title|{b}} ({d}%)',
+              rich: {
+                title: {
+                  color: '#989898',
+                  lineHeight: 10
+                }
+              }
+            },
+            emphasis: {
+              label: {
+                show: true,
+                fontSize: '16',
+                fontWeight: 'bold'
+              }
+            },
+            data: [
+              {
+                value: 335,
+                name: '已完成',
+                itemStyle: {
+                  color: '#FF7A8E'
+                }
+              },
+              {
+                value: 310,
+                name: '未完成',
+                itemStyle: {
+                  color: '#FFCC33'
+                }
+              },
+              {
+                value: 234,
+                name: '进行中',
+                itemStyle: {
+                  color: '#1DEAAD'
+                }
+              }
+            ]
+          }
+        ]
+      }
+      echartPie.setOption(pieOption)
+      window.addEventListener('resize', this.repaint) // 宽度改变resize饼形图
+    },
+    // 选择页码
     choosePage (index) {
       this.active = index
+    },
+    // 自适应饼形图方法
+    repaint () {
+      let echartPie = this.$echarts.init(document.getElementById('pie-box'))
+      echartPie.resize()
+    },
+    startToLearn (index, row) {
+      console.log(index, row)
     }
   },
   watch: {}
 }
 </script>
 <style lang="less" scoped>
+@media screen and (max-width: 1460px){
+  table tr td{font-size: 14px!important;}
+  table th{font-size: 14px!important;}
+}
 .myCourse-wrapper{
   display: flex;
   width: 100%;
   .myCourse-left{
-    width: 600px;
-    height: 600px;
+    width: 40%;
     .myCourse-title{
       display: flex;
-      // justify-content: center;
       align-items: center;
       font-size:18px;
       font-family:Microsoft YaHei;
@@ -229,16 +246,16 @@ export default {
         margin-right: 10px;
       }
     }
-    padding: 0 15px;
+    padding: 0 20px;
     box-sizing: border-box;
     background-color: #fff;
     #pie-box{
-      width: 570px;
+      width: 100%;
       height: 500px;
     }
   }
   .myCourse-right{
-    flex: 1;
+    width: 60%;
     margin-left: 15px;
     background-color: #fff;
     padding: 0 30px;
@@ -272,6 +289,9 @@ export default {
           color: #0094E0;
         }
       }
+    }
+    .right-table{
+      width: 100%;
     }
     .table-btn{
       width: 93px;

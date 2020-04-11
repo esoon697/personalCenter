@@ -16,7 +16,7 @@
           <img class="header-left" src="../../assets/photo.jpeg">
       </div>
       <el-menu
-      default-active="centerIndex"
+      :default-active="currentPath"
       class="el-nav"
       @open="handleOpen"
       @close="handleClose"
@@ -60,12 +60,13 @@ export default {
   props: {},
   data () {
     return {
+      currentPath: '',
       openeds: ['0'],
       isCollapse: false,
       routerLists: [
         {
           title: '学习中心',
-          path: '/studyCenter/studyCenter',
+          path: '/studyCenter',
           name: 'StudyCenter',
           icon: 'el-icon-menu',
           children: [
@@ -123,9 +124,14 @@ export default {
     }
   },
   created () {},
-  mounted () {},
+  mounted () {
+    this.initNav()
+  },
   computed: {},
   methods: {
+    initNav () {
+      this.currentPath = this.$route.path
+    },
     handleOpen (key, keyPath) {
       console.log(key, keyPath)
     },
@@ -141,12 +147,12 @@ export default {
     display: flex;
     // flex-direction: column;
     justify-content: center;
-    align-items: center;
+    // align-items: center;
     // width: 240px;
     .nav-box{
       display: flex;
       flex-direction: column;
-      justify-content: center;
+      // justify-content: center;
       align-items: center;
       background-color: #fff;
       box-shadow: 0px 5px 17px -2px rgba(240,240,240,1);

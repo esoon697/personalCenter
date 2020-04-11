@@ -34,6 +34,7 @@ export default {
 </script>
 <style lang="less" scoped>
   .main{
+    width: 100%;
     background: #F4F5FC;
   }
 </style>

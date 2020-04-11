@@ -9,8 +9,8 @@
     </div>
     <div class="item-bottom">
       <div class="progress">
-        <div class="inner">
-          <span class="progress-val">{{mapItem.progressVal}}</span>
+        <div class="inner" :style="'width:'+mapItem.progressVal">
+          <span class="progress-val" :class="{isCenter:mapItem.progressVal == '100%'}">{{mapItem.progressVal}}</span>
         </div>
       </div>
     </div>
@@ -38,11 +38,10 @@ export default {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  // position: absolute;
+  width: 16%;
   .item-top{
     img{
       width: 80px;
-      height: 62px;
     }
   }
   .item-mid{
@@ -51,8 +50,6 @@ export default {
     justify-content: center;
     align-items: center;
     .mid-title{
-      width:214px;
-      height:17px;
       font-size:16px;
       font-family:Microsoft YaHei;
       font-weight:bold;
@@ -60,25 +57,23 @@ export default {
       margin: 15px 0;
     }
     .mid-content{
-      width:245px;
-      height:35px;
       font-size:14px;
       font-family:Microsoft YaHei;
       font-weight:bold;
       color:rgba(102,102,102,1);
       line-height:20px;
-      margin-bottom: 25px;
+      margin-bottom: 15px;
     }
   }
   .item-bottom{
-    position: relative;
+    width: 90%;
     .progress{
-      width:220px;
       height:30px;
       background:rgba(255,255,255,1);
       border:1px solid rgba(67,167,229,1);
       border-radius:5px;
       .inner{
+        position: relative;
         width: 50%;
         height: 100%;
         background:linear-gradient(0deg,rgba(0,148,224,1),rgba(78,177,229,1),rgba(1,232,216,1));
@@ -99,6 +94,11 @@ export default {
         }
       }
     }
+  }
+  @media screen and (max-width: 1460px){
+    .mid-title{font-size: 14px!important;}
+    .mid-content{font-size: 12px!important;}
+    .item-top img{width: 60px!important;}
   }
 }
 </style>

@@ -6,6 +6,8 @@
     </div>
     <div class="map-box">
       <MapItem ref="Map-item" class="Map-item" v-for="(mapItem, index) in mapList" :key="index" :mapItem="mapItem"/>
+      <!-- <div class="map-flag"></div> -->
+      <img class="map-flag" :src="base+'studyMap_flag.png'">
     </div>
   </div>
 </template>
@@ -55,43 +57,111 @@ export default {
 <style lang="less" scoped>
 .map-main{
   position: relative;
-  height: 100%;
+  width: 100%;
   height: 440px;
   margin-bottom: 20px;
+  padding: 25px 20px;
+  box-sizing: border-box;
   background: #fff url(http://182.148.48.236:54321/source/personalCenter/studyMap_bg.png) center no-repeat;
-  // display: flex;
-  // flex-direction: column;
-  // justify-content: center;
   .map-title{
     display: flex;
-    // justify-content: center;
     align-items: center;
-    font-size:18px;
-    font-family:Microsoft YaHei;
-    font-weight:bold;
-    color:rgba(51,51,51,1);
+    font-size: 18px;
+    font-family: Microsoft YaHei;
+    font-weight: bold;
+    color: rgba(51,51,51,1);
     // line-height:67px;
     .line{
       width: 4px;
       height: 18px;
-      background:linear-gradient(0deg,rgba(1,232,216,1),rgba(78,177,229,1),rgba(0,148,224,1));
-      border-radius:2px;
+      background: linear-gradient(0deg,rgba(1,232,216,1),rgba(78,177,229,1),rgba(0,148,224,1));
+      border-radius: 2px;
       margin-right: 10px;
     }
   }
   .map-box{
+    width: 100%;
     display: flex;
     position: absolute;
-    top: 20%;
+    top: 28%;
+    left: 2%;
   }
   .Map-item{
-    margin-right: 100px;
+    margin-right: 5%;
     &:nth-child(odd){
       transform: translateY(50px);
+      // width: 100%;
+      &::after{
+        content: '';
+        display: block;
+        background: url(http://182.148.48.236:54321/source/personalCenter/studyMap-line1.png) center no-repeat;
+        background-size: contain;
+        width: 100%;
+        height: 200px;
+        position: absolute;
+        top: -60%;
+        left: 70%;
+      }
+      @media screen and (max-width: 1920px){
+        &::after{top: -60%; left: 70%;}
+      }
+      @media screen and (max-width: 1460px){
+        &::after{top: -60%; left: 60%;}
+      }
+      @media screen and (max-width: 1200px){
+        &::after{top: -60%; left: 60%;}
+      }
     }
     &:nth-child(even){
       transform: translateY(-50px);
+      &::after{
+        content: '';
+        display: block;
+        background: url(http://182.148.48.236:54321/source/personalCenter/studyMap-line2.png) center no-repeat;
+        background-size: contain;
+        width: 100%;
+        height: 200px;
+        position: absolute;
+        top: -15%;
+        left: 68%;
+      }
+      @media screen and (max-width: 1920px){
+        &::after{top: -10%; left: 70%;}
+      }
+      @media screen and (max-width: 1460px){
+        &::after{top: -20%; left: 70%;}
+      }
+      @media screen and (max-width: 1200px){
+        &::after{top: -15%; left: 67%;}
+      }
     }
+    &:nth-child(4){
+      &::after{
+        width: 80%;
+      }
+      @media screen and (max-width: 1920px){
+        &::after{top: -15%; left: 65%;}
+      }
+      @media screen and (max-width: 1460px){
+        &::after{top: -25%; left: 70%;}
+      }
+      // @media screen and (max-width: 1200px){
+      //   &::after{top: -25%; left: 70%;}
+      // }
+    }
+  }
+  .map-flag{
+    display: block;
+    margin-left: -1%;
+  }
+  @media screen and (max-width: 1920px){
+    .map-flag{height: 120px;}
+  }
+  @media screen and (max-width: 1460px){
+    .map-flag{height: 100px;}
+  }
+  @media screen and (max-width: 1200px){
+    .map-flag{height: 90px;}
   }
 }
 </style>
