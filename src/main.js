@@ -4,7 +4,10 @@ import 'babel-polyfill'
 import Vue from 'vue'
 import App from './App'
 import router from './router'
-// import 'element-ui/lib/theme-chalk/index.css'
+import store from './store/index'
+import api from './axios/api'
+// 引入工具文件
+import './utils/utils'
 // 引入element-ui相关组件
 import {
   Button,
@@ -69,6 +72,9 @@ Vue.prototype.$prompt = MessageBox.prompt
 // vue全局注入echarts
 Vue.prototype.$echarts = echarts
 
+// 将api挂载到vue的原型上
+Vue.prototype.$api = api
+
 Vue.config.productionTip = false
 
 const base = 'http://182.148.48.236:54321/source/personalCenter/'
@@ -78,5 +84,6 @@ Vue.prototype.base = base
 new Vue({
   el: '#app',
   router,
+  store,
   render: h => h(App)
 })

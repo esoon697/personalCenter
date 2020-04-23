@@ -2,7 +2,7 @@
   <div class="nav-wrapper">
     <div class="nav-box">
       <div class="nav-header" v-if="!isCollapse">
-        <img class="header-left" src="../../assets/photo.jpeg">
+        <img class="header-left" :src="isLogin&&headImgUrl?headImgUrl:base+'default-avatar.jpg'">
         <div class="header-right">
           <p class="uname">天高任鸟飞</p>
           <p class="uid">
@@ -13,7 +13,7 @@
         <div></div>
       </div>
       <div class="nav-header" v-else>
-          <img class="header-left" src="../../assets/photo.jpeg">
+          <img class="header-left" :src="isLogin&&headImgUrl?headImgUrl:base+'default-avatar.jpg'">
       </div>
       <el-menu
       :default-active="currentPath"
@@ -27,7 +27,8 @@
           <template v-for="(routerList, index) in routerLists">
               <el-submenu :index="index+''" :key="index" v-if="routerList.children.length">
                   <template slot="title">
-                      <i :class="routerList.icon"></i>
+                      <!-- <i :class="routerList.icon"></i> -->
+                      <img :src="routerList.icon" alt="">
                       <span slot="title">{{routerList.title}}</span>
                   </template>
                   <template v-for="(routers, index) in routerList.children">
@@ -55,6 +56,7 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
 export default {
   components: {},
   props: {},
@@ -68,7 +70,8 @@ export default {
           title: '学习中心',
           path: '/studyCenter',
           name: 'StudyCenter',
-          icon: 'el-icon-menu',
+          // icon: 'el-icon-menu',
+          icon: 'http://182.148.48.236:54321/source/personalCenter/nav_icon1.png',
           children: [
             {
               title: '个人中心',
@@ -114,11 +117,53 @@ export default {
             }
           ]
         },
+        // {
+        //   title: 'Tree',
+        //   path: '/tree',
+        //   name: 'Tree',
+        //   children: []
+        // },
         {
-          title: 'Tree',
-          path: '/tree',
-          name: 'Tree',
-          children: []
+          title: '讨论中心',
+          path: '/',
+          name: 'DiscussionCenter',
+          icon: 'http://182.148.48.236:54321/source/personalCenter/nav_icon2.png',
+          children: [
+            {
+              title: '讨论中心',
+              path: '/',
+              name: 'DiscussionCenter',
+              children: []
+            }
+          ]
+        },
+        {
+          title: '我的考试',
+          path: '/',
+          name: 'MyExam',
+          icon: 'http://182.148.48.236:54321/source/personalCenter/nav_icon3.png',
+          children: [
+            {
+              title: '我的考试',
+              path: '/',
+              name: 'MyExam',
+              children: []
+            }
+          ]
+        },
+        {
+          title: '个人设置',
+          path: '/',
+          name: 'MySitting',
+          icon: 'http://182.148.48.236:54321/source/personalCenter/nav_icon4.png',
+          children: [
+            {
+              title: '个人设置',
+              path: '/',
+              name: 'MySitting',
+              children: []
+            }
+          ]
         }
       ]
     }
@@ -127,7 +172,9 @@ export default {
   mounted () {
     this.initNav()
   },
-  computed: {},
+  computed: {
+    ...mapState(['headImgUrl', 'isLogin'])
+  },
   methods: {
     initNav () {
       this.currentPath = this.$route.path

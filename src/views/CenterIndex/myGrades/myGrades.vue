@@ -39,7 +39,7 @@
         <!-- 作业页码 -->
         <div class="page-num" v-if="workActive == 0">
           <span
-          v-for="(item, index) in page" :key="index"
+          v-for="(item, index) in page1" :key="index"
           :class="['page-num-item', workPage == index ? 'page-num-item-active' : '']"
           @click="workPageChoose(index)"
           >
@@ -49,7 +49,7 @@
         <!-- 考试页码 -->
         <div class="page-num" v-else>
           <span
-          v-for="(item, index) in page" :key="index"
+          v-for="(item, index) in page2" :key="index"
           :class="['page-num-item', testPage == index ? 'page-num-item-active' : '']"
           @click="testPageChoose(index)"
           >
@@ -72,12 +72,16 @@ import myTest from './components/myTest'
 export default {
   data () {
     return {
-      page: ['1', '2', '3'], // 页码
+      page: ['科目', '月份'], // 页码
+      page1: 6, // 页码
+      page2: 5, // 页码
       work: ['我的作业', '我的考试'],
       leftActive: 0, // 左当前页码
       workPage: 0, // 我的作业当前页码
       testPage: 0, // 我的考试当前页码
-      workActive: 0
+      workActive: 0,
+      // homeworkList: [],
+      examList: []
     }
   },
   components: {
@@ -85,6 +89,10 @@ export default {
     echartLine,
     myWork,
     myTest
+  },
+  created () {
+    this.getHomeworkInfo()
+    this.getExamInfo()
   },
   mounted () {
   },
@@ -106,6 +114,29 @@ export default {
       this.workActive = index
       // 重置页码
       this.rightActive = 0
+    },
+    getHomeworkInfo () {
+      console.log(this.workPage)
+      this.$api.getHomeworkInfo({
+        pageNum: this.workPage + 1,
+        pageSize: 5
+      }).then(res => {
+        if (res.code == 200) {
+          console.log('res.data.myHomework.list', res.data.myHomework.list)
+          this.$store.state.homeworkList = res.data.myHomework.list
+          console.log('this.$store.state.homeworkList', this.$store.state.homeworkList)
+        }
+      })
+    },
+    getExamInfo () {
+      this.$api.getExamInfo({
+        pageNum: this.testPage + 1,
+        pageSize: 5
+      }).then(res => {
+        if (res.code == 200) {
+          this.examList = res.data.myExams.list
+        }
+      })
     }
   }
 }

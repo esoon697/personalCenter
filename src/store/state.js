@@ -1,3 +1,7 @@
 // 状态对象
 export default {
+  headImgUrl: '',
+  isLogin: false,
+  homeworkList: [],
+  examList: []
 }

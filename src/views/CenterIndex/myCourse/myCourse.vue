@@ -88,6 +88,7 @@ export default {
   props: {},
   data () {
     return {
+      echartPie: null,
       courseTypeVal: '', // 课程分类当前值
       courseTypes: [
         {
@@ -133,7 +134,8 @@ export default {
         date: '2019-12-04',
         score: '20分',
         state: '开始学习'
-      }] // 课程table数据
+      }], // 课程table数据
+      echartData: {}
     }
   },
   created () {},
@@ -143,66 +145,97 @@ export default {
   computed: {},
   methods: {
     initEchart () {
-      var echartPie = this.$echarts.init(document.getElementById('pie-box'))
-      var pieOption = {
-        tooltip: {
-          trigger: 'item',
-          formatter: '{a} <br/>{b}: {c} ({d}%)'
-        },
-        legend: {
-          left: 10,
-          data: ['已完成', '未完成', '进行中']
-        },
-        series: [
-          {
-            name: '访问来源',
-            type: 'pie',
-            radius: ['15%', '60%'],
-            // right: 30,
-            label: {
-              formatter: '{title|{b}} ({d}%)',
-              rich: {
-                title: {
-                  color: '#989898',
-                  lineHeight: 10
-                }
-              }
-            },
-            emphasis: {
+      this.echartPie = this.$echarts.init(document.getElementById('pie-box'))
+      this.echartPie.showLoading({
+        text: '数据正在努力加载...',
+        color: '#409EFF',
+        textColor: '#666',
+        maskColor: 'rgba(255, 255, 255, 0.8)',
+        zlevel: 0
+      })
+      setTimeout(() => {
+        this.echartData = {
+          horizontal: ['已完成', '未完成', '进行中'],
+          vertical: [355, 310, 234]
+        }
+        this.echartPie.hideLoading()
+        this.echartPie.setOption({
+          tooltip: {
+            trigger: 'item',
+            formatter: '{a} <br/>{b}: {c} ({d}%)'
+          },
+          legend: {
+            left: 10,
+            // data: ['已完成', '未完成', '进行中']
+            data: this.echartData.horizontal
+          },
+          series: [
+            {
+              name: '我的选课',
+              type: 'pie',
+              radius: ['15%', '60%'],
+              left: 'center',
+              // top: 'center',
+              width: '70%',
               label: {
-                show: true,
-                fontSize: '16',
-                fontWeight: 'bold'
-              }
-            },
-            data: [
-              {
-                value: 335,
-                name: '已完成',
-                itemStyle: {
-                  color: '#FF7A8E'
+                formatter: '{title|{b}} ({d}%)',
+                rich: {
+                  title: {
+                    color: '#989898',
+                    lineHeight: 10
+                  }
                 }
               },
-              {
-                value: 310,
-                name: '未完成',
-                itemStyle: {
-                  color: '#FFCC33'
+              emphasis: {
+                label: {
+                  show: true,
+                  fontSize: '16',
+                  fontWeight: 'bold'
                 }
               },
-              {
-                value: 234,
-                name: '进行中',
-                itemStyle: {
-                  color: '#1DEAAD'
+              data: [
+                {
+                  // value: 335,
+                  // name: '已完成',
+                  value: this.echartData.vertical[0],
+                  name: this.echartData.horizontal[0],
+                  itemStyle: {
+                    color: '#FF7A8E'
+                  }
+                },
+                {
+                  // value: 310,
+                  // name: '未完成',
+                  value: this.echartData.vertical[1],
+                  name: this.echartData.horizontal[1],
+                  itemStyle: {
+                    color: '#FFCC33'
+                  }
+                },
+                {
+                  // value: 234,
+                  // name: '进行中',
+                  value: this.echartData.vertical[2],
+                  name: this.echartData.horizontal[2],
+                  itemStyle: {
+                    color: '#1DEAAD'
+                  }
                 }
-              }
-            ]
-          }
-        ]
-      }
-      echartPie.setOption(pieOption)
+              ]
+            }
+          ]
+        })
+      }, 1000)
+      // echartPie.showLoading({
+      //   text: '数据正在努力加载...',
+      //   textStyle: { fontSize: 30, color: '#444' },
+      //   effectOption: {backgroundColor: 'rgba(0, 0, 0, 0)'}
+      // })
       window.addEventListener('resize', this.repaint) // 宽度改变resize饼形图
+      this.echartPie.on('click', (params) => {
+        console.log(params)
+      })
+      // echartPie.hideLoading()
     },
     // 选择页码
     choosePage (index) {
@@ -229,7 +262,7 @@ export default {
   display: flex;
   width: 100%;
   .myCourse-left{
-    width: 40%;
+    width: 45%;
     .myCourse-title{
       display: flex;
       align-items: center;
@@ -255,7 +288,7 @@ export default {
     }
   }
   .myCourse-right{
-    width: 60%;
+    width: 55%;
     margin-left: 15px;
     background-color: #fff;
     padding: 0 30px;

@@ -10,7 +10,7 @@ export default {
     return {
     }
   },
-  props: ['page', 'workActive'],
+  props: ['page', 'workActive', 'examList'],
   watch: {
     page () {
       if (this.workActive === 1) {

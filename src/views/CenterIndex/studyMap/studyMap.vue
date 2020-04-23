@@ -24,25 +24,29 @@ export default {
           imgUrl: 'studyMap_img01.png',
           title: '完成部颁五门课程学习第一步',
           content: '完成部颁五门课程学习第一步完成部颁五门课程学习第一步完成部颁五门课程',
-          progressVal: '100%'
+          progressVal: '100%',
+          progressVal1: '1/1'
         },
         {
           imgUrl: 'studyMap_img02.png',
           title: '完成部颁五门课程学习第二步',
           content: '完成部颁五门课程学习第一步完成部颁五门课程学习第一步完成部颁五门课程',
-          progressVal: '60%'
+          progressVal: '60%',
+          progressVal1: '3/5'
         },
         {
           imgUrl: 'studyMap_img03.png',
           title: '完成部颁五门课程学习第三步',
           content: '完成部颁五门课程学习第一步完成部颁五门课程学习第一步完成部颁五门课程',
-          progressVal: '70%'
+          progressVal: '70%',
+          progressVal1: '7/10'
         },
         {
           imgUrl: 'studyMap_img04.png',
           title: '完成部颁五门课程学习第四步',
           content: '完成部颁五门课程学习第一步完成部颁五门课程学习第一步完成部颁五门课程',
-          progressVal: '80%'
+          progressVal: '80%',
+          progressVal1: '8/10'
         }
       ]
     }
@@ -106,7 +110,7 @@ export default {
         &::after{top: -60%; left: 70%;}
       }
       @media screen and (max-width: 1460px){
-        &::after{top: -60%; left: 60%;}
+        &::after{top: -60%; left: 65%;}
       }
       @media screen and (max-width: 1200px){
         &::after{top: -60%; left: 60%;}
@@ -140,7 +144,7 @@ export default {
         width: 80%;
       }
       @media screen and (max-width: 1920px){
-        &::after{top: -15%; left: 65%;}
+        &::after{top: -15%; left: 70%;}
       }
       @media screen and (max-width: 1460px){
         &::after{top: -25%; left: 70%;}

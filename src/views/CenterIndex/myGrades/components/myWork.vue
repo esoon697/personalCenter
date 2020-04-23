@@ -23,9 +23,9 @@
           </thead>
           <tbody>
             <tr v-for="(item, index) in list" :key="index">
-              <td>{{item.title}}</td>
-              <td>{{item.name}}</td>
-              <td>{{item.time}}</td>
+              <td>{{item.courseEventName}}</td>
+              <td>{{item.description}}</td>
+              <td>{{item.endTime}}</td>
               <td>
                 <a href="javascript:void(0);">马上学习</a>
               </td>
@@ -39,14 +39,15 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
 export default {
   data () {
     return {
       list: [],
       listOne: [
-        {title: '职业道德与法律', name: '导言', time: '2099-12-03 12:00'},
-        {title: '职业道德与法律', name: '导言', time: '2099-12-03 12:00'},
-        {title: '职业道德与法律', name: '导言', time: '2099-12-03 12:00'}
+        // {title: '职业道德与法律', name: '导言', time: '2099-12-03 12:00'},
+        // {title: '职业道德与法律', name: '导言', time: '2099-12-03 12:00'},
+        // {title: '职业道德与法律', name: '导言', time: '2099-12-03 12:00'}
       ],
       listTwo: [
         {title: '心理健康教育', name: '导言', time: '2099-12-03 12:00'},
@@ -61,22 +62,27 @@ export default {
     }
   },
   props: ['page', 'workActive'],
-  watch: {
-    page () {
-      if (this.workActive === 0) {
-        switch (this.page) {
-          case 0:
-            this.list = this.listOne
-            break
-          case 1:
-            this.list = this.listTwo
-            break
-          case 2:
-            this.list = this.listThree
-            break
-        }
-      }
-    }
+  // watch: {
+  //   page () {
+  //     if (this.workActive === 0) {
+  //       switch (this.page) {
+  //         case 0:
+  //           this.list = this.listOne
+  //           break
+  //         case 1:
+  //           this.list = this.listTwo
+  //           break
+  //         case 2:
+  //           this.list = this.listThree
+  //           break
+  //       }
+  //     }
+  //   }
+  // },
+  computed: {
+    ...mapState(['homeworkList'])
+  },
+  created () {
   },
   mounted () {
     this.init()
@@ -84,18 +90,39 @@ export default {
   methods: {
     init () {
       if (this.workActive === 0) {
-        switch (this.page) {
-          case 0:
-            this.list = this.listOne
-            break
-          case 1:
-            this.list = this.listTwo
-            break
-          case 2:
-            this.list = this.listThree
-            break
-        }
+        // switch (this.page) {
+        //   case 0:
+        //     this.list = this.listOne
+        //     break
+        //   case 1:
+        //     this.list = this.listTwo
+        //     break
+        //   case 2:
+        //     this.list = this.listThree
+        //     break
+        // }
+        console.log('homeworkListtttttttttttttttttttttttttttttttttt', this.homeworkList)
+        this.list = this.homeworkList
+        console.log('listtttttttttttttttttttttttttttttttttt', this.list)
       }
+    }
+    // getHomeworkInfo () {
+    //   this.$api.getHomeworkInfo({
+    //     stuId: 36,
+    //     pageNum: 1,
+    //     pageSize: 5
+    //   }).then(res => {
+    //     if (res.code == 200) {
+    //       this.listOne = res.data.myHomework.list
+    //       this.list = this.listOne
+    //     }
+    //   })
+    // }
+  },
+  watch: {
+    homeworkList (val) {
+      console.log(val)
+      this.list = this.homeworkList
     }
   }
 }

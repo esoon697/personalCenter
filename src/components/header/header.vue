@@ -8,12 +8,14 @@
         <input type="text" placeholder="搜索功能" class="search-input">
         <img :src="base + 'header-search.png'" alt="">
       </div>
-      <img class="avatar" src="../../assets/photo.jpeg">
+      <img class="avatar" v-if="isLogin" :src="headImgUrl?headImgUrl:base+'default-avatar.jpg'">
+      <img class="avatar" v-else :src="base+'default-avatar.jpg'" @click="goLogin">
     </div>
   </div>
 </template>
 
 <script>
+import { mapState } from 'vuex'
 export default {
   components: {},
   props: {},
@@ -23,8 +25,14 @@ export default {
   },
   created () {},
   mounted () {},
-  computed: {},
-  methods: {},
+  computed: {
+    ...mapState(['headImgUrl', 'isLogin'])
+  },
+  methods: {
+    goLogin () {
+      window.location.href = 'http://portal.yazhuokj.com/login' + '?orient=personalCenter'
+    }
+  },
   watch: {}
 }
 </script>

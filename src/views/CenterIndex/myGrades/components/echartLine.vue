@@ -26,8 +26,17 @@ export default {
     init () {
       let echartLine = this.$echarts.init(document.getElementById('line-box'))
       this.$echartLine = echartLine
+      this.$echartLine.showLoading({
+        text: '数据正在努力加载...',
+        color: '#409EFF',
+        textColor: '#666',
+        maskColor: 'rgba(255, 255, 255, 0.8)',
+        zlevel: 0
+      })
+      this.$echartLine.hideLoading()
       // 绘制图表
-      var lineOption = {
+      // 加载配置项
+      echartLine.setOption({
         grid: {
           left: '3%',
           right: '5%',
@@ -126,9 +135,7 @@ export default {
             }
           } // 拐点处显示数值
         }]
-      }
-      // 加载配置项
-      echartLine.setOption(lineOption)
+      })
       // 通过resize方法来重设图表宽度
       window.addEventListener('resize', this.repaint)
     },

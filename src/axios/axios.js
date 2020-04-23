@@ -3,9 +3,9 @@ import axios from 'axios'
 // import qs from 'qs'
 import router from '../router'
 import Vue from 'vue'
-import { Message } from 'ant-design-vue'
-Vue.use(Message)
-Vue.prototype.$message = Message
+// import { Message } from 'ant-design-vue'
+// Vue.use(Message)
+// Vue.prototype.$message = Message
 
 let config = {
   timeout: 60 * 1000 // Timeout
@@ -14,10 +14,12 @@ let config = {
 
 if (process.env.NODE_ENV == 'development') {
   // dev开发环境
-  config.baseURL = 'api'
+  // config.baseURL = 'api'
+  config.baseURL = 'http://10.10.10.240:8001'
 } else if (process.env.NODE_ENV == 'production') {
   // build生产环境
   // config.baseURL = 'xxx'
+  config.baseURL = 'http://personal.yazhuokj.com'
 }
 
 const _axios = axios.create(config)
@@ -68,7 +70,7 @@ _axios.interceptors.response.use(
     }
   },
   function (err) {
-    self.$error(err.message)
+    self.$message.error(err.message)
     return Promise.reject(err)
   }
 )

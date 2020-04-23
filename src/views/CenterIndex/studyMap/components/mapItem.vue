@@ -8,9 +8,10 @@
       <p class="mid-content">{{mapItem.content}}</p>
     </div>
     <div class="item-bottom">
-      <div class="progress">
+      <div class="progress" @mouseover="isHover = true" @mouseout="isHover = false">
         <div class="inner" :style="'width:'+mapItem.progressVal">
-          <span class="progress-val" :class="{isCenter:mapItem.progressVal == '100%'}">{{mapItem.progressVal}}</span>
+          <span class="progress-val" :class="{isCenter:mapItem.progressVal == '100%'}" v-if="!isHover">{{mapItem.progressVal}}</span>
+          <span class="progress-val" :class="{isCenter:mapItem.progressVal == '100%'}" v-else>{{mapItem.progressVal1}}</span>
         </div>
       </div>
     </div>
@@ -23,6 +24,7 @@ export default {
   props: ['mapItem'],
   data () {
     return {
+      isHover: false
     }
   },
   created () {},
