@@ -28,7 +28,8 @@ import {
   Table,
   TableColumn,
   Select,
-  Option
+  Option,
+  Pagination
 } from 'element-ui'
 
 // 引入ECharts 主模块
@@ -62,6 +63,7 @@ Vue.component(Table.name, Table)
 Vue.component(TableColumn.name, TableColumn)
 Vue.component(Select.name, Select)
 Vue.component(Option.name, Option)
+Vue.component(Pagination.name, Pagination)
 Vue.prototype.$message = Message
 Vue.prototype.$msgbox = MessageBox
 Vue.prototype.$alert = MessageBox.alert

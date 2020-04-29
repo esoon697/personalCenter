@@ -52,9 +52,21 @@ export default {
     }
   },
   created () {},
-  mounted () {},
+  mounted () {
+    this.init()
+  },
   computed: {},
-  methods: {},
+  methods: {
+    init () {
+      this.$api.getLearningMap().then(res => {
+        if (res.code == 200) {
+          // console.log('getLearningMapppppppppppppppppp', res.data)
+          // this.mapList = res.data.slice(0, 4)
+          // console.log('getLearningMapppppppppppppppppp', this.mapList)
+        }
+      })
+    }
+  },
   watch: {}
 }
 </script>

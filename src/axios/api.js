@@ -4,6 +4,8 @@ const api = {
   // getIndex: data => post('/api/index/index', data) 示例
   // 学生选课详细进度情况查询
   getCourseProgress: data => post('/course/studentCourseInfo/queryStuCourseEventByCourType', data),
+  // 课程类型
+  getCourseType: data => post('/course/courseType/list', data),
   // 我的作业
   getHomeworkInfo: data => post('/course/studentCourseInfo/queryHomework', data),
   // 我的考试

@@ -37,7 +37,7 @@
           </span>
         </div>
         <!-- 作业页码 -->
-        <div class="page-num" v-if="workActive == 0">
+        <!-- <div class="page-num" v-if="workActive == 0">
           <span
           v-for="(item, index) in page1" :key="index"
           :class="['page-num-item', workPage == index ? 'page-num-item-active' : '']"
@@ -45,9 +45,20 @@
           >
           {{item}}
           </span>
+        </div> -->
+        <div class="page-num"  v-if="workActive == 0">
+          <!-- <span class="demonstration">页数较少时的效果</span> -->
+          <el-pagination
+            layout="pager"
+            :total="workTotal"
+            :page-size="pageSize"
+            :hide-on-single-page="true"
+            :current-page.sync="workPage"
+            @current-change="workPageChoose">
+          </el-pagination>
         </div>
         <!-- 考试页码 -->
-        <div class="page-num" v-else>
+        <!-- <div class="page-num" v-else>
           <span
           v-for="(item, index) in page2" :key="index"
           :class="['page-num-item', testPage == index ? 'page-num-item-active' : '']"
@@ -55,6 +66,16 @@
           >
           {{item}}
           </span>
+        </div> -->
+        <div class="page-num"  v-else>
+          <el-pagination
+            layout="pager"
+            :total="testTotal"
+            :page-size="pageSize"
+            :hide-on-single-page="true"
+            :current-page.sync="testPage"
+            @current-change="testPageChoose">
+          </el-pagination>
         </div>
       </div>
       <!-- 作业和考试内容展示区域 -->
@@ -73,15 +94,16 @@ export default {
   data () {
     return {
       page: ['科目', '月份'], // 页码
-      page1: 6, // 页码
-      page2: 5, // 页码
+      page1: 0, // 页码
+      page2: 0, // 页码
       work: ['我的作业', '我的考试'],
       leftActive: 0, // 左当前页码
-      workPage: 0, // 我的作业当前页码
-      testPage: 0, // 我的考试当前页码
-      workActive: 0,
-      // homeworkList: [],
-      examList: []
+      workPage: 1, // 我的作业当前页码
+      testPage: 1, // 我的考试当前页码
+      workActive: 0, // 作业\考试类型
+      pageSize: 5, // 单页显示数据条数
+      workTotal: 100, // 我的作业数据总条数
+      testTotal: 20 // 我的考试数据总条数
     }
   },
   components: {
@@ -102,12 +124,14 @@ export default {
       this.leftActive = index
     },
     // 我的作业页码选择
-    workPageChoose (index) {
-      this.workPage = index
+    workPageChoose (val) {
+      this.workPage = val
+      this.getHomeworkInfo()
     },
     // 我的考试页码选择
-    testPageChoose (index) {
-      this.testPage = index
+    testPageChoose (val) {
+      this.testPage = val
+      this.getExamInfo()
     },
     // 我的作业，我的考试选择
     workChoose (index) {
@@ -116,25 +140,32 @@ export default {
       this.rightActive = 0
     },
     getHomeworkInfo () {
-      console.log(this.workPage)
       this.$api.getHomeworkInfo({
-        pageNum: this.workPage + 1,
+        pageNum: this.workPage,
         pageSize: 5
       }).then(res => {
         if (res.code == 200) {
-          console.log('res.data.myHomework.list', res.data.myHomework.list)
+          // console.log('getHomeworkInfooooooo', res.data)
+          this.$store.state.doneHomeworkCounts = res.data.doneHomeworkCounts
+          this.$store.state.notDoneHomeworkCounts = res.data.notDoneHomeworkCounts
           this.$store.state.homeworkList = res.data.myHomework.list
-          console.log('this.$store.state.homeworkList', this.$store.state.homeworkList)
+          // console.log(res.data.myHomework.total)
+          // this.total = res.data.myHomework.total
         }
       })
     },
     getExamInfo () {
       this.$api.getExamInfo({
-        pageNum: this.testPage + 1,
+        pageNum: this.testPage,
         pageSize: 5
       }).then(res => {
         if (res.code == 200) {
-          this.examList = res.data.myExams.list
+          // console.log('getExamInfoooooooo', res.data)
+          this.$store.state.doneExamCounts = res.data.doneExamCounts
+          this.$store.state.notDoneExamCounts = res.data.notDoneExamCounts
+          this.$store.state.examList = res.data.myExams.list
+          // console.log(res.data.myExams.pages)
+          // this.page2 = res.data.myExams.pages
         }
       })
     }
@@ -149,7 +180,7 @@ export default {
 }
   .grades-main{
     background: #fff;
-    height: 440px;
+    // height: 440px;
     margin-bottom: 20px;
   }
   .grades-left {
@@ -168,6 +199,19 @@ export default {
   .title-item{
     width: 100%;
     margin-bottom: 15px;
+    display: flex;
+    align-items: flex-start;
+    padding-right: 20px;
+    box-sizing: border-box;
+    .work-test{
+      flex: 1;
+    }
+    .page-num{
+      flex: 2;
+      display: flex;
+      justify-content: flex-end;
+      flex-wrap: wrap;
+    }
   }
   .my-grade span{
     display: inline-block;

@@ -3,5 +3,7 @@ export default {
   headImgUrl: '',
   isLogin: false,
   homeworkList: [],
-  examList: []
+  examList: [],
+  doneHomeworkCounts: 0,
+  notDoneHomeworkCounts: 0
 }

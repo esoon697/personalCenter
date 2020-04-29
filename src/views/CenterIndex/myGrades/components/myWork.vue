@@ -4,11 +4,11 @@
     <div class="work-top flex-center-y">
       <div class="over-yes flex-col">
         <span>已完成：</span>
-        <p class="flex-center">11</p>
+        <p class="flex-center">{{doneHomeworkCounts}}</p>
       </div>
       <div class="over-no flex-col">
         <span>未完成：</span>
-        <p class="flex-center">23</p>
+        <p class="flex-center">{{notDoneHomeworkCounts}}</p>
       </div>
     </div>
     <!-- 课程内容展示 -->
@@ -43,44 +43,24 @@ import { mapState } from 'vuex'
 export default {
   data () {
     return {
-      list: [],
-      listOne: [
-        // {title: '职业道德与法律', name: '导言', time: '2099-12-03 12:00'},
-        // {title: '职业道德与法律', name: '导言', time: '2099-12-03 12:00'},
-        // {title: '职业道德与法律', name: '导言', time: '2099-12-03 12:00'}
-      ],
-      listTwo: [
-        {title: '心理健康教育', name: '导言', time: '2099-12-03 12:00'},
-        {title: '心理健康教育', name: '导言', time: '2099-12-03 12:00'},
-        {title: '心理健康教育', name: '导言', time: '2099-12-03 12:00'}
-      ],
-      listThree: [
-        {title: '哲学与人生', name: '导言', time: '2099-12-03 12:00'},
-        {title: '哲学与人生', name: '导言', time: '2099-12-03 12:00'},
-        {title: '哲学与人生', name: '导言', time: '2099-12-03 12:00'}
-      ]
+      list: []
     }
   },
   props: ['page', 'workActive'],
-  // watch: {
-  //   page () {
-  //     if (this.workActive === 0) {
-  //       switch (this.page) {
-  //         case 0:
-  //           this.list = this.listOne
-  //           break
-  //         case 1:
-  //           this.list = this.listTwo
-  //           break
-  //         case 2:
-  //           this.list = this.listThree
-  //           break
-  //       }
-  //     }
-  //   }
-  // },
+  watch: {
+    page () {
+      console.log(this.page)
+      console.log(this.workActive)
+      if (this.workActive === 0) {
+        this.list = this.homeworkList
+      }
+    },
+    homeworkList (val) {
+      this.list = this.homeworkList
+    }
+  },
   computed: {
-    ...mapState(['homeworkList'])
+    ...mapState(['homeworkList', 'doneHomeworkCounts', 'notDoneHomeworkCounts'])
   },
   created () {
   },
@@ -89,40 +69,12 @@ export default {
   },
   methods: {
     init () {
+      console.log(this.page)
+      console.log(this.workActive)
       if (this.workActive === 0) {
-        // switch (this.page) {
-        //   case 0:
-        //     this.list = this.listOne
-        //     break
-        //   case 1:
-        //     this.list = this.listTwo
-        //     break
-        //   case 2:
-        //     this.list = this.listThree
-        //     break
-        // }
-        console.log('homeworkListtttttttttttttttttttttttttttttttttt', this.homeworkList)
+        // console.log('homeworkListtttttttttttttttttttttttttttttttttt', this.homeworkList)
         this.list = this.homeworkList
-        console.log('listtttttttttttttttttttttttttttttttttt', this.list)
       }
-    }
-    // getHomeworkInfo () {
-    //   this.$api.getHomeworkInfo({
-    //     stuId: 36,
-    //     pageNum: 1,
-    //     pageSize: 5
-    //   }).then(res => {
-    //     if (res.code == 200) {
-    //       this.listOne = res.data.myHomework.list
-    //       this.list = this.listOne
-    //     }
-    //   })
-    // }
-  },
-  watch: {
-    homeworkList (val) {
-      console.log(val)
-      this.list = this.homeworkList
     }
   }
 }
@@ -175,7 +127,7 @@ export default {
     // 课程展示
     .work-bottom{
       width: 100%;
-      height: 230px;
+      // height: 230px;
       margin-top: 20px;
       .table-wrap{
         width: 100%;
