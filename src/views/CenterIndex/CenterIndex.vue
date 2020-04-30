@@ -54,6 +54,18 @@ export default {
       if (this.isblank(token)) {
         console.log(token)
         // window.location.href = 'http://portal.yazhuokj.com/login' + '?orient=personalCenter'
+        this.$confirm('登录已失效，是否重新登录', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          window.location.href = 'http://portal.yazhuokj.com/login' + '?orient=personalCenter'
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消'
+          })
+        })
       } else {
         this.$api.checkTk({
           jwt: token
