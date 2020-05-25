@@ -2,7 +2,7 @@
   <div class="map-main">
     <div class="map-title">
       <div class="line"></div>
-      <span>我的选课</span>
+      <span>学习地图</span>
     </div>
     <div class="map-box">
       <MapItem ref="Map-item" class="Map-item" v-for="(mapItem, index) in mapList" :key="index" :mapItem="mapItem"/>

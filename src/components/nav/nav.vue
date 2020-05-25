@@ -42,7 +42,7 @@
                   </template>
               </el-submenu>
               <el-menu-item :index="routerList.path" :key="index" v-else>
-                  <i :class="routerList.icon"></i>
+                  <img :src="routerList.icon" alt="">
                   <span slot="title">{{routerList.title}}</span>
               </el-menu-item>
           </template>
@@ -67,18 +67,25 @@ export default {
       isCollapse: false,
       routerLists: [
         {
+          title: '首页',
+          path: '/centerIndex',
+          name: 'CenterIndex',
+          icon: 'http://182.148.48.236:54321/source/personalCenter/nav_icon0.png',
+          children: []
+        },
+        {
           title: '学习中心',
           path: '/studyCenter',
           name: 'StudyCenter',
           // icon: 'el-icon-menu',
           icon: 'http://182.148.48.236:54321/source/personalCenter/nav_icon1.png',
           children: [
-            {
-              title: '个人中心',
-              path: '/studyCenter/centerIndex',
-              name: 'CenterIndex',
-              children: []
-            },
+            // {
+            //   title: '个人中心',
+            //   path: '/studyCenter/centerIndex',
+            //   name: 'CenterIndex',
+            //   children: []
+            // },
             {
               title: '课前预习',
               path: '/studyCenter/preview',
@@ -117,12 +124,13 @@ export default {
             }
           ]
         },
-        // {
-        //   title: 'Tree',
-        //   path: '/tree',
-        //   name: 'Tree',
-        //   children: []
-        // },
+        {
+          title: '教师管理',
+          path: '/teacherManagement',
+          name: 'TeacherManagement',
+          icon: 'http://182.148.48.236:54321/source/personalCenter/nav_icon1.png',
+          children: []
+        },
         {
           title: '讨论中心',
           path: '/',
@@ -237,7 +245,7 @@ export default {
       }
       .el-nav:not(.el-menu--collapse) {
           width: 200px;
-          min-height: 100vh;
+          // min-height: 100vh;
       }
       .el-menu--collapse{
           min-height: 100vh;

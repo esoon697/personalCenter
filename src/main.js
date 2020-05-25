@@ -82,6 +82,29 @@ Vue.config.productionTip = false
 const base = 'http://182.148.48.236:54321/source/personalCenter/'
 Vue.prototype.base = base
 
+// let currentURL = null
+// let targetURL = null
+// let comeBackURL = null
+let orient = window.location.href
+Vue.prototype.orient = orient
+if (process.env.NODE_ENV == 'development') {
+  // dev开发环境
+  let currentURL = 'http://10.10.10.213:8080/centerIndex'
+  let targetURL = 'http://10.10.10.213:5000/login'
+  let comeBackURL = 'http://nys.yazhuokj.com/home'
+  Vue.prototype.currentURL = currentURL
+  Vue.prototype.targetURL = targetURL
+  Vue.prototype.comeBackURL = comeBackURL
+} else if (process.env.NODE_ENV == 'production') {
+  // build生产环境
+  let currentURL = 'http://personal.yazhuokj.com/centerIndex'
+  let targetURL = 'http://portal.yazhuokj.com/login'
+  let comeBackURL = 'http://edu.yazhuokj.com/home'
+  Vue.prototype.currentURL = currentURL
+  Vue.prototype.targetURL = targetURL
+  Vue.prototype.comeBackURL = comeBackURL
+}
+
 /* eslint-disable no-new */
 new Vue({
   el: '#app',

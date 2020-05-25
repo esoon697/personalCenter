@@ -8,6 +8,8 @@ import CourseTask from '@/views/CourseTask/CourseTask'
 import CourseEvaluation from '@/views/CourseEvaluation/CourseEvaluation'
 import StudyFeedback from '@/views/StudyFeedback/StudyFeedback'
 import MyWork from '@/views/MyWork/MyWork'
+import TeacherManagement from '@/views/TeacherManagement/TeacherManagement'
+import InitCourseEntrance from '@/views/TeacherManagement/InitCourseEntrance/InitCourseEntrance'
 import Tree from '@/views/tree/tree'
 
 Vue.use(Router)
@@ -15,20 +17,21 @@ Vue.use(Router)
 export default new Router({
   mode: 'history',
   routes: [
-    { path: '/', redirect: '/studyCenter/centerIndex' },
+    { path: '/', redirect: '/centerIndex' },
     {
+      title: '首页',
+      path: '/centerIndex',
+      name: 'CenterIndex',
+      component: CenterIndex,
+      children: []
+    },
+    {
+      title: '学习中心',
       path: '/studyCenter',
       name: 'StudyCenter',
       component: StudyCenter,
       children: [
-        { path: '/studyCenter', redirect: '/studyCenter/centerIndex' },
-        {
-          title: '学习中心',
-          path: 'centerIndex',
-          name: 'CenterIndex',
-          component: CenterIndex,
-          children: []
-        },
+        { path: '/studyCenter', redirect: '/studyCenter/interaction' },
         {
           title: '课前预习',
           path: 'preview',
@@ -72,6 +75,40 @@ export default new Router({
           children: []
         }
       ]
+    },
+    {
+      title: '教师管理',
+      path: '/teacherManagement',
+      name: 'TeacherManagement',
+      component: TeacherManagement,
+      children: [
+        { path: '/teacherManagement', redirect: '/teacherManagement/initCourseEntrance' },
+        {
+          title: '导入建课',
+          path: 'initCourseEntrance',
+          name: 'InitCourseEntrance',
+          component: InitCourseEntrance,
+          children: []
+        }
+      ]
+    },
+    {
+      title: '讨论中心',
+      path: '/discussionCenter',
+      name: 'DiscussionCenter',
+      children: []
+    },
+    {
+      title: '我的考试',
+      path: '/',
+      name: 'MyExam',
+      children: []
+    },
+    {
+      title: '个人设置',
+      path: '/',
+      name: 'MySitting',
+      children: []
     },
     {
       title: 'Tree',

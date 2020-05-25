@@ -8,7 +8,7 @@
         <input type="text" placeholder="搜索功能" class="search-input">
         <img :src="base + 'header-search.png'" alt="">
       </div>
-      <img class="avatar" v-if="isLogin" :src="headImgUrl?headImgUrl:base+'default-avatar.jpg'">
+      <img class="avatar" v-if="isLogin" :src="headImgUrl?headImgUrl:base+'default-avatar.jpg'" @click="goEducationPlatform">
       <img class="avatar" v-else :src="base+'default-avatar.jpg'" @click="goLogin">
     </div>
   </div>
@@ -16,6 +16,18 @@
 
 <script>
 import { mapState } from 'vuex'
+// let comeBackURL = null
+// let targetURL = null
+// let orient = window.location.href
+// if (process.env.NODE_ENV == 'development') {
+//   // dev开发环境
+//   comeBackURL = 'http://nys.yazhuokj.com/home'
+//   targetURL = 'http://10.10.10.213:5000/login'
+// } else if (process.env.NODE_ENV == 'production') {
+//   // build生产环境
+//   comeBackURL = 'http://edu.yazhuokj.com/home'
+//   targetURL = 'http://portal.yazhuokj.com/login'
+// }
 export default {
   components: {},
   props: {},
@@ -30,7 +42,11 @@ export default {
   },
   methods: {
     goLogin () {
-      window.location.href = 'http://portal.yazhuokj.com/login' + '?orient=personalCenter'
+      window.location.href = this.targetURL + '?orient=' + this.orient
+    },
+    goEducationPlatform () {
+      let token = localStorage.getItem('token')
+      window.location.href = this.comeBackURL + '?token=' + token
     }
   },
   watch: {}

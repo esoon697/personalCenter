@@ -263,6 +263,8 @@ export default {
     },
     startToLearn (index, row) {
       console.log(index, row)
+      let token = localStorage.getItem('token')
+      window.location.href = 'http://10.10.10.213:4399?token=' + token
     }
   },
   watch: {

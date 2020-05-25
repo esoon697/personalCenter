@@ -13,6 +13,18 @@
 import myGrades from './myGrades/myGrades'
 import myCourse from './myCourse/myCourse'
 import studyMap from './studyMap/studyMap'
+// let currentURL = null
+// let targetURL = null
+// let orient = window.location.href
+// if (process.env.NODE_ENV == 'development') {
+//   // dev开发环境
+//   currentURL = 'http://10.10.10.213:8080/centerIndex'
+//   targetURL = 'http://10.10.10.213:5000/login'
+// } else if (process.env.NODE_ENV == 'production') {
+//   // build生产环境
+//   currentURL = 'http://personal.yazhuokj.com/centerIndex'
+//   targetURL = 'http://portal.yazhuokj.com/login'
+// }
 export default {
   components: {
     myGrades,
@@ -53,13 +65,12 @@ export default {
       let token = localStorage.getItem('token')
       if (this.isblank(token)) {
         console.log(token)
-        // window.location.href = 'http://portal.yazhuokj.com/login' + '?orient=personalCenter'
-        this.$confirm('登录已失效，是否重新登录', '提示', {
+        this.$confirm('暂未登录，是否重新登录', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-          window.location.href = 'http://portal.yazhuokj.com/login' + '?orient=personalCenter'
+          window.location.href = this.targetURL + '?orient=' + this.orient
         }).catch(() => {
           this.$message({
             type: 'info',
@@ -72,11 +83,20 @@ export default {
         }).then(res => {
           if (res.code == 200 && res.data == 0) {
             this.$store.state.isLogin = true
-            history.pushState({}, 'personalcenter', 'http://personal.yazhuokj.com/studyCenter/centerIndex')
-            // history.pushState({}, 'personalcenter', 'http://10.10.10.213:8082/studyCenter/centerIndex')
+            history.replaceState({}, 'personalcenter', this.currentURL)
           } else {
-            // window.location.href = 'http://portal.yazhuokj.com/login' + '?orient=personalCenter'
-            // window.location.href = 'http://10.10.10.213:4399/login' + '?orient=personalCenter'
+            this.$confirm('登录已失效，是否重新登录', '提示', {
+              confirmButtonText: '确定',
+              cancelButtonText: '取消',
+              type: 'warning'
+            }).then(() => {
+              window.location.href = this.targetURL + '?orient=' + this.orient
+            }).catch(() => {
+              this.$message({
+                type: 'info',
+                message: '已取消'
+              })
+            })
           }
         })
       }

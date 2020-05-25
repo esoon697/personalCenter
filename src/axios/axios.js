@@ -15,11 +15,13 @@ let config = {
 if (process.env.NODE_ENV == 'development') {
   // dev开发环境
   // config.baseURL = 'api'
-  config.baseURL = 'http://10.10.10.240:8001'
+  // config.baseURL = 'http://10.10.10.240:8001'
+  config.baseURL = 'http://api.yazhuokj.com'
 } else if (process.env.NODE_ENV == 'production') {
   // build生产环境
   // config.baseURL = 'xxx'
-  config.baseURL = 'http://personal.yazhuokj.com'
+  config.baseURL = 'http://api.yazhuokj.com'
+  // config.baseURL = 'http://api.yazhuo.com'
 }
 
 const _axios = axios.create(config)
@@ -65,7 +67,7 @@ _axios.interceptors.response.use(
       )
     } else {
       // 接口状态异常
-      self.$message.error(response.data.message)
+      // self.$message.error(response.data.message)
       return Promise.resolve(response)
     }
   },

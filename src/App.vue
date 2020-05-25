@@ -3,7 +3,7 @@
     <Header/>
     <div class="app-main">
       <Nav/>
-      <router-view/>
+      <router-view class="content-box"/>
     </div>
   </div>
 </template>
@@ -37,7 +37,13 @@ export default {
     background: #F4F5FC;
     box-sizing: border-box;
     overflow: hidden;
-    min-width: 1200px;
+    // min-width: 1200px;
+    // min-height: calc(100vh - 77px);
+    .content-box{
+      flex: 1;
+      height: 100%;
+      min-height: calc(100vh - 77px);
+    }
   }
   .el-pager li{
     color: #666;
