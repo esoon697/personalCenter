@@ -7,7 +7,7 @@
           <span><span>* </span>课程码：</span>
           <input type="text" name="" id="" placeholder="输入课程码">
         </div>
-        <button class="import-btn">导入</button>
+        <button class="import-btn" @click="importCourseNum">导入</button>
       </div>
     </div>
   </div>
@@ -24,7 +24,11 @@ export default {
   computed: {},
   created () {},
   mounted () {},
-  methods: {},
+  methods: {
+    importCourseNum () {
+      this.$router.push({path: '/teacherManagement/InitCourse'})
+    }
+  },
   watch: {}
 }
 </script>
@@ -105,6 +109,10 @@ export default {
         font-family:Microsoft YaHei;
         font-weight:400;
         color:rgba(255,255,255,1);
+        cursor: pointer;
+        &:active{
+          opacity: .7;
+        }
       }
     }
   }

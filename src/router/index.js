@@ -10,7 +10,7 @@ import StudyFeedback from '@/views/StudyFeedback/StudyFeedback'
 import MyWork from '@/views/MyWork/MyWork'
 import TeacherManagement from '@/views/TeacherManagement/TeacherManagement'
 import InitCourseEntrance from '@/views/TeacherManagement/InitCourseEntrance/InitCourseEntrance'
-import Tree from '@/views/tree/tree'
+import InitCourse from '@/views/TeacherManagement/InitCourse/InitCourse'
 
 Vue.use(Router)
 
@@ -89,6 +89,13 @@ export default new Router({
           name: 'InitCourseEntrance',
           component: InitCourseEntrance,
           children: []
+        },
+        {
+          title: '建课',
+          path: 'initCourse',
+          name: 'InitCourse',
+          component: InitCourse,
+          children: []
         }
       ]
     },
@@ -108,13 +115,6 @@ export default new Router({
       title: '个人设置',
       path: '/',
       name: 'MySitting',
-      children: []
-    },
-    {
-      title: 'Tree',
-      path: '/tree',
-      name: 'Tree',
-      component: Tree,
       children: []
     }
   ]
