@@ -24,8 +24,8 @@
               <button class="btn-item" @click="() => appendNode(data)">新增同级节点</button>
               <button class="btn-item" @click="() => remove(node, data)">删除目录</button>
               <button class="btn-item" @click="() => editName(node, data)">编辑目录</button>
-              <button class="btn-item" v-show="!data.children" @click="() => update(node, data)">编辑内容</button>
-              <button class="btn-item" v-show="!data.children" @click="() => update(node, data)">编辑下载</button>
+              <button class="btn-item" v-show="!data.children" @click="() => editContent(node, data)">编辑内容</button>
+              <button class="btn-item" v-show="!data.children" @click="() => editLoad(node, data)">编辑下载</button>
             </span>
             <div class="less-btn" @click="ChangeShowBtns(node.id)">
               <i class="el-icon-setting" v-if="!(isShowBtns && node.id == currentId)"></i>
@@ -34,13 +34,45 @@
         </span>
         </el-tree>
     </div>
+    <myDialog
+    :title="'课程内容编辑'"
+    :aside="true"
+    :isShowDialog.sync = isShowDialog
+    @close="close"
+    @confirm="confirm"
+    v-if="isShowDialog">
+      <div class="contentEdit-box" slot="dialog-content">
+        <div class="contentEdit-item">
+          <div class="item-title">课前预习</div>
+          <div class="item-main-box">
+            <div class="item-main-left">
+              <swiper ref="mySwiper" :options="swiperOptions">
+                <swiper-slide>Slide 1</swiper-slide>
+                <swiper-slide>Slide 2</swiper-slide>
+                <swiper-slide>Slide 3</swiper-slide>
+                <swiper-slide>Slide 4</swiper-slide>
+                <swiper-slide>Slide 5</swiper-slide>
+                <div class="swiper-pagination" slot="pagination"></div>
+                <div class="swiper-button-prev" slot="button-prev"></div>
+                <div class="swiper-button-next" slot="button-next"></div>
+              </swiper>
+            </div>
+            <div class="item-main-right">
+              <button class="sourse-btn"></button>
+              <button class="local-btn"></button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </myDialog>
   </div>
 </template>
 
 <script>
+import myDialog from '@/components/myDialog/myDialog'
 let id = 1000
 export default {
-  components: {},
+  components: {myDialog},
   props: {},
   data () {
     return {
@@ -88,17 +120,35 @@ export default {
           }]
         }
       ],
+      swiperOptions: {
+        pagination: {
+          el: '.swiper-pagination'
+        },
+        // 箭头配置
+        navigation: {
+          nextEl: '.swiper-button-next',
+          prevEl: '.swiper-button-prev'
+          // hideOnClick: true,
+          // disabledClass: 'my-button-disabled'
+        }
+      },
       hasChlid: false,
       isShowBtns: false,
       currentId: null,
       isEdit: false,
-      editVal: null
+      editVal: null,
+      isShowDialog: false
     }
   },
   created () {},
   mounted () {},
-  computed: {},
+  computed: {
+    swiper () {
+      return this.$refs.mySwiper.$swiper
+    }
+  },
   methods: {
+    // 新增子目录
     appendChildNode (data) {
       const newChild = { id: id++, label: '子节点', children: [] }
       if (!data.children) {
@@ -107,10 +157,12 @@ export default {
       console.log('data---------', data)
       data.children.push(newChild)
     },
+    // 新增同级目录
     appendNode () {
       const newNode = { id: id++, label: '节点', children: [] }
       this.data.push(newNode)
     },
+    // 删除节点
     remove (node, data) {
       const parent = node.parent
       const children = parent.data.children || parent.data
@@ -119,19 +171,13 @@ export default {
       // console.log(this.data)
       console.log(children)
     },
-    update (node, data) {
-      const parent = node.parent
-      const children = parent.data.children || parent.data
-      const index = children.findIndex(d => d.id === data.id)
-      children.splice(index, 1)
-    },
+    // 编辑节点名称
     editName (node, data) {
       console.log(node.id)
       this.currentId = node.id
       this.isEdit = true
-      console.log('node', node)
-      console.log('data', data)
     },
+    // 保存修改节点名称
     saveChange (node, data) {
       if (this.editVal) {
         const parent = node.parent
@@ -142,6 +188,12 @@ export default {
       this.isEdit = false
       this.editVal = null
     },
+    // 编辑课程内容
+    editContent (node, data) {
+      this.isShowDialog = true
+    },
+    // 编辑下载权限
+    editLoad (node, data) {},
     handleDragStart (node, ev) {
       console.log('drag start', node)
     },
@@ -171,15 +223,36 @@ export default {
       return draggingNode.data.label.indexOf('三级 3-2-2') === -1
     },
     ChangeShowBtns (id) {
-      if (this.isShowBtns) {
-        this.isShowBtns = false
-      }
       if (this.currentId === id) {
-        this.isShowBtns = false
-        return
+        this.isShowBtns = !this.isShowBtns
+      } else {
+        this.currentId = id
+        this.isShowBtns = true
       }
-      this.currentId = id
-      this.isShowBtns = !this.isShowBtns
+    },
+    close () {
+      this.isShowDialog = false
+    },
+    confirm () {
+      this.$confirm('确认提交?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning',
+        cancelButtonClass: 'cancelButton',
+        confirmButtonClass: 'confirmButton',
+        showClose: false
+      }).then(() => {
+        this.isShowDialog = false
+        this.$message({
+          type: 'success',
+          message: '删除成功!'
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        })
+      })
     }
   },
   watch: {}
@@ -203,7 +276,6 @@ export default {
       padding-right: 8px;
       font-size:16px;
       font-family:Microsoft YaHei;
-      font-weight:bold;
       .nodeName{
         color:rgba(153,153,153,1);
       }
@@ -253,5 +325,70 @@ export default {
       border-bottom: 1px solid #DDDDDD;
     }
   }
+  .contentEdit-box{
+    width: 750px;
+    height: 500px;
+    overflow: auto;
+    font-family:Microsoft YaHei;
+    font-weight:400;
+    .contentEdit-item{
+      .item-title{
+        font-size:18px;
+        color:rgba(51,51,51,1);
+        padding-left: 60px;
+        box-sizing: border-box;
+      }
+      .item-main-box{
+        width: 100%;
+        .item-main-left{
+          width: 60%;
+          height: 200px;
+          background-color: #eee;
+        }
+        .item-main-right{
+          .sourse-btn{}
+          .local-btn{}
+        }
+      }
+    }
+  }
+}
+.el-message-box{
+  border: none;
+  border-radius: 6px;
+  overflow: hidden;
+}
+.el-message-box__header{
+  background: #007ab7;
+  .el-message-box__title{
+    text-align: center;
+    span{
+      color: #fff;
+    }
+  }
+}
+.el-message-box__btns{
+  display: flex;
+  justify-content: center;
+}
+.cancelButton{
+  border:1px solid rgba(0,122,183,1);
+  color:rgba(0,122,183,1);
+  box-sizing: border-box;
+  background-color: #fff;
+  &:hover{
+    background-color: #eee;
+  }
+  &:active{
+    opacity: .6;
+  }
+}
+.confirmButton{
+  background:rgba(0,122,183,1);
+  border-color: rgba(0,122,183,1);
+}
+.el-button--primary{
+  background:rgba(0,122,183,1);
+  border-color: rgba(0,122,183,1);
 }
 </style>

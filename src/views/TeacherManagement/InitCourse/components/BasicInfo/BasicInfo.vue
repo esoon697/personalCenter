@@ -49,7 +49,7 @@ export default {
   props: [],
   data () {
     var checkFileList = (rule, value, callback) => {
-      if (!this.hasFile) {
+      if (!this.ruleForm.fileList.length) {
         return callback(new Error('请至少选择一张封面'))
       } else {
         callback()
@@ -82,11 +82,7 @@ export default {
       dialogVisible: false
     }
   },
-  computed: {
-    fileList () {
-      return this.ruleForm.fileList
-    }
-  },
+  computed: {},
   created () {},
   mounted () {},
   methods: {
@@ -128,19 +124,7 @@ export default {
       this.$refs.upload.clearFiles()
     }
   },
-  watch: {
-    'ruleForm.fileList': {
-      handler: function () {
-        if (this.ruleForm.fileList.length) {
-          console.log('this.ruleForm.fileList', this.ruleForm.fileList)
-          this.hasFile = true
-        } else {
-          console.log('this.ruleForm.fileList', this.ruleForm.fileList)
-          this.hasFile = false
-        }
-      }
-    }
-  }
+  watch: {}
 }
 </script>
 <style lang="less" scoped>

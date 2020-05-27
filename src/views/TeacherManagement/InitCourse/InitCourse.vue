@@ -54,7 +54,7 @@ export default {
   .main-box{
     max-width: 1350px;
     margin: 0 auto;
-    overflow: hidden;
+    // overflow: hidden;
     .el-tabs__nav-scroll{
       display: flex;
       justify-content: center;

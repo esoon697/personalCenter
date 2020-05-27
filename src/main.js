@@ -6,6 +6,8 @@ import App from './App'
 import router from './router'
 import store from './store/index'
 import api from './axios/api'
+import VueAwesomeSwiper from 'vue-awesome-swiper'
+import 'swiper/css/swiper.css'
 // 引入工具文件
 import './utils/utils'
 // 引入element-ui相关组件
@@ -92,6 +94,8 @@ Vue.prototype.$echarts = echarts
 
 // 将api挂载到vue的原型上
 Vue.prototype.$api = api
+
+Vue.use(VueAwesomeSwiper)
 
 Vue.config.productionTip = false
 
