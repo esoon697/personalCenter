@@ -1,5 +1,5 @@
 <template>
-  <div class="myDialog-mask" v-show="isShowDialog">
+  <div class="myDialog-mask">
     <div class="myDialog-box">
       <div class="dialog-header">
         <div class="mid" v-if="!aside" >
@@ -24,6 +24,7 @@
           <button class="dialog-confirm" @click="confirm">
             <slot name="dialog-confirm">确认</slot>
           </button>
+          <slot name="custom"></slot>
         </div>
       </div>
     </div>
@@ -33,7 +34,7 @@
 <script>
 export default {
   components: {},
-  props: ['aside', 'title', 'isShowDialog'],
+  props: ['aside', 'title'],
   data () {
     return {
       // isShowDialog: false
@@ -115,9 +116,11 @@ export default {
         justify-content: center;
       }
       .dialog-footer{
+        position: relative;
         display: flex;
         justify-content: center;
         align-items: center;
+        padding: 20px 0;
         .dialog-cancel{
           width:120px;
           height:36px;

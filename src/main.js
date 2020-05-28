@@ -39,7 +39,9 @@ import {
   FormItem,
   Input,
   Upload,
-  Checkbox
+  Checkbox,
+  Carousel,
+  CarouselItem
 } from 'element-ui'
 
 // 引入ECharts 主模块
@@ -82,6 +84,8 @@ Vue.component(FormItem.name, FormItem)
 Vue.component(Input.name, Input)
 Vue.component(Upload.name, Upload)
 Vue.component(Checkbox.name, Checkbox)
+Vue.component(Carousel.name, Carousel)
+Vue.component(CarouselItem.name, CarouselItem)
 Vue.prototype.$message = Message
 Vue.prototype.$msgbox = MessageBox
 Vue.prototype.$alert = MessageBox.alert

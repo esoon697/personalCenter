@@ -34,36 +34,130 @@
         </span>
         </el-tree>
     </div>
+    <!-- 课程内容编辑弹窗 -->
     <myDialog
     :title="'课程内容编辑'"
     :aside="true"
-    :isShowDialog.sync = isShowDialog
     @close="close"
     @confirm="confirm"
-    v-if="isShowDialog">
+    v-if="isShowEdit">
       <div class="contentEdit-box" slot="dialog-content">
-        <div class="contentEdit-item">
+        <div class="contentEdit-item" v-for="(resources, index) in resourcesList" :key="index">
           <div class="item-title">课前预习</div>
           <div class="item-main-box">
             <div class="item-main-left">
-              <swiper ref="mySwiper" :options="swiperOptions">
-                <swiper-slide>Slide 1</swiper-slide>
-                <swiper-slide>Slide 2</swiper-slide>
-                <swiper-slide>Slide 3</swiper-slide>
-                <swiper-slide>Slide 4</swiper-slide>
-                <swiper-slide>Slide 5</swiper-slide>
-                <div class="swiper-pagination" slot="pagination"></div>
-                <div class="swiper-button-prev" slot="button-prev"></div>
-                <div class="swiper-button-next" slot="button-next"></div>
+              <!-- <swiper :ref="'mySwiper'+n" :options="swiperOptions">
+                  <swiper-slide>Slide 1</swiper-slide>
+                  <swiper-slide>Slide 2</swiper-slide>
+                  <swiper-slide>Slide 3</swiper-slide>
+                  <swiper-slide>Slide 4</swiper-slide>
+                  <swiper-slide>Slide 5</swiper-slide>
               </swiper>
+              <div class="swiper-button-prev"></div>
+              <div class="swiper-button-next"></div> -->
+              <!-- <div class="block">
+                <el-carousel trigger="click" height="200px" indicator-position="none" arrow="always" :autoplay='false'>
+                  <el-carousel-item v-for="item in 4" :key="item">
+                    <div class="swiper-item">
+                      <div class="resource-item">
+                        <img class="resource" v-show="!type" src="" alt="">
+                        <video class="resource" v-show="type == 2" src=""></video>
+                        <input type="text">
+                      </div>
+                      <div class="resource-item">
+                        <img class="resource" v-show="!type" src="" alt="">
+                        <video class="resource" v-show="type == 2" src=""></video>
+                        <input type="text">
+                      </div>
+                      <div class="resource-item">
+                        <img class="resource" v-show="!type" src="" alt="">
+                        <video class="resource" v-show="type == 2" src=""></video>
+                        <input type="text">
+                      </div>
+                    </div>
+                  </el-carousel-item>
+                </el-carousel>
+              </div> -->
+              <div class="slide-outer">
+                <div class="slide-inner">
+                  <div class="slide-item" v-for="(resource, index) in resources.resources" :key="index">
+                    <div class="resource-item">
+                      <img class="resource" v-show="resource.type == 1" src="" alt="">
+                      <video class="resource" v-show="resource.type == 2" src=""></video>
+                      <input type="text" v-model="resource.sort">
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
             <div class="item-main-right">
-              <button class="sourse-btn"></button>
-              <button class="local-btn"></button>
+              <button class="sourse-btn" @click="sourseImport">资源库导入</button>
+              <button class="local-btn">本地导入
+                <input type="file" name="file" id="file1" value="" accept="image/jpeg,image/png,image/jpg,image/gif" multiple οnchange="previewImg(this)"  @click="localImport">
+              </button>
             </div>
           </div>
         </div>
       </div>
+    </myDialog>
+    <!-- 选择资源弹窗 -->
+    <myDialog
+    :title="'选择资源'"
+    :aside="true"
+    @close="close"
+    @confirm="confirm"
+    v-if="isShowChooseResour">
+    <div class="ChooseResour-btns" slot="dialog-btns">
+      <div>
+        <label for="input1">资源类别：</label>
+        <input type="text" name="" id="input1">
+        <label for="input2">资源名称：</label>
+        <input type="text" name="" id="input2">
+      </div>
+      <button class="search-btn">查询</button>
+    </div>
+    <div class="ChooseResour-box" slot="dialog-content">
+      <el-tree slot="dialog-content" :data="data1" :props="defaultProps" @node-click="handleNodeClick"></el-tree>
+    </div>
+    <div class="checkbox-box" slot="custom">
+      <el-checkbox v-model="checked">备选项</el-checkbox>
+    </div>
+    </myDialog>
+     <!-- 可下载内容编辑弹窗 -->
+    <myDialog
+    :title="'可下载内容编辑'"
+    :aside="true"
+    @close="close"
+    @confirm="confirm"
+    v-if="isShowLoadPerms">
+    <div class="loadPerms-btns" slot="dialog-btns">
+      <div>
+        <button class="lp-resourse-btn" @click="sourseImport">选择资源</button>
+        <button class="lp-upload-btn">上传资源
+          <input type="file" name="file" id="file1" value="" accept="image/jpeg,image/png,image/jpg,image/gif" multiple οnchange="previewImg(this)"  @click="localImport">
+        </button>
+      </div>
+    </div>
+    <div class="loadPerms-box" slot="dialog-content">
+      <el-table
+        :data="tableData"
+        style="width: 100%">
+        <el-table-column
+          prop="date"
+          label="日期"
+          width="180">
+        </el-table-column>
+        <el-table-column
+          prop="name"
+          label="姓名"
+          width="180">
+        </el-table-column>
+        <el-table-column
+          prop="address"
+          label="地址">
+        </el-table-column>
+      </el-table>
+    </div>
     </myDialog>
   </div>
 </template>
@@ -121,31 +215,193 @@ export default {
         }
       ],
       swiperOptions: {
-        pagination: {
-          el: '.swiper-pagination'
-        },
+        // pagination: {
+        //   el: '.swiper-pagination'
+        // },
         // 箭头配置
         navigation: {
           nextEl: '.swiper-button-next',
           prevEl: '.swiper-button-prev'
           // hideOnClick: true,
           // disabledClass: 'my-button-disabled'
-        }
+        },
+        // 一个屏幕展示的数量
+        slidesPerView: 3,
+        // 间距
+        spaceBetween: 30
       },
+      resourcesList: [
+        {
+          title: '课前预习',
+          resources: [
+            {
+              type: 1,
+              url: '',
+              sort: '1'
+            },
+            {
+              type: 1,
+              url: '',
+              sort: '2'
+            },
+            {
+              type: 1,
+              url: '',
+              sort: '3'
+            },
+            {
+              type: 1,
+              url: '',
+              sort: '4'
+            }
+          ]
+        },
+        {
+          title: '课前预习',
+          resources: [
+            {
+              type: 1,
+              url: '',
+              sort: '1'
+            },
+            {
+              type: 1,
+              url: '',
+              sort: '2'
+            },
+            {
+              type: 1,
+              url: '',
+              sort: '3'
+            },
+            {
+              type: 1,
+              url: '',
+              sort: '4'
+            }
+          ]
+        },
+        {
+          title: '课前预习',
+          resources: [
+            {
+              type: 1,
+              url: '',
+              sort: '1'
+            },
+            {
+              type: 1,
+              url: '',
+              sort: '2'
+            },
+            {
+              type: 1,
+              url: '',
+              sort: '3'
+            },
+            {
+              type: 1,
+              url: '',
+              sort: '4'
+            }
+          ]
+        }
+      ],
       hasChlid: false,
       isShowBtns: false,
       currentId: null,
       isEdit: false,
       editVal: null,
-      isShowDialog: false
+      isShowEdit: false,
+      isShowChooseResour: false,
+      isShowLoadPerms: false,
+      data1: [
+        {
+          label: '一级 1',
+          children: [
+            {
+              label: '二级 1-1',
+              children: [
+                {
+                  label: '三级 1-1-1'
+                }
+              ]
+            }
+          ]
+        },
+        {
+          label: '一级 2',
+          children: [
+            {
+              label: '二级 2-1',
+              children: [
+                {
+                  label: '三级 2-1-1'
+                }
+              ]
+            },
+            {
+              label: '二级 2-2',
+              children: [
+                {
+                  label: '三级 2-2-1'
+                }
+              ]
+            }
+          ]
+        },
+        {
+          label: '一级 3',
+          children: [
+            {
+              label: '二级 3-1',
+              children: [
+                {
+                  label: '三级 3-1-1'
+                }
+              ]
+            },
+            {
+              label: '二级 3-2',
+              children: [
+                {
+                  label: '三级 3-2-1'
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      defaultProps: {
+        children: 'children',
+        label: 'label'
+      },
+      checked: true,
+      tableData: [{
+        date: '2016-05-02',
+        name: '王小虎',
+        address: '上海市普陀区金沙江路 1518 弄'
+      }, {
+        date: '2016-05-04',
+        name: '王小虎',
+        address: '上海市普陀区金沙江路 1517 弄'
+      }, {
+        date: '2016-05-01',
+        name: '王小虎',
+        address: '上海市普陀区金沙江路 1519 弄'
+      }, {
+        date: '2016-05-03',
+        name: '王小虎',
+        address: '上海市普陀区金沙江路 1516 弄'
+      }]
     }
   },
   created () {},
   mounted () {},
   computed: {
-    swiper () {
-      return this.$refs.mySwiper.$swiper
-    }
+    // swiper () {
+    //   return this.$refs.mySwiper1.$swiper
+    // }
   },
   methods: {
     // 新增子目录
@@ -190,10 +446,18 @@ export default {
     },
     // 编辑课程内容
     editContent (node, data) {
-      this.isShowDialog = true
+      this.isShowEdit = true
+      // this.isShowEdit = false
+      // this.isShowChooseResour = false
+      // this.isShowLoadPerms = false
     },
     // 编辑下载权限
-    editLoad (node, data) {},
+    editLoad (node, data) {
+      this.isShowLoadPerms = true
+      // this.isShowEdit = false
+      // this.isShowChooseResour = false
+      // this.isShowLoadPerms = false
+    },
     handleDragStart (node, ev) {
       console.log('drag start', node)
     },
@@ -231,7 +495,13 @@ export default {
       }
     },
     close () {
-      this.isShowDialog = false
+      if (this.isShowChooseResour) {
+        this.isShowChooseResour = false
+        return
+      }
+      this.isShowEdit = false
+      this.isShowChooseResour = false
+      this.isShowLoadPerms = false
     },
     confirm () {
       this.$confirm('确认提交?', '提示', {
@@ -242,7 +512,13 @@ export default {
         confirmButtonClass: 'confirmButton',
         showClose: false
       }).then(() => {
-        this.isShowDialog = false
+        if (this.isShowChooseResour) {
+          this.isShowChooseResour = false
+          return
+        }
+        this.isShowEdit = false
+        this.isShowChooseResour = false
+        this.isShowLoadPerms = false
         this.$message({
           type: 'success',
           message: '删除成功!'
@@ -253,6 +529,21 @@ export default {
           message: '已取消删除'
         })
       })
+    },
+    sourseImport () {
+      this.isShowChooseResour = true
+      this.isShowEdit = false
+      this.isShowLoadPerms = false
+    },
+    localImport () {
+      var oFiles = document.querySelector('#file1').files
+      console.log(oFiles)
+    },
+    previewImg (input, imgObj) {
+      console.log(input)
+    },
+    handleNodeClick (data) {
+      console.log(data)
     }
   },
   watch: {}
@@ -306,8 +597,8 @@ export default {
           background-color: #fff;
           margin: 0 7px 3px 0;
           &:hover{
-            border: 1px solid #409EFF;
-            color: #409EFF;
+            border: 1px solid #007AB7;
+            color: #007AB7;
           }
           &:active{
             opacity: .7;
@@ -328,6 +619,9 @@ export default {
   .contentEdit-box{
     width: 750px;
     height: 500px;
+    border: 1px solid #DFDFE0;
+    padding: 0 20px;
+    box-sizing: border-box;
     overflow: auto;
     font-family:Microsoft YaHei;
     font-weight:400;
@@ -335,22 +629,258 @@ export default {
       .item-title{
         font-size:18px;
         color:rgba(51,51,51,1);
-        padding-left: 60px;
-        box-sizing: border-box;
+        padding: 20px 0;
+        // text-indent: 40px;
       }
       .item-main-box{
         width: 100%;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
         .item-main-left{
-          width: 60%;
+          position: relative;
+          // width: 60%;
           height: 200px;
-          background-color: #eee;
+          // background-color: #eee;
+          // padding: 0 40px;
+          // box-sizing: border-box;
+            .slide-outer{
+              width: 400px;
+              height: 100%;
+              overflow: auto;
+              .slide-inner{
+                width: 100%;
+                height: 100%;
+                display: flex;
+                justify-content: flex-start;
+                align-items: center;
+                overflow: auto;
+                .slide-item{
+                  flex-shrink: 0;
+                  // display: inline-block;
+                  width: 120px;
+                  height: 100%;
+                  margin-right: 20px;
+                  .resource-item{
+                    // flex: 1;
+                    height: 100%;
+                    // margin-right: 10px;
+                    background-color: #fff;
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: space-between;
+                    align-items: center;
+                    .resource{
+                      width: 100%;
+                      height: 80%;
+                      background-color: #eee;
+                      // margin-bottom: 20px;
+                    }
+                    input{
+                      width: 30px;
+                      height: 20px;
+                      background-color: #eee;
+                      text-align: center;
+                      margin: 20px 0;
+                    }
+                    &:last-child{
+                      margin-right: 0;
+                    }
+                  }
+                }
+              }
+            }
+          .block{
+            width: 100%;
+            height: 100%;
+            .swiper-item{
+              // background-color: #eee;
+              width: 100%;
+              height: 100%;
+              padding: 0 20px;
+              box-sizing: border-box;
+              display: flex;
+              justify-content: center;
+              align-items: center;
+              .resource-item{
+                flex: 1;
+                height: 100%;
+                margin-right: 10px;
+                background-color: #fff;
+                display: flex;
+                flex-direction: column;
+                justify-content: space-between;
+                align-items: center;
+                .resource{
+                  width: 100%;
+                  height: 80%;
+                  background-color: #eee;
+                  margin-bottom: 20px;
+                }
+                input{
+                  width: 30px;
+                  height: 20px;
+                  background-color: #eee;
+                  text-align: center;
+                }
+                &:last-child{
+                  margin-right: 0;
+                }
+              }
+            }
+          }
+          .swiper-container{
+            width: 100%;
+            height: 100%;
+            .Slides-box{
+              padding: 0 20px;
+              display: flex;
+            }
+            .swiper-wrapper{
+              // padding: 0 40px;
+              // box-sizing: border-box;
+              // overflow: hidden;
+            }
+            .swiper-slide{
+              background-color: #fff;
+            }
+          }
+          .swiper-button-prev, .swiper-button-next{
+            outline: none;
+            &::after{
+              font-size: 24px;
+            }
+          }
         }
         .item-main-right{
-          .sourse-btn{}
-          .local-btn{}
+          font-size:16px;
+          font-family:Microsoft YaHei;
+          font-weight:400;
+          .sourse-btn, .local-btn{
+            width: 110px;
+            height: 40px;
+            border-radius:4px;
+            color:rgba(255,255,255,1);
+            &:hover{
+              opacity: .8;
+            }
+            &:active{
+              opacity: .6;
+            }
+          }
+          .sourse-btn{
+            background:rgba(202,56,66,1);
+            margin-right: 20px;
+          }
+          .local-btn{
+            position: relative;
+            background:rgba(0,122,183,1);
+            input {
+              width: 100%;
+              height: 100%;
+              position: absolute;
+              right: 0;
+              top: 0;
+              opacity: 0;
+            }
+          }
         }
       }
     }
+  }
+  .ChooseResour-btns{
+    font-size:18px;
+    font-family:Microsoft YaHei;
+    font-weight:400;
+    color:rgba(51,51,51,1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    input{
+      border:1px solid rgba(221,221,221,1);
+      border-radius:4px;
+      text-indent: 10px;
+      padding: 7px 0;
+      margin-right: 30px;
+    }
+    .search-btn{
+      background:rgba(202,56,66,1);
+      border-radius:4px;
+      font-size:18px;
+      color:rgba(255,255,255,1);
+      padding: 5px 20px;
+      &:hover{
+        opacity: .8;
+      }
+      &:active{
+        opacity: .6;
+      }
+    }
+  }
+  .ChooseResour-box{
+    width: 750px;
+    height: 470px;
+    border: 1px solid #DFDFE0;
+    box-sizing: border-box;
+    overflow: auto;
+    .el-tree-node__label{
+      font-size:18px;
+      font-family:Microsoft YaHei;
+      font-weight:400;
+      // color:rgba(51,51,51,1);
+    }
+  }
+  .checkbox-box{
+    position: absolute;
+    top: 0;
+    left: 0;
+    .el-checkbox__input.is-checked+.el-checkbox__label{
+      color: #007AB7;
+    }
+    .el-checkbox__input.is-checked .el-checkbox__inner, .el-checkbox__input.is-indeterminate .el-checkbox__inner{
+      background-color: #007AB7;
+      border-color: #007AB7;
+    }
+  }
+  .loadPerms-btns{
+    .lp-upload-btn, .lp-resourse-btn{
+      width:110px;
+      height:40px;
+      border-radius:4px;
+      font-size:16px;
+      font-family:Microsoft YaHei;
+      font-weight:400;
+      color:rgba(255,255,255,1);
+      &:hover{
+        opacity: .8;
+      }
+      &:active{
+        opacity: .6;
+      }
+    }
+    .lp-resourse-btn{
+      background:rgba(202,56,66,1);
+      margin-right: 30px;
+    }
+    .lp-upload-btn{
+      position: relative;
+      background:rgba(0,122,183,1);
+      input {
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        right: 0;
+        top: 0;
+        opacity: 0;
+      }
+    }
+  }
+  .loadPerms-box{
+    width: 750px;
+    height: 470px;
+    border: 1px solid #DFDFE0;
+    box-sizing: border-box;
+    overflow: auto;
   }
 }
 .el-message-box{
