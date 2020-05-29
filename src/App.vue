@@ -5,15 +5,17 @@
       <Nav/>
       <router-view class="content-box"/>
     </div>
+    <Footer/>
   </div>
 </template>
 
 <script>
 import Header from './components/Header/Header'
 import Nav from './components/nav/nav'
+import Footer from './components/footer/footer'
 export default {
   name: 'App',
-  components: {Header, Nav},
+  components: {Header, Nav, Footer},
   created () {
   },
   methods: {
@@ -38,11 +40,11 @@ export default {
     box-sizing: border-box;
     overflow: hidden;
     // min-width: 1200px;
-    // min-height: calc(100vh - 77px);
+    // min-height: calc(100vh - 250px);
     .content-box{
       flex: 1;
       height: 100%;
-      min-height: calc(100vh - 77px);
+      min-height: calc(100vh - 250px);
     }
   }
   .el-pager li{

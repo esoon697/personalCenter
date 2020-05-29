@@ -34,13 +34,17 @@
 <script>
 export default {
   components: {},
-  props: ['aside', 'title'],
+  props: ['aside', 'title', 'zIndex'],
   data () {
     return {
       // isShowDialog: false
     }
   },
-  computed: {},
+  computed: {
+    myDialogMask () {
+      return document.querySelector('.myDialog-mask')
+    }
+  },
   created () {},
   mounted () {},
   methods: {
@@ -51,7 +55,12 @@ export default {
       this.$emit('confirm')
     }
   },
-  watch: {}
+  watch: {
+    zIndex (val) {
+      let zIndex = this.myDialogMask.style.zIndex
+      this.myDialogMask.style.cssText = 'z-index:' + zIndex++
+    }
+  }
 }
 </script>
 <style lang="less" scoped>

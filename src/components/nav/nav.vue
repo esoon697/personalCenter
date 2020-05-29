@@ -129,7 +129,20 @@ export default {
           path: '/teacherManagement',
           name: 'TeacherManagement',
           icon: 'http://182.148.48.236:54321/source/personalCenter/nav_icon1.png',
-          children: []
+          children: [
+            {
+              title: '导入建课',
+              path: '/teacherManagement/initCourseEntrance',
+              name: 'initCourseEntrance',
+              children: []
+            },
+            {
+              title: '开课管理',
+              path: '/teacherManagement/OpenCourse',
+              name: 'OpenCourse',
+              children: []
+            }
+          ]
         },
         {
           title: '讨论中心',
@@ -248,7 +261,7 @@ export default {
           // min-height: 100vh;
       }
       .el-menu--collapse{
-          min-height: 100vh;
+          // min-height: 100vh;
       }
       .el-menu{
         border-right: none;

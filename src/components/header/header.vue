@@ -63,8 +63,8 @@ export default {
   box-shadow:0px 5px 17px 1px rgba(230,239,253,1);
   z-index: 1;
   .header-left{
-    width:380px;
-    height:20px;
+    width:440px;
+    height:29px;
     img{
       width: 100%;
       height: 100%;

@@ -38,8 +38,8 @@
     <myDialog
     :title="'课程内容编辑'"
     :aside="true"
-    @close="close"
-    @confirm="confirm"
+    @close="editClose"
+    @confirm="editConfirm"
     v-if="isShowEdit">
       <div class="contentEdit-box" slot="dialog-content">
         <div class="contentEdit-item" v-for="(resources, index) in resourcesList" :key="index">
@@ -91,7 +91,7 @@
               </div>
             </div>
             <div class="item-main-right">
-              <button class="sourse-btn" @click="sourseImport">资源库导入</button>
+              <button class="sourse-btn" @click="sourseImport('isShowEdit')">资源库导入</button>
               <button class="local-btn">本地导入
                 <input type="file" name="file" id="file1" value="" accept="image/jpeg,image/png,image/jpg,image/gif" multiple οnchange="previewImg(this)"  @click="localImport">
               </button>
@@ -104,8 +104,8 @@
     <myDialog
     :title="'选择资源'"
     :aside="true"
-    @close="close"
-    @confirm="confirm"
+    @close="chooseResourClose"
+    @confirm="chooseResourConfirm"
     v-if="isShowChooseResour">
     <div class="ChooseResour-btns" slot="dialog-btns">
       <div>
@@ -117,22 +117,28 @@
       <button class="search-btn">查询</button>
     </div>
     <div class="ChooseResour-box" slot="dialog-content">
-      <el-tree slot="dialog-content" :data="data1" :props="defaultProps" @node-click="handleNodeClick"></el-tree>
+      <el-tree
+      slot="dialog-content"
+      :data="data1"
+      :props="defaultProps"
+      @node-click="handleNodeClick"
+      @check-change="handleCheckChange"
+      show-checkbox></el-tree>
     </div>
     <div class="checkbox-box" slot="custom">
-      <el-checkbox v-model="checked">备选项</el-checkbox>
+      <el-checkbox v-model="checked">将选中项设置为学生课下载</el-checkbox>
     </div>
     </myDialog>
      <!-- 可下载内容编辑弹窗 -->
     <myDialog
     :title="'可下载内容编辑'"
     :aside="true"
-    @close="close"
-    @confirm="confirm"
+    @close="loadPermsClose"
+    @confirm="loadPermsConfirm"
     v-if="isShowLoadPerms">
     <div class="loadPerms-btns" slot="dialog-btns">
       <div>
-        <button class="lp-resourse-btn" @click="sourseImport">选择资源</button>
+        <button class="lp-resourse-btn" @click="sourseImport('isShowLoadPerms')">选择资源</button>
         <button class="lp-upload-btn">上传资源
           <input type="file" name="file" id="file1" value="" accept="image/jpeg,image/png,image/jpg,image/gif" multiple οnchange="previewImg(this)"  @click="localImport">
         </button>
@@ -494,16 +500,22 @@ export default {
         this.isShowBtns = true
       }
     },
-    close () {
-      if (this.isShowChooseResour) {
-        this.isShowChooseResour = false
-        return
-      }
+    editClose () {
       this.isShowEdit = false
+    },
+    chooseResourClose () {
+      if (this.fromState == 'isShowEdit') {
+        this.isShowEdit = true
+      }
+      if (this.fromState == 'isShowLoadPerms') {
+        this.isShowLoadPerms = true
+      }
       this.isShowChooseResour = false
+    },
+    loadPermsClose () {
       this.isShowLoadPerms = false
     },
-    confirm () {
+    editConfirm () {
       this.$confirm('确认提交?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
@@ -512,12 +524,54 @@ export default {
         confirmButtonClass: 'confirmButton',
         showClose: false
       }).then(() => {
-        if (this.isShowChooseResour) {
-          this.isShowChooseResour = false
-          return
-        }
         this.isShowEdit = false
+        this.$message({
+          type: 'success',
+          message: '删除成功!'
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        })
+      })
+    },
+    chooseResourConfirm () {
+      this.$confirm('确认提交?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning',
+        cancelButtonClass: 'cancelButton',
+        confirmButtonClass: 'confirmButton',
+        showClose: false
+      }).then(() => {
+        if (this.fromState == 'isShowEdit') {
+          this.isShowEdit = true
+        }
+        if (this.fromState == 'isShowLoadPerms') {
+          this.isShowLoadPerms = true
+        }
         this.isShowChooseResour = false
+        this.$message({
+          type: 'success',
+          message: '删除成功!'
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        })
+      })
+    },
+    loadPermsConfirm () {
+      this.$confirm('确认提交?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning',
+        cancelButtonClass: 'cancelButton',
+        confirmButtonClass: 'confirmButton',
+        showClose: false
+      }).then(() => {
         this.isShowLoadPerms = false
         this.$message({
           type: 'success',
@@ -530,7 +584,8 @@ export default {
         })
       })
     },
-    sourseImport () {
+    sourseImport (from) {
+      this.fromState = from
       this.isShowChooseResour = true
       this.isShowEdit = false
       this.isShowLoadPerms = false
@@ -539,11 +594,14 @@ export default {
       var oFiles = document.querySelector('#file1').files
       console.log(oFiles)
     },
-    previewImg (input, imgObj) {
-      console.log(input)
-    },
+    // previewImg (input, imgObj) {
+    //   console.log(input)
+    // },
     handleNodeClick (data) {
       console.log(data)
+    },
+    handleCheckChange (data, checked, indeterminate) {
+      console.log(data, checked, indeterminate)
     }
   },
   watch: {}
@@ -576,8 +634,8 @@ export default {
       .edit-box{
         width: 120px;
         height: 26px;
-        text-indent: 10px;
         border-radius: 5px;
+        padding: 0 10px;
       }
       .btn-group{
         display: flex;
@@ -679,9 +737,14 @@ export default {
                     input{
                       width: 30px;
                       height: 20px;
-                      background-color: #eee;
                       text-align: center;
                       margin: 20px 0;
+                      padding: 5px;
+                      border: 1px solid #ddd;
+                      color: #999;
+                      font-size: 16px;
+                      border-radius: 6px;
+                      // box-sizing: border-box;
                     }
                     &:last-child{
                       margin-right: 0;

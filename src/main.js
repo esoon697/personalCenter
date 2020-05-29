@@ -41,7 +41,10 @@ import {
   Upload,
   Checkbox,
   Carousel,
-  CarouselItem
+  CarouselItem,
+  DatePicker,
+  TimeSelect,
+  TimePicker
 } from 'element-ui'
 
 // 引入ECharts 主模块
@@ -86,6 +89,9 @@ Vue.component(Upload.name, Upload)
 Vue.component(Checkbox.name, Checkbox)
 Vue.component(Carousel.name, Carousel)
 Vue.component(CarouselItem.name, CarouselItem)
+Vue.component(DatePicker.name, DatePicker)
+Vue.component(TimeSelect.name, TimeSelect)
+Vue.component(TimePicker.name, TimePicker)
 Vue.prototype.$message = Message
 Vue.prototype.$msgbox = MessageBox
 Vue.prototype.$alert = MessageBox.alert

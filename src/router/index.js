@@ -11,6 +11,7 @@ import MyWork from '@/views/MyWork/MyWork'
 import TeacherManagement from '@/views/TeacherManagement/TeacherManagement'
 import InitCourseEntrance from '@/views/TeacherManagement/InitCourseEntrance/InitCourseEntrance'
 import InitCourse from '@/views/TeacherManagement/InitCourse/InitCourse'
+import OpenCourse from '@/views/TeacherManagement/OpenCourse/OpenCourse'
 
 Vue.use(Router)
 
@@ -84,17 +85,24 @@ export default new Router({
       children: [
         { path: '/teacherManagement', redirect: '/teacherManagement/initCourseEntrance' },
         {
-          title: '导入建课',
+          title: '建课入口',
           path: 'initCourseEntrance',
           name: 'InitCourseEntrance',
           component: InitCourseEntrance,
           children: []
         },
         {
-          title: '建课',
+          title: '导入建课',
           path: 'initCourse',
           name: 'InitCourse',
           component: InitCourse,
+          children: []
+        },
+        {
+          title: '开课管理',
+          path: 'OpenCourse',
+          name: 'OpenCourse',
+          component: OpenCourse,
           children: []
         }
       ]
