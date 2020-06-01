@@ -44,7 +44,8 @@ import {
   CarouselItem,
   DatePicker,
   TimeSelect,
-  TimePicker
+  TimePicker,
+  Cascader
 } from 'element-ui'
 
 // 引入ECharts 主模块
@@ -92,6 +93,7 @@ Vue.component(CarouselItem.name, CarouselItem)
 Vue.component(DatePicker.name, DatePicker)
 Vue.component(TimeSelect.name, TimeSelect)
 Vue.component(TimePicker.name, TimePicker)
+Vue.component(Cascader.name, Cascader)
 Vue.prototype.$message = Message
 Vue.prototype.$msgbox = MessageBox
 Vue.prototype.$alert = MessageBox.alert
