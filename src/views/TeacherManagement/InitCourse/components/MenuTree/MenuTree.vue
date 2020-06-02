@@ -40,7 +40,7 @@
     :aside="true"
     @close="editClose"
     @confirm="editConfirm"
-    v-if="isShowEdit">
+    v-show="isShowEdit">
       <div class="contentEdit-box" slot="dialog-content">
         <div class="contentEdit-item" v-for="(resources, index) in resourcesList" :key="index">
           <div class="item-title">课前预习</div>
@@ -106,7 +106,7 @@
     :aside="true"
     @close="chooseResourClose"
     @confirm="chooseResourConfirm"
-    v-if="isShowChooseResour">
+    v-show="isShowChooseResour">
     <div class="ChooseResour-btns" slot="dialog-btns">
       <div>
         <label for="input1">资源类别：</label>
@@ -135,7 +135,7 @@
     :aside="true"
     @close="loadPermsClose"
     @confirm="loadPermsConfirm"
-    v-if="isShowLoadPerms">
+    v-show="isShowLoadPerms">
     <div class="loadPerms-btns" slot="dialog-btns">
       <div>
         <button class="lp-resourse-btn" @click="sourseImport('isShowLoadPerms')">选择资源</button>
@@ -146,21 +146,44 @@
     </div>
     <div class="loadPerms-box" slot="dialog-content">
       <el-table
+        stripe
+        highlight-current-row
         :data="tableData"
+        max-height="470"
         style="width: 100%">
         <el-table-column
-          prop="date"
-          label="日期"
-          width="180">
+          prop="id"
+          align="center"
+          label="序号">
         </el-table-column>
         <el-table-column
           prop="name"
-          label="姓名"
+          label="资源名称"
           width="180">
         </el-table-column>
         <el-table-column
-          prop="address"
-          label="地址">
+          prop="isAllow"
+          align="center"
+          label="学生可下载">
+          <template slot-scope="scope">
+            <el-switch v-model="scope.row.isAllow" active-color="#007AB7"></el-switch>
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="rank"
+          align="center"
+          label="顺序调整">
+          <template>
+            <span class="el-icon-sort"></span>
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="operation"
+          align="center"
+          label="操作">
+          <template slot-scope="scope">
+            <el-button @click="loadPermsDel(scope)" type="text" size="small">删除</el-button>
+          </template>
         </el-table-column>
       </el-table>
     </div>
@@ -169,6 +192,7 @@
 </template>
 
 <script>
+import Sortable from 'sortablejs'
 import myDialog from '@/components/myDialog/myDialog'
 let id = 1000
 export default {
@@ -383,33 +407,62 @@ export default {
         label: 'label'
       },
       checked: true,
-      tableData: [{
-        date: '2016-05-02',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1518 弄'
-      }, {
-        date: '2016-05-04',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1517 弄'
-      }, {
-        date: '2016-05-01',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1519 弄'
-      }, {
-        date: '2016-05-03',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1516 弄'
-      }]
+      tableData: [
+        {
+          id: 1,
+          name: '白夜行',
+          isAllow: false,
+          sort: 1
+        },
+        {
+          id: 2,
+          name: '沉默的大多数',
+          isAllow: false,
+          sort: 2
+        },
+        {
+          id: 3,
+          name: '乌合之众',
+          isAllow: false,
+          sort: 3
+        },
+        {
+          id: 4,
+          name: '人间失格',
+          isAllow: false,
+          sort: 4
+        },
+        {
+          id: 5,
+          name: '活着',
+          isAllow: false,
+          sort: 5
+        }
+      ]
     }
   },
   created () {},
-  mounted () {},
+  mounted () {
+  },
   computed: {
     // swiper () {
     //   return this.$refs.mySwiper1.$swiper
     // }
   },
   methods: {
+    // 行拖拽
+    rowDrop () {
+      const tbody = document.querySelector('.el-table__body-wrapper tbody')
+      const _this = this
+      Sortable.create(tbody, {
+        onEnd ({ newIndex, oldIndex }) {
+          const newRow = _this.tableData[oldIndex]
+          const oldRow = _this.tableData[newIndex]
+          _this.tableData.splice(oldIndex, 1, newRow)
+          _this.tableData.splice(newIndex, 1, oldRow)
+        }
+      })
+    },
     // 新增子目录
     appendChildNode (data) {
       const newChild = { id: id++, label: '子节点', children: [] }
@@ -460,9 +513,7 @@ export default {
     // 编辑下载权限
     editLoad (node, data) {
       this.isShowLoadPerms = true
-      // this.isShowEdit = false
-      // this.isShowChooseResour = false
-      // this.isShowLoadPerms = false
+      this.rowDrop()
     },
     handleDragStart (node, ev) {
       console.log('drag start', node)
@@ -602,6 +653,9 @@ export default {
     },
     handleCheckChange (data, checked, indeterminate) {
       console.log(data, checked, indeterminate)
+    },
+    loadPermsDel (scope) {
+      this.tableData.splice(scope.index, 1)
     }
   },
   watch: {}
@@ -944,6 +998,12 @@ export default {
     border: 1px solid #DFDFE0;
     box-sizing: border-box;
     overflow: auto;
+    .el-button--text{
+      color: #007AB7;
+      &:active{
+        opacity: .6;
+      }
+    }
   }
 }
 .el-message-box{

@@ -43,7 +43,7 @@ export default {
 .footer-box{
   width: 100%;
   height: 180px;
-  font-size:18px;
+  font-size:16px;
   font-family:Microsoft YaHei;
   .up-box{
     width: 100%;
@@ -64,12 +64,12 @@ export default {
         border-right: 1px solid #9A9A9A;
         &:last-child{
           span{
-            font-size: 18px;
+            font-size: 16px;
             font-weight: bold;
             color: #323232;
           }
           a{
-            font-size: 14px;
+            font-size: 13px;
             color: @theme;
             margin-right: 10px;
             text-decoration:none;
@@ -79,20 +79,20 @@ export default {
           }
         }
         img{
-          width:410px;
-          height:26px;
+          // width:410px;
+          height:22px;
         }
         i{
           font-size: 20px;
           margin-right: 10px;
         }
         span{
-          font-size:18px;
+          font-size:16px;
           font-family:Microsoft YaHei;
           font-weight:bold;
           color:#323232;
           &:last-child{
-            font-size:14px;
+            font-size:13px;
             color:#666666;
             margin-left: 20px;
           }
@@ -108,7 +108,7 @@ export default {
     justify-content: center;
     align-items: center;
     span{
-      font-size:18px;
+      font-size:13px;
       font-weight:400;
       color:rgba(245,245,245,1);
       line-height:45px;

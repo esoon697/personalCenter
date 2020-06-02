@@ -119,7 +119,7 @@ export default {
       .dialog-btns{}
       .dialog-content{
         margin: 20px 0;
-        font-size:18px;
+        font-size:16px;
         color:rgba(51,51,51,1);
         display: flex;
         justify-content: center;
@@ -135,7 +135,7 @@ export default {
           height:36px;
           border:1px solid rgba(0,122,183,1);
           border-radius:4px;
-          font-size:18px;
+          font-size:16px;
           color:rgba(0,122,183,1);
           box-sizing: border-box;
           margin-right: 20px;
@@ -152,7 +152,7 @@ export default {
           height:36px;
           background:rgba(0,122,183,1);
           border-radius:4px;
-          font-size:18px;
+          font-size:16px;
           color:rgba(255,255,255,1);
           &:hover{
             opacity: .8;

@@ -5,7 +5,7 @@
       <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="150px" class="demo-ruleForm" label-position="right">
         <el-form-item label="选择课程：" prop="course">
           <div class="wrapper">
-            <el-input class="lengthStyle" v-model="ruleForm.course" placeholder="请选择课程" disabled></el-input>
+            <el-input class="lengthStyle" v-model="ruleForm.course.label" placeholder="请选择课程" disabled></el-input>
             <button class="choose-btn" @click.prevent="chooseCourse">选择</button>
           </div>
         </el-form-item>
@@ -42,15 +42,14 @@
           </el-radio-group>
         </el-form-item>
         <el-form-item v-show="!ruleForm.isChoice" label="选课学生：" prop="student">
-          <div class="wrapper">
-            <!-- <el-input class="lengthStyle" v-model="ruleForm.student" placeholder="请选择选课学生" disabled></el-input> -->
-            <el-select class="lengthStyle" v-model="ruleForm.student" multiple placeholder="请选择选课学生">
-              <el-option
-                v-for="item in checkedStu"
+          <div class="wrapper" @click="chooseStu">
+            <el-select class="lengthStyle" v-model="checkedStuName" multiple collapse-tags disabled placeholder="请选择选课学生">
+              <!-- <el-option
+                v-for="item in ruleForm.student"
                 :key="item.value"
                 :label="item.label"
                 :value="item.value">
-              </el-option>
+              </el-option> -->
             </el-select>
             <button class="choose-btn" @click.prevent="chooseStu">选择</button>
           </div>
@@ -204,9 +203,10 @@
 </template>
 
 <script>
+import TMContentBox from '@/components/TMContentBox/TMContentBox'
 import myDialog from '@/components/myDialog/myDialog'
 export default {
-  components: {myDialog},
+  components: {myDialog, TMContentBox},
   props: [],
   data () {
     return {
@@ -216,7 +216,7 @@ export default {
         teacher: '',
         courseTime: '',
         isChoice: '',
-        student: '',
+        student: [],
         chooseNum: '',
         timeValue1: '',
         timeValue2: '',
@@ -706,7 +706,11 @@ export default {
       checkedStu: []
     }
   },
-  computed: {},
+  computed: {
+    checkedStuName () {
+      return this.ruleForm.student.map(e => e.label)
+    }
+  },
   created () {},
   mounted () {},
   methods: {
@@ -742,13 +746,14 @@ export default {
         confirmButtonClass: 'confirmButton',
         showClose: false
       }).then(() => {
-        if (this.course.children.length) {
+        if (this.course.children && this.course.children.length) {
           this.$message.warning('请选择某一节课程')
           return
         }
-        this.ruleForm.course = this.course.label
+        this.ruleForm.course = this.course
         this.isShowchooseCour = false
-      }).catch(() => {
+      }).catch((e) => {
+        console.log(e)
         this.course = null
         this.$message({
           type: 'info',
@@ -795,7 +800,10 @@ export default {
       }).then(() => {
         this.getCheckedStu()
         this.ruleForm.student = this.checkedStu
+        // this.checkedStuName = this.checkedStu.map(e => e.label)
         this.isShowchooseStu = false
+        console.log('this.checkedStu', this.checkedStu)
+        console.log('this.ruleForm.student', this.ruleForm.student)
       }).catch((e) => {
         this.checkedStu = []
         console.log(e)
