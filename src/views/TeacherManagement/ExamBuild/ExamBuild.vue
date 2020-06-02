@@ -1,7 +1,7 @@
 <template>
 <TMContentBox>
   <span slot="content-title">考试建设</span>
-  <div slot="main-content"></div>
+  <div slot="main-content">hello</div>
 </TMContentBox>
 </template>
 
