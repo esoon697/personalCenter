@@ -12,6 +12,7 @@ import TeacherManagement from '@/views/TeacherManagement/TeacherManagement'
 import InitCourseEntrance from '@/views/TeacherManagement/InitCourseEntrance/InitCourseEntrance'
 import InitCourse from '@/views/TeacherManagement/InitCourse/InitCourse'
 import OpenCourse from '@/views/TeacherManagement/OpenCourse/OpenCourse'
+import ExamBuild from '@/views/TeacherManagement/ExamBuild/ExamBuild'
 
 Vue.use(Router)
 
@@ -100,9 +101,16 @@ export default new Router({
         },
         {
           title: '开课管理',
-          path: 'OpenCourse',
+          path: 'openCourse',
           name: 'OpenCourse',
           component: OpenCourse,
+          children: []
+        },
+        {
+          title: '开课管理',
+          path: 'examBuild',
+          name: 'ExamBuild',
+          component: ExamBuild,
           children: []
         }
       ]

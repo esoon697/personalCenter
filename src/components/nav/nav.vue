@@ -141,6 +141,12 @@ export default {
               path: '/teacherManagement/OpenCourse',
               name: 'OpenCourse',
               children: []
+            },
+            {
+              title: '考试建设',
+              path: '/teacherManagement/examBuild',
+              name: 'ExamBuild',
+              children: []
             }
           ]
         },

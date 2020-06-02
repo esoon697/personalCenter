@@ -24,8 +24,8 @@
               <button class="btn-item" @click="() => appendNode(data)">新增同级节点</button>
               <button class="btn-item" @click="() => remove(node, data)">删除目录</button>
               <button class="btn-item" @click="() => editName(node, data)">编辑目录</button>
-              <button class="btn-item" v-show="!data.children" @click="() => editContent(node, data)">编辑内容</button>
-              <button class="btn-item" v-show="!data.children" @click="() => editLoad(node, data)">编辑下载</button>
+              <button class="btn-item" v-show="!(data.children&&data.children.length)" @click="() => editContent(node, data)">编辑内容</button>
+              <button class="btn-item" v-show="!(data.children&&data.children.length)" @click="() => editLoad(node, data)">编辑下载</button>
             </span>
             <div class="less-btn" @click="ChangeShowBtns(node.id)">
               <i class="el-icon-setting" v-if="!(isShowBtns && node.id == currentId)"></i>
