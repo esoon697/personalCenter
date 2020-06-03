@@ -201,12 +201,20 @@ export default {
       }
     }
   }
-  .uncheck-btn{
-    width: 20px;
-    padding: 5px 10px;
-    background:rgba(202,56,66,1);
-    border-radius:4px;
+  .uncheck-btn, .checked-btn{
+    width: 60px;
+    height: 35px;
+    border-radius: 4px;
+    text-align: center;
+    line-height: 35px;
+    color: #fff;
+    cursor: pointer;
   }
-  .checked-btn{}
+  .uncheck-btn{
+    background: #ca3842;
+  }
+  .checked-btn{
+    background: #42ca38;
+  }
 }
 </style>
