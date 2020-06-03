@@ -16,7 +16,7 @@
           <div class="wrapper">
             <el-select class="lengthStyle" v-model="ruleForm.teacher" filterable placeholder="请选择授课教师">
               <el-option
-                v-for="item in options"
+                v-for="item in teacherOptions"
                 :key="item.value"
                 :label="item.label"
                 :value="item.value">
@@ -41,7 +41,7 @@
             <el-radio :label="0">否</el-radio>
           </el-radio-group>
         </el-form-item>
-        <el-form-item v-show="!ruleForm.isChoice" label="选课学生：" prop="student">
+        <el-form-item v-show="ruleForm.isChoice===0" label="选课学生：" prop="student">
           <div class="wrapper" @click="chooseStu">
             <el-select class="lengthStyle" v-model="checkedStuName" multiple collapse-tags disabled placeholder="请选择选课学生">
               <!-- <el-option
@@ -161,9 +161,9 @@
     <div class="chooseStu-btns" slot="dialog-btns">
         <div class="select-box">
           <label>专业：</label>
-          <el-select class="lengthStyle1" v-model="selVal" placeholder="请选择">
+          <el-select class="lengthStyle1" v-model="stuProfessionVal" placeholder="请选择">
             <el-option
-              v-for="item in options"
+              v-for="item in professionOptions"
               :key="item.value"
               :label="item.label"
               :value="item.value">
@@ -407,7 +407,7 @@ export default {
       },
       isShowchooseCour: false,
       course: null,
-      options: [
+      teacherOptions: [
         {
           value: '选项1',
           label: '黄金糕'
@@ -431,6 +431,28 @@ export default {
       ],
       value: '',
       isShowchooseStu: false,
+      professionOptions: [
+        {
+          value: '选项1',
+          label: '黄金糕'
+        },
+        {
+          value: '选项2',
+          label: '双皮奶'
+        },
+        {
+          value: '选项3',
+          label: '蚵仔煎'
+        },
+        {
+          value: '选项4',
+          label: '龙须面'
+        },
+        {
+          value: '选项5',
+          label: '北京烤鸭'
+        }
+      ],
       CascOptions: [
         {
           value: 'zhinan',
@@ -699,7 +721,7 @@ export default {
           ]
         }
       ],
-      selVal: '',
+      stuProfessionVal: '',
       CascVal: '',
       stuNameVal: '',
       stuNumVal: '',

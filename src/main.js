@@ -46,6 +46,7 @@ import {
   Cascader,
   Switch
 } from 'element-ui'
+import '../static/theme/index.css'
 
 // 引入ECharts 主模块
 var echarts = require('echarts/lib/echarts')

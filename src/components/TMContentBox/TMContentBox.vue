@@ -1,8 +1,10 @@
 <template>
   <div class="main-content-box">
-    <div class="main-content-inner"></div>
-    <div class="title"><slot name="content-title"></slot></div>
-    <slot name="main-content"></slot>
+    <div class="main-content-inner">
+      <div class="title"><slot name="content-title"></slot></div>
+      <slot name="main-content"></slot>
+    </div>
+    <slot name="dialog"></slot>
   </div>
 </template>
 

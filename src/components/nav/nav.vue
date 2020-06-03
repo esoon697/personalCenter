@@ -147,6 +147,12 @@ export default {
               path: '/teacherManagement/examBuild',
               name: 'ExamBuild',
               children: []
+            },
+            {
+              title: '试卷建设',
+              path: '/teacherManagement/testPaperBuild',
+              name: 'TestPaperBuild',
+              children: []
             }
           ]
         },

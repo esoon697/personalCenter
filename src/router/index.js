@@ -13,6 +13,7 @@ import InitCourseEntrance from '@/views/TeacherManagement/InitCourseEntrance/Ini
 import InitCourse from '@/views/TeacherManagement/InitCourse/InitCourse'
 import OpenCourse from '@/views/TeacherManagement/OpenCourse/OpenCourse'
 import ExamBuild from '@/views/TeacherManagement/ExamBuild/ExamBuild'
+import TestPaperBuild from '@/views/TeacherManagement/TestPaperBuild/TestPaperBuild'
 
 Vue.use(Router)
 
@@ -111,6 +112,13 @@ export default new Router({
           path: 'examBuild',
           name: 'ExamBuild',
           component: ExamBuild,
+          children: []
+        },
+        {
+          title: '试卷建设',
+          path: 'testPaperBuild',
+          name: 'TestPaperBuild',
+          component: TestPaperBuild,
           children: []
         }
       ]

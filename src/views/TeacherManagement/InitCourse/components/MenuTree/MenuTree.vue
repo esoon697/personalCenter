@@ -283,6 +283,41 @@ export default {
               type: 1,
               url: '',
               sort: '4'
+            },
+            {
+              type: 1,
+              url: '',
+              sort: '4'
+            },
+            {
+              type: 1,
+              url: '',
+              sort: '5'
+            },
+            {
+              type: 1,
+              url: '',
+              sort: '6'
+            },
+            {
+              type: 1,
+              url: '',
+              sort: '7'
+            },
+            {
+              type: 1,
+              url: '',
+              sort: '8'
+            },
+            {
+              type: 1,
+              url: '',
+              sort: '9'
+            },
+            {
+              type: 1,
+              url: '',
+              sort: '10'
             }
           ]
         },
@@ -729,7 +764,7 @@ export default {
     }
   }
   .contentEdit-box{
-    width: 750px;
+    width: 1300px;
     height: 500px;
     border: 1px solid #DFDFE0;
     padding: 0 20px;
@@ -750,14 +785,16 @@ export default {
         justify-content: space-between;
         align-items: center;
         .item-main-left{
+          // flex: 1;
           position: relative;
-          // width: 60%;
-          height: 200px;
+          width: 75%;
+          height: 180px;
+          // margin-right: 20px;
           // background-color: #eee;
           // padding: 0 40px;
           // box-sizing: border-box;
             .slide-outer{
-              width: 400px;
+              width: 100%;
               height: 100%;
               overflow: auto;
               .slide-inner{
@@ -770,7 +807,7 @@ export default {
                 .slide-item{
                   flex-shrink: 0;
                   // display: inline-block;
-                  width: 120px;
+                  width: 75px;
                   height: 100%;
                   margin-right: 20px;
                   .resource-item{
@@ -780,11 +817,11 @@ export default {
                     background-color: #fff;
                     display: flex;
                     flex-direction: column;
-                    justify-content: space-between;
+                    // justify-content: space-between;
                     align-items: center;
                     .resource{
                       width: 100%;
-                      height: 80%;
+                      height: 100px;
                       background-color: #eee;
                       // margin-bottom: 20px;
                     }
@@ -807,74 +844,13 @@ export default {
                 }
               }
             }
-          .block{
-            width: 100%;
-            height: 100%;
-            .swiper-item{
-              // background-color: #eee;
-              width: 100%;
-              height: 100%;
-              padding: 0 20px;
-              box-sizing: border-box;
-              display: flex;
-              justify-content: center;
-              align-items: center;
-              .resource-item{
-                flex: 1;
-                height: 100%;
-                margin-right: 10px;
-                background-color: #fff;
-                display: flex;
-                flex-direction: column;
-                justify-content: space-between;
-                align-items: center;
-                .resource{
-                  width: 100%;
-                  height: 80%;
-                  background-color: #eee;
-                  margin-bottom: 20px;
-                }
-                input{
-                  width: 30px;
-                  height: 20px;
-                  background-color: #eee;
-                  text-align: center;
-                }
-                &:last-child{
-                  margin-right: 0;
-                }
-              }
-            }
-          }
-          .swiper-container{
-            width: 100%;
-            height: 100%;
-            .Slides-box{
-              padding: 0 20px;
-              display: flex;
-            }
-            .swiper-wrapper{
-              // padding: 0 40px;
-              // box-sizing: border-box;
-              // overflow: hidden;
-            }
-            .swiper-slide{
-              background-color: #fff;
-            }
-          }
-          .swiper-button-prev, .swiper-button-next{
-            outline: none;
-            &::after{
-              font-size: 24px;
-            }
-          }
         }
         .item-main-right{
           font-size:16px;
           font-family:Microsoft YaHei;
           font-weight:400;
           .sourse-btn, .local-btn{
-            width: 110px;
+            width: 95px;
             height: 40px;
             border-radius:4px;
             color:rgba(255,255,255,1);
