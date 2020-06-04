@@ -483,6 +483,7 @@ export default {
       this.parentInfo = null
       this.infoType = null
       this.state = null
+      console.log('1')
     },
     addClose () {
       this.isShowAdd = false
