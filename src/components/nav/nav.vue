@@ -153,6 +153,24 @@ export default {
               path: '/teacherManagement/testPaperBuild',
               name: 'TestPaperBuild',
               children: []
+            },
+            {
+              title: '信息管理',
+              path: '/teacherManagement/infoManage',
+              name: 'InfoManage',
+              children: []
+            },
+            {
+              title: '信息类别管理',
+              path: '/teacherManagement/infoTypeManage',
+              name: 'InfoTypeManage',
+              children: []
+            },
+            {
+              title: '学生选课',
+              path: '/teacherManagement/stuChooseCourse',
+              name: 'StuChooseCourse',
+              children: []
             }
           ]
         },

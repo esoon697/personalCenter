@@ -134,23 +134,23 @@
     @close="chooseCourClose"
     @confirm="chooseCourConfirm"
     v-show="isShowchooseCour">
-    <div class="chooseCour-btns" slot="dialog-btns">
-      <div>
-        <label for="input1">资源类别：</label>
-        <input type="text" name="" id="input1">
-        <label for="input2">资源名称：</label>
-        <input type="text" name="" id="input2">
+      <div class="chooseCour-btns" slot="dialog-btns">
+        <div>
+          <label for="input1">资源类别：</label>
+          <input type="text" name="" id="input1">
+          <label for="input2">资源名称：</label>
+          <input type="text" name="" id="input2">
+        </div>
+        <button class="search-btn">查询</button>
       </div>
-      <button class="search-btn">查询</button>
-    </div>
-    <div class="chooseCour-box" slot="dialog-content">
-      <el-tree
-      slot="dialog-content"
-      :data="courseData"
-      :props="defaultProps"
-      @node-click="courNodeClick"
-      ></el-tree>
-    </div>
+      <div class="chooseCour-box" slot="dialog-content">
+        <el-tree
+        slot="dialog-content"
+        :data="courseData"
+        :props="defaultProps"
+        @node-click="courNodeClick"
+        ></el-tree>
+      </div>
     </myDialog>
     <myDialog
     :title="'选择学生'"
@@ -158,46 +158,46 @@
     @close="chooseStuClose"
     @confirm="chooseStuConfirm"
     v-show="isShowchooseStu">
-    <div class="chooseStu-btns" slot="dialog-btns">
-        <div class="select-box">
-          <label>专业：</label>
-          <el-select class="lengthStyle1" v-model="stuProfessionVal" placeholder="请选择">
-            <el-option
-              v-for="item in professionOptions"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value">
-            </el-option>
-          </el-select>
-        </div>
-        <div class="select-box">
-          <label>班级：</label>
-          <el-cascader
-            class="lengthStyle1"
-            v-model="CascVal"
-            :options="CascOptions"
-            @change="CascChange"></el-cascader>
-        </div>
-        <div class="select-box">
-          <label>姓名：</label>
-            <el-input class="lengthStyle1" v-model="stuNameVal" placeholder="请输入内容"></el-input>
-        </div>
-        <div class="select-box">
-          <label>学号：</label>
-            <el-input class="lengthStyle1" v-model="stuNumVal" placeholder="请输入内容"></el-input>
-        </div>
-      <button class="search-btn">查询</button>
-    </div>
-    <div class="chooseCour-box" slot="dialog-content">
-      <el-tree
-      ref="stuTree"
-      slot="dialog-content"
-      :data="studentData"
-      :props="defaultProps"
-      @node-click="stuNodeClick"
-      @check-change="stuCheckChange"
-      show-checkbox></el-tree>
-    </div>
+      <div class="chooseStu-btns" slot="dialog-btns">
+          <div class="select-box">
+            <label>专业：</label>
+            <el-select class="lengthStyle1" v-model="stuProfessionVal" placeholder="请选择">
+              <el-option
+                v-for="item in professionOptions"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value">
+              </el-option>
+            </el-select>
+          </div>
+          <div class="select-box">
+            <label>班级：</label>
+            <el-cascader
+              class="lengthStyle1"
+              v-model="CascVal"
+              :options="CascOptions"
+              @change="CascChange"></el-cascader>
+          </div>
+          <div class="select-box">
+            <label>姓名：</label>
+              <el-input class="lengthStyle1" v-model="stuNameVal" placeholder="请输入内容"></el-input>
+          </div>
+          <div class="select-box">
+            <label>学号：</label>
+              <el-input class="lengthStyle1" v-model="stuNumVal" placeholder="请输入内容"></el-input>
+          </div>
+        <button class="search-btn">查询</button>
+      </div>
+      <div class="chooseStu-box" slot="dialog-content">
+        <el-tree
+        ref="stuTree"
+        slot="dialog-content"
+        :data="studentData"
+        :props="defaultProps"
+        @node-click="stuNodeClick"
+        @check-change="stuCheckChange"
+        show-checkbox></el-tree>
+      </div>
     </myDialog>
   </div>
 </template>
@@ -793,7 +793,6 @@ export default {
     stuNodeClick () {},
     stuCheckChange (data, checked, indeterminate) {
       console.log(data, checked, indeterminate)
-      // if (data) {}
     },
     getCheckedStu () {
       console.log(this.$refs.stuTree.getCheckedNodes())
@@ -956,7 +955,7 @@ export default {
       }
     }
   }
-  .chooseCour-box{
+  .chooseCour-box, .chooseStu-box{
     width: 750px;
     height: 470px;
     border: 1px solid #DFDFE0;
