@@ -27,6 +27,7 @@ export default {
 @theme: #007AB7;
 .main-content-box{
   padding: 80px;
+  width: 100%;
   box-sizing: border-box;
   .main-content-inner{
     .title{

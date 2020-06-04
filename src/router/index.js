@@ -14,6 +14,9 @@ import InitCourse from '@/views/TeacherManagement/InitCourse/InitCourse'
 import OpenCourse from '@/views/TeacherManagement/OpenCourse/OpenCourse'
 import ExamBuild from '@/views/TeacherManagement/ExamBuild/ExamBuild'
 import TestPaperBuild from '@/views/TeacherManagement/TestPaperBuild/TestPaperBuild'
+import InfoManage from '@/views/TeacherManagement/InfoManage/InfoManage'
+import InfoTypeManage from '@/views/TeacherManagement/InfoTypeManage/InfoTypeManage'
+import StuChooseCourse from '@/views/TeacherManagement/StuChooseCourse/StuChooseCourse'
 
 Vue.use(Router)
 
@@ -108,7 +111,7 @@ export default new Router({
           children: []
         },
         {
-          title: '开课管理',
+          title: '考试建设',
           path: 'examBuild',
           name: 'ExamBuild',
           component: ExamBuild,
@@ -119,6 +122,27 @@ export default new Router({
           path: 'testPaperBuild',
           name: 'TestPaperBuild',
           component: TestPaperBuild,
+          children: []
+        },
+        {
+          title: '信息管理',
+          path: 'infoManage',
+          name: 'InfoManage',
+          component: InfoManage,
+          children: []
+        },
+        {
+          title: '信息类型管理',
+          path: 'infoTypeManage',
+          name: 'InfoTypeManage',
+          component: InfoTypeManage,
+          children: []
+        },
+        {
+          title: '学生选课',
+          path: 'stuChooseCourse',
+          name: 'StuChooseCourse',
+          component: StuChooseCourse,
           children: []
         }
       ]

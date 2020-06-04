@@ -3,7 +3,7 @@
   <span slot="content-title">考试建设</span>
   <el-form slot="main-content" :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
     <el-form-item class="ExamBuild-form" label="考试名称：" placeholder="请选择考试名称" prop="examName">
-      <el-input v-model="ruleForm.examName"></el-input>
+      <el-input class="lengthStyle" v-model="ruleForm.examName"></el-input>
     </el-form-item>
     <el-form-item label="所属课程：" prop="belongCourse">
       <div class="wrapper">
@@ -94,15 +94,6 @@ export default {
         ],
         taskTime: [
           { type: 'array', required: true, message: '请选择考试时间', trigger: 'change' }
-        ],
-        date1: [
-          { type: 'date', required: true, message: '请选择日期', trigger: 'change' }
-        ],
-        date2: [
-          { type: 'date', required: true, message: '请选择时间', trigger: 'change' }
-        ],
-        type: [
-          { type: 'array', required: true, message: '请至少选择一个活动性质', trigger: 'change' }
         ]
       },
       courseData: [
@@ -279,7 +270,7 @@ export default {
     display: flex;
   }
   .lengthStyle{
-    width: 100%;
+    width: 260px;
   }
   .btn-group{
     padding-top: 50px;
@@ -305,35 +296,35 @@ export default {
     }
   }
 }
-  .chooseCour-btns{
+.chooseCour-btns{
+  font-size:18px;
+  font-family:Microsoft YaHei;
+  font-weight:400;
+  color:rgba(51,51,51,1);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  input{
+    border:1px solid rgba(221,221,221,1);
+    border-radius:4px;
+    text-indent: 10px;
+    padding: 7px 0;
+    margin-right: 30px;
+  }
+  .search-btn{
+    background:rgba(202,56,66,1);
+    border-radius:4px;
     font-size:18px;
-    font-family:Microsoft YaHei;
-    font-weight:400;
-    color:rgba(51,51,51,1);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    input{
-      border:1px solid rgba(221,221,221,1);
-      border-radius:4px;
-      text-indent: 10px;
-      padding: 7px 0;
-      margin-right: 30px;
+    color:rgba(255,255,255,1);
+    padding: 5px 20px;
+    &:hover{
+      opacity: .8;
     }
-    .search-btn{
-      background:rgba(202,56,66,1);
-      border-radius:4px;
-      font-size:18px;
-      color:rgba(255,255,255,1);
-      padding: 5px 20px;
-      &:hover{
-        opacity: .8;
-      }
-      &:active{
-        opacity: .6;
-      }
+    &:active{
+      opacity: .6;
     }
   }
+}
 .chooseCour-box{
   width: 750px;
   height: 470px;

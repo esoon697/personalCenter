@@ -1,62 +1,64 @@
 <template>
   <TMContentBox>
     <span slot="content-title">试卷建设</span>
-    <el-form slot="main-content" :model="ruleForm" :rules="rules" ref="ruleForm" label-width="120px" class="demo-ruleForm">
+    <el-form slot="main-content" :model="ruleForm" :rules="rules" ref="ruleForm" label-width="125px" class="demo-ruleForm">
       <el-form-item label="试卷名称：" placeholder="请输入试卷名称" prop="testPaperName">
-        <el-input v-model="ruleForm.testPaperName"></el-input>
+        <el-input class="lengthStyle" v-model="ruleForm.testPaperName"></el-input>
       </el-form-item>
       <el-form-item label="是否新增标签：" prop="isAllowAdd">
         <el-radio-group v-model="ruleForm.isAllowAdd">
-          <el-radio label="1">是</el-radio>
-          <el-radio label="0">否</el-radio>
+          <el-radio :label="1">是</el-radio>
+          <el-radio :label="0">否</el-radio>
         </el-radio-group>
       </el-form-item>
-      <el-form-item v-show="ruleForm.isAllowAdd === 1" label="新增标签：" placeholder="请输入新增标签" prop="addLabel">
-        <el-input v-model="ruleForm.addLabel"></el-input>
+      <el-form-item v-if="ruleForm.isAllowAdd === 1" label="新增标签：" placeholder="请输入新增标签" prop="addLabel">
+        <el-input class="lengthStyle" v-model="ruleForm.addLabel"></el-input>
       </el-form-item>
-      <el-form-item v-show="ruleForm.isAllowAdd === 0" label="所属标签：" placeholder="请选择所属标签" prop="belongLabel">
-        <el-select v-model="ruleForm.belongLabel" placeholder="请选择活动区域">
+      <el-form-item v-if="ruleForm.isAllowAdd === 0" label="所属标签：" placeholder="请选择所属标签" prop="belongLabel">
+        <el-select class="lengthStyle" v-model="ruleForm.belongLabel" placeholder="请选择所属标签">
           <el-option label="区域一" value="shanghai"></el-option>
           <el-option label="区域二" value="beijing"></el-option>
         </el-select>
       </el-form-item>
       <el-form-item label="随机生成试卷：" prop="isRandom">
         <el-radio-group v-model="ruleForm.isRandom">
-          <el-radio label="1">是</el-radio>
-          <el-radio label="0">否</el-radio>
+          <el-radio :label="1">是</el-radio>
+          <el-radio :label="0">否</el-radio>
         </el-radio-group>
       </el-form-item>
       <el-form-item label-width="0px" v-for="(testObj, index) in ruleForm.testObjs" :key="index" required>
-        <el-row :gutter="20">
-          <el-col :span="7">
-            <el-form-item label="题目类型：" prop="testType">
+        <!-- <el-row :gutter="20"> -->
+          <el-col :sm="10" :lg="7">
+            <el-form-item label="题目类型：" :prop="'testObjs.'+index+'.testType'" :rules="[{required: true, message: '请选择题目类型', trigger: 'change'}]">
               <el-select v-model="testObj.testType" placeholder="请选择题型">
                 <el-option label="区域一" value="shanghai"></el-option>
                 <el-option label="区域二" value="beijing"></el-option>
               </el-select>
             </el-form-item>
           </el-col>
-          <el-col :span="5">
-            <el-form-item label-width="85px" label="题目数量：" prop="testCount">
-              <el-input v-model="testObj.testCount"></el-input>
+          <el-col :sm="7" :lg="5">
+            <el-form-item label="题目数量：" :prop="'testObjs.'+index+'.testCount'" :rules="[{required: true, message: '请选择题目数量', trigger: 'blur'}]">
+              <el-input v-model.number="testObj.testCount"></el-input>
             </el-form-item>
           </el-col>
-          <el-col :span="5">
-            <el-form-item label-width="70px" label="总分数：" prop="grossScore">
-              <el-input v-model="testObj.grossScore"></el-input>
+          <el-col :sm="7" :lg="5">
+            <el-form-item label="总分数：" :prop="'testObjs.'+index+'.grossScore'" :rules="[{required: true, message: '请选择总分数', trigger: 'blur'}]">
+              <el-input v-model.number="testObj.grossScore"></el-input>
             </el-form-item>
           </el-col>
-          <el-col :span="4">
-            <el-form-item label-width="85px" label="选择题目：" prop="tests">
-              <div v-if="!testObj.tests.length" class="uncheck-btn">选择</div>
-              <div v-else class="checked-btn">已选</div>
+          <el-col :sm="8" :lg="4">
+            <el-form-item v-if="ruleForm.isRandom===0" label="选择题目：" :prop="'testObjs.'+index+'.tests'" :rules="[{ type: 'array', required: true, message: '请选择总分数', trigger: 'change'}]">
+              <button v-if="!testObj.tests.length" class="uncheck-btn" @click.prevent="chooseTest(index)">选择</button>
+              <button v-else class="checked-btn" @click.prevent="chooseTest(index)">已选{{testObj.tests.length}}</button>
             </el-form-item>
           </el-col>
-          <el-col label-width="0px" :span="3">
-            <button class="add-btn" v-if="ruleForm.testObjs.length === index+1" @click.prevent="addTestType">增添题型</button>
-            <button class="add-btn" v-else @click.prevent="delTestType(testObj.id)">删除题型</button>
+          <el-col :sm="16" :lg="3">
+            <el-form-item>
+              <button class="add-btn" v-if="ruleForm.testObjs.length === index+1" @click.prevent="addTestType">增添题型</button>
+              <button class="del-btn" v-else @click.prevent="delTestType(testObj.id)">删除题型</button>
+            </el-form-item>
           </el-col>
-        </el-row>
+        <!-- </el-row> -->
       </el-form-item>
       <el-form-item>
         <div class="btn-group">
@@ -65,6 +67,58 @@
         </div>
       </el-form-item>
     </el-form>
+  <myDialog
+  slot="dialog"
+  :title="'题目选择'"
+  :aside="true"
+  @close="chooseTestClose"
+  @confirm="chooseTestConfirm"
+  v-show="isShowChooseTest">
+    <div class="chooseTest-btns" slot="dialog-btns">
+      <div>
+        <label for="input1">资源类别：</label>
+        <input type="text" name="" id="input1">
+        <label for="input2">资源名称：</label>
+        <input type="text" name="" id="input2">
+      </div>
+      <button class="search-btn">查询</button>
+    </div>
+    <div class="chooseTest-box" slot="dialog-content">
+        <el-tree
+        ref="stuTree"
+        slot="dialog-content"
+        :data="testData"
+        :props="defaultProps"
+        node-key="id"
+        @node-click="testNodeClick"
+        @check-change="testCheckChange"
+        show-checkbox>
+          <span class="custom-tree-node" slot-scope="{ node, data }">
+            <span>{{ node.label }}</span>
+            <span>
+              <el-button
+                type="text"
+                size="mini"
+                @click="() => showDetails(data)"
+                v-show="!(data.children&&data.children.length)">
+                查看
+              </el-button>
+            </span>
+          </span>
+        </el-tree>
+    </div>
+  </myDialog>
+  <myDialog
+  slot="dialog"
+  v-if="isShowtestDetails"
+  :title="testContent.label"
+  :aside="true"
+  @close="testDetailsClose"
+  @confirm="testDetailsConfirm">
+    <div slot="dialog-content">
+      <p class="testOption" v-for="(testOption, index) in testContent.content" :key="index">{{testOption}}</p>
+    </div>
+  </myDialog>
   </TMContentBox>
 </template>
 
@@ -77,15 +131,14 @@ export default {
   props: [],
   data () {
     return {
+      isShowChooseTest: false,
+      isShowtestDetails: false,
       ruleForm: {
         testPaperName: '',
-        belongCourse: '',
-        date1: '',
-        date2: '',
-        delivery: false,
-        type: [],
-        resource: '',
-        desc: '',
+        isAllowAdd: '',
+        addLabel: '',
+        belongLabel: '',
+        isRandom: '',
         testObjs: [
           {
             id: 1,
@@ -97,30 +150,111 @@ export default {
         ]
       },
       rules: {
-        name: [
+        testPaperName: [
           { required: true, message: '请输入活动名称', trigger: 'blur' },
-          { min: 3, max: 5, message: '长度在 3 到 5 个字符', trigger: 'blur' }
+          { min: 2, max: 9, message: '长度在 2 到 9 个字符', trigger: 'blur' }
         ],
-        region: [
-          { required: true, message: '请选择活动区域', trigger: 'change' }
+        isAllowAdd: [
+          { required: true, message: '请选择是否新增标签：', trigger: 'change' }
         ],
-        date1: [
-          { type: 'date', required: true, message: '请选择日期', trigger: 'change' }
+        addLabel: [
+          { required: true, message: '请输入标签', trigger: 'blur' }
         ],
-        date2: [
-          { type: 'date', required: true, message: '请选择时间', trigger: 'change' }
+        belongLabel: [
+          { required: true, message: '请选择所属标签', trigger: 'change' }
         ],
-        type: [
-          { type: 'array', required: true, message: '请至少选择一个活动性质', trigger: 'change' }
+        isRandom: [
+          { required: true, message: '请选择是否随机生成试卷：', trigger: 'change' }
         ],
-        resource: [
-          { required: true, message: '请选择活动资源', trigger: 'change' }
+        testObjs: [
+          { type: 'object',
+            required: true,
+            message: '请至少选择一个',
+            trigger: 'change',
+            fields: {
+              testType: {type: 'string', required: true, trigger: 'change'},
+              testCount: {type: 'string', required: true, trigger: 'blur'},
+              grossScore: {type: 'string', required: true, trigger: 'blur'}
+            }
+          }
         ],
-        desc: [
-          { required: true, message: '请填写活动形式', trigger: 'blur' }
+        testType: [
+          { required: true, message: '请选择题目类型', trigger: 'change' }
+        ],
+        testCount: [
+          { required: true, message: '请输入题目数量', trigger: 'blur' }
+        ],
+        grossScore: [
+          { required: true, message: '请输入总分数', trigger: 'blur' }
         ]
       },
-      testTypeCount: 1
+      testData: [
+        {
+          label: '一级 1',
+          children: [
+            {
+              label: '二级 1-1',
+              children: [
+                {
+                  id: 11,
+                  label: '三级 1-1-1',
+                  content: ['A.选项一', 'B.选项二', 'C.选项三']
+                }
+              ]
+            }
+          ]
+        },
+        {
+          label: '一级 2',
+          children: [
+            {
+              label: '二级 2-1',
+              children: [
+                {
+                  label: '三级 2-1-1'
+                }
+              ]
+            },
+            {
+              label: '二级 2-2',
+              children: [
+                {
+                  label: '三级 2-2-1'
+                }
+              ]
+            }
+          ]
+        },
+        {
+          label: '一级 3',
+          children: [
+            {
+              label: '二级 3-1',
+              children: [
+                {
+                  label: '三级 3-1-1'
+                }
+              ]
+            },
+            {
+              label: '二级 3-2',
+              children: [
+                {
+                  label: '三级 3-2-1'
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      defaultProps: {
+        children: 'children',
+        label: 'label'
+      },
+      testTypeCount: 1,
+      checkedTest: null,
+      currentIndex: null,
+      testContent: null
     }
   },
   computed: {},
@@ -129,13 +263,75 @@ export default {
   methods: {
     addTestType () {
       id++
-      this.ruleForm.testObjs.push({id: id, testType: '', testCount: id, grossScore: '', tests: []})
+      this.ruleForm.testObjs.push({id: id, testType: '', testCount: '', grossScore: '', tests: []})
     },
     delTestType (id) {
       let index = this.ruleForm.testObjs.findIndex(e => e.id === id)
       this.ruleForm.testObjs.splice(index, 1)
     },
+    chooseTest (index) {
+      this.$refs.stuTree.setCheckedKeys([])
+      this.isShowChooseTest = true
+      this.currentIndex = index
+    },
+    testNodeClick () {},
+    testCheckChange () {},
+    getCheckedTest () {
+      console.log(this.$refs.stuTree.getCheckedNodes())
+      let checkedNodes = this.$refs.stuTree.getCheckedNodes()
+      this.checkedTest = checkedNodes.filter(e => {
+        return !e.children
+      }).map(e => {
+        return {
+          value: e.$treeNodeId,
+          label: e.label
+        }
+      })
+      console.log(this.checkedTest)
+    },
+    chooseTestClose () {
+      this.isShowChooseTest = false
+      // let keys = this.$refs.stuTree.getCheckedKeys()
+      // console.log('keys', keys)
+    },
+    chooseTestConfirm () {
+      this.$confirm('确认提交?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning',
+        cancelButtonClass: 'cancelButton',
+        confirmButtonClass: 'confirmButton',
+        showClose: false
+      }).then(() => {
+        this.getCheckedTest()
+        this.ruleForm.testObjs[this.currentIndex].tests = this.checkedTest
+        this.isShowChooseTest = false
+      }).catch((e) => {
+        console.log(e)
+        this.checkedTest = null
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        })
+      })
+    },
+    showDetails (data) {
+      console.log(data)
+      this.testContent = data
+      // this.isShowChooseTest = false
+      this.isShowtestDetails = true
+      this.isShowChooseTest = false
+    },
+    testDetailsClose () {
+      this.isShowChooseTest = true
+      this.isShowtestDetails = false
+    },
+    testDetailsConfirm () {
+      this.isShowChooseTest = true
+      this.isShowtestDetails = false
+    },
     submitForm (formName) {
+      console.log(this.ruleForm)
       this.$refs[formName].validate((valid) => {
         if (valid) {
           alert('submit!')
@@ -147,9 +343,15 @@ export default {
     },
     resetForm (formName) {
       this.$refs[formName].resetFields()
+      this.ruleForm.testObjs = [{id: 1, testType: '', testCount: '', grossScore: '', tests: []}]
+      id = 1
     }
   },
-  watch: {}
+  watch: {
+    isAllowAdd (val) {
+      console.log('isAllowAdd', val)
+    }
+  }
 }
 </script>
 <style lang="less" scoped>
@@ -176,7 +378,7 @@ export default {
     display: flex;
   }
   .lengthStyle{
-    width: 100%;
+    width: 260px;
   }
   .btn-group{
     padding-top: 50px;
@@ -201,20 +403,80 @@ export default {
       }
     }
   }
-  .uncheck-btn, .checked-btn{
-    width: 60px;
-    height: 35px;
-    border-radius: 4px;
+  .uncheck-btn, .checked-btn, .add-btn, .del-btn{
+    min-width: 60px;
+    // height: 35px;
+    padding: 0 10px;
     text-align: center;
     line-height: 35px;
     color: #fff;
+    border-radius: 4px;
     cursor: pointer;
   }
   .uncheck-btn{
-    background: #ca3842;
+    background: @theme;
   }
   .checked-btn{
     background: #42ca38;
   }
+  .add-btn{
+    margin-left: 10px;
+    background:rgba(202,56,66,1);
+    color:rgba(255,255,255,1);
+  }
+  .del-btn{
+    margin-left: 10px;
+    background: #fff;
+    color: #aaa;
+    border: 1px solid #eee;
+    box-sizing: border-box;
+  }
+}
+.chooseTest-btns{
+  font-size:16px;
+  font-family:Microsoft YaHei;
+  font-weight:400;
+  color:rgba(51,51,51,1);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  input{
+    border:1px solid rgba(221,221,221,1);
+    border-radius:4px;
+    text-indent: 10px;
+    padding: 7px 0;
+    margin-right: 30px;
+  }
+  .search-btn{
+    background:rgba(202,56,66,1);
+    border-radius:4px;
+    font-size:16px;
+    color:rgba(255,255,255,1);
+    padding: 5px 20px;
+    &:hover{
+      opacity: .8;
+    }
+    &:active{
+      opacity: .6;
+    }
+  }
+}
+.chooseTest-box{
+  width: 750px;
+  height: 470px;
+  border: 1px solid #DFDFE0;
+  box-sizing: border-box;
+  overflow: auto;
+  .el-tree-node__label{
+    font-size:16px;
+    font-family:Microsoft YaHei;
+    font-weight:400;
+  }
+}
+.testOption{
+    font-size:16px;
+    font-family:Microsoft YaHei;
+    font-weight:400;
+    line-height: 2;
 }
 </style>

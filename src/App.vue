@@ -44,6 +44,7 @@ export default {
     .content-box{
       flex: 1;
       height: 100%;
+      min-width: 600px;
       min-height: calc(100vh - 250px);
     }
   }
