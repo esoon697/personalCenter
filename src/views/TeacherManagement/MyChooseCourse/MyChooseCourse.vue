@@ -1,8 +1,8 @@
 <template>
   <TMContentBox>
-    <span slot="content-title">学生选课</span>
+    <span slot="content-title">我的选课</span>
     <div slot="main-content" class="view-outer">
-      <ChosCourItem v-for="n in 3" :key="n" :index="n"></ChosCourItem>
+      <MyCourItem v-for="n in 6" :key="n"></MyCourItem>
       <div class="view-footer">
         <el-pagination
           background
@@ -20,9 +20,9 @@
 
 <script>
 import TMContentBox from '@/components/TMContentBox/TMContentBox'
-import ChosCourItem from './components/ChosCourItem'
+import MyCourItem from './components/MyCourItem'
 export default {
-  components: {TMContentBox, ChosCourItem},
+  components: {TMContentBox, MyCourItem},
   props: [],
   data () {
     return {
@@ -44,9 +44,14 @@ export default {
 }
 </script>
 <style lang="less" scoped>
-.view-footer{
+.view-outer{
   display: flex;
   justify-content: center;
-  padding-top: 20px;
+  flex-wrap: wrap;
+  .view-footer{
+    display: flex;
+    justify-content: center;
+    padding-top: 20px;
+  }
 }
 </style>

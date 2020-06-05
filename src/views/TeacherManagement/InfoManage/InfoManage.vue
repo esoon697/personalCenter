@@ -1,6 +1,6 @@
 <template>
   <TMContentBox>
-    <span slot="content-title">试卷建设</span>
+    <span slot="content-title">信息管理</span>
     <div slot="main-content" class="view-outer">
       <div class="btns-group">
         <div class="left">
@@ -32,7 +32,7 @@
         </div>
         <div class="search-item">
           <label for="item4">信息类别：</label>
-          <el-select class="select-style" id="item3" v-model="infoType" size="mini" placeholder="请选择">
+          <el-select class="select-style" id="item4" v-model="infoType" size="mini" placeholder="请选择">
             <el-option
               v-for="item in infoTypeOpts"
               :key="item.value"
@@ -43,7 +43,7 @@
         </div>
         <div class="search-item">
           <label for="item5">状态：</label>
-          <el-select class="select-style" id="item3" v-model="state" size="mini" placeholder="请选择">
+          <el-select class="select-style" id="item5" v-model="state" size="mini" placeholder="请选择">
             <el-option
               v-for="item in stateOpts"
               :key="item.value"
@@ -57,7 +57,7 @@
         <el-table
           :data="tableData"
           border
-          header-cell-style="background: #F2F2F2"
+          :header-cell-style="{background: '#F2F2F2'}"
           style="width: 100%">
           <el-table-column
             prop="id"
@@ -100,6 +100,7 @@
           <el-table-column
             prop="state"
             label="状态"
+            :formatter="formatter"
             align="center">
           </el-table-column>
           <el-table-column
@@ -131,7 +132,7 @@
             width="100">
             <template slot-scope="scope">
               <el-button @click="editClick(scope)" type="text" size="small">编辑</el-button>
-              <el-button type="text" size="small">显示</el-button>
+              <el-button @click="showAndHide(scope)" type="text" size="small">{{scope.row.state?'隐藏':'显示'}}</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -339,7 +340,7 @@ export default {
           keywords: 'keyword',
           parentinfo: '父级信息',
           infoType: '类别1',
-          state: '可用',
+          state: 1,
           creator: 'admin',
           creatTime: '2020-5-26 10:20',
           updatar: '张三',
@@ -353,7 +354,7 @@ export default {
           keywords: 'keyword',
           parentinfo: '父级信息',
           infoType: '类别1',
-          state: '可用',
+          state: 1,
           creator: 'admin',
           creatTime: '2020-5-26 10:20',
           updatar: '张三',
@@ -367,7 +368,7 @@ export default {
           keywords: 'keyword',
           parentinfo: '父级信息',
           infoType: '类别1',
-          state: '可用',
+          state: 0,
           creator: 'admin',
           creatTime: '2020-5-26 10:20',
           updatar: '张三',
@@ -381,7 +382,7 @@ export default {
           keywords: 'keyword',
           parentinfo: '父级信息',
           infoType: '类别1',
-          state: '可用',
+          state: 0,
           creator: 'admin',
           creatTime: '2020-5-26 10:20',
           updatar: '张三',
@@ -395,7 +396,7 @@ export default {
           keywords: 'keyword',
           parentinfo: '父级信息',
           infoType: '类别1',
-          state: '可用',
+          state: 1,
           creator: 'admin',
           creatTime: '2020-5-26 10:20',
           updatar: '张三',
@@ -409,7 +410,7 @@ export default {
           keywords: 'keyword',
           parentinfo: '父级信息',
           infoType: '类别1',
-          state: '可用',
+          state: 1,
           creator: 'admin',
           creatTime: '2020-5-26 10:20',
           updatar: '张三',
@@ -423,7 +424,7 @@ export default {
           keywords: 'keyword',
           parentinfo: '父级信息',
           infoType: '类别1',
-          state: '可用',
+          state: 1,
           creator: 'admin',
           creatTime: '2020-5-26 10:20',
           updatar: '张三',
@@ -456,13 +457,13 @@ export default {
           { required: true, message: '请输入关键字', trigger: 'blur' }
         ],
         parentinfo: [
-          { required: true, message: '请输入父级信息', trigger: 'blur' }
+          { required: true, message: '请选择父级信息', trigger: 'change' }
         ],
         infoType: [
-          { required: true, message: '请输入信息类别', trigger: 'blur' }
+          { required: true, message: '请选择信息类别', trigger: 'change' }
         ],
         state: [
-          { required: true, message: '请输入状态', trigger: 'blur' }
+          { required: true, message: '请选择状态', trigger: 'change' }
         ]
       },
       editForm: null,
@@ -473,6 +474,14 @@ export default {
   created () {},
   mounted () {},
   methods: {
+    formatter (row, column) {
+      console.log(row, column)
+      if (row.state) {
+        return '可用'
+      } else {
+        return '不可用'
+      }
+    },
     addInfo () {
       this.isShowAdd = true
     },
@@ -517,6 +526,9 @@ export default {
       this.isShowEdit = true
       this.editForm = this.tableData[scope.$index]
       console.log(scope)
+    },
+    showAndHide (scope) {
+      this.tableData[scope.$index].state = !this.tableData[scope.$index].state
     },
     editClose () {
       this.isShowEdit = false
@@ -635,7 +647,7 @@ export default {
     align-items: center;
     flex-wrap: wrap;
     padding: 0 12px;
-    margin: 20px 0;
+    margin: 20px 0 10px;
     .search-item{
       display: flex;
       align-items: center;
@@ -643,6 +655,7 @@ export default {
       font-family:Microsoft YaHei;
       font-weight:400;
       color:rgba(51,51,51,1);
+      margin-bottom: 10px;
       .input-style{
         width: 140px;
         height: 28px;

@@ -10,13 +10,14 @@ import StudyFeedback from '@/views/StudyFeedback/StudyFeedback'
 import MyWork from '@/views/MyWork/MyWork'
 import TeacherManagement from '@/views/TeacherManagement/TeacherManagement'
 import InitCourseEntrance from '@/views/TeacherManagement/InitCourseEntrance/InitCourseEntrance'
-import InitCourse from '@/views/TeacherManagement/InitCourse/InitCourse'
+import CustomCourse from '@/views/TeacherManagement/CustomCourse/CustomCourse'
 import OpenCourse from '@/views/TeacherManagement/OpenCourse/OpenCourse'
 import ExamBuild from '@/views/TeacherManagement/ExamBuild/ExamBuild'
 import TestPaperBuild from '@/views/TeacherManagement/TestPaperBuild/TestPaperBuild'
 import InfoManage from '@/views/TeacherManagement/InfoManage/InfoManage'
 import InfoTypeManage from '@/views/TeacherManagement/InfoTypeManage/InfoTypeManage'
 import StuChooseCourse from '@/views/TeacherManagement/StuChooseCourse/StuChooseCourse'
+import MyChooseCourse from '@/views/TeacherManagement/MyChooseCourse/MyChooseCourse'
 
 Vue.use(Router)
 
@@ -90,17 +91,17 @@ export default new Router({
       children: [
         { path: '/teacherManagement', redirect: '/teacherManagement/initCourseEntrance' },
         {
-          title: '建课入口',
+          title: '导入建课',
           path: 'initCourseEntrance',
           name: 'InitCourseEntrance',
           component: InitCourseEntrance,
           children: []
         },
         {
-          title: '导入建课',
-          path: 'initCourse',
-          name: 'InitCourse',
-          component: InitCourse,
+          title: '自主建课',
+          path: 'customCourse',
+          name: 'CustomCourse',
+          component: CustomCourse,
           children: []
         },
         {
@@ -143,6 +144,13 @@ export default new Router({
           path: 'stuChooseCourse',
           name: 'StuChooseCourse',
           component: StuChooseCourse,
+          children: []
+        },
+        {
+          title: '我的选课',
+          path: 'myChooseCourse',
+          name: 'MyChooseCourse',
+          component: MyChooseCourse,
           children: []
         }
       ]

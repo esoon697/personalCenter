@@ -171,6 +171,12 @@ export default {
               path: '/teacherManagement/stuChooseCourse',
               name: 'StuChooseCourse',
               children: []
+            },
+            {
+              title: '自主建课',
+              path: '/teacherManagement/customCourse',
+              name: 'CustomCourse',
+              children: []
             }
           ]
         },

@@ -48,17 +48,5 @@ export default {
       min-height: calc(100vh - 250px);
     }
   }
-  .el-pager li{
-    color: #666;
-    &:hover{
-      color: #409EFF;
-    }
-    &:active{
-      color: #409EFF;
-    }
-  }
-  .el-pager li.active{
-    color: #409EFF;
-  }
 }
 </style>

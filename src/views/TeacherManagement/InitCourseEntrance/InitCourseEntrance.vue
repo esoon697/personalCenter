@@ -5,7 +5,7 @@
       <div class="inner-box">
         <div class="courseNum-box">
           <span><span>* </span>课程码：</span>
-          <input type="text" name="" id="" placeholder="输入课程码">
+          <input type="text" name="" v-model="courseNum" id="" placeholder="输入课程码">
         </div>
         <button class="import-btn" @click="importCourseNum">导入</button>
       </div>
@@ -19,6 +19,7 @@ export default {
   props: [],
   data () {
     return {
+      courseNum: ''
     }
   },
   computed: {},
@@ -26,7 +27,11 @@ export default {
   mounted () {},
   methods: {
     importCourseNum () {
-      this.$router.push({path: '/teacherManagement/InitCourse'})
+      if (this.courseNum) {
+        this.$alert('导入成功！', '提示')
+      } else {
+        this.$message.warning('课程码不能为空')
+      }
     }
   },
   watch: {}
