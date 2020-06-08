@@ -87,37 +87,37 @@
           <el-input type="textarea" :rows="9" v-model="ruleForm.desc" maxlength="200" :show-word-limit="true"></el-input>
         </el-form-item>
         <el-form-item label="通过分数：" prop="passVal">
-          <el-input class="lengthStyle1" v-model="ruleForm.passVal" placeholder="请输入通过分数"></el-input>
+          <el-input class="lengthStyle1" v-model="ruleForm.passVal" oninput = "value=value.replace(/[^\d]/g,'')" placeholder="请输入通过分数"></el-input>
         </el-form-item>
         <el-form-item label="视频观看比：" prop="watched">
           <div class="wrapper">
-            <el-input class="lengthStyle1" v-model="ruleForm.watched" placeholder="请输入视频观看比"></el-input>%
+            <el-input class="lengthStyle1" v-model="ruleForm.watched" oninput = "value=value.replace(/[^\d]/g,'')" placeholder="请输入视频观看比"></el-input>%
             <span class="annotation">（参加考试前，需要完成视频观看百分比）</span>
           </div>
         </el-form-item>
         <el-form-item label="视频考核比例：" prop="videoAssess">
           <div class="wrapper">
-            <el-input class="lengthStyle1" v-model="ruleForm.videoAssess" placeholder=""></el-input>%
+            <el-input class="lengthStyle1" v-model="ruleForm.videoAssess" oninput = "value=value.replace(/[^\d]/g,'')" placeholder=""></el-input>%
           </div>
         </el-form-item>
         <el-form-item label="作业考核比例：" prop="workAssess">
           <div class="wrapper">
-            <el-input class="lengthStyle1" v-model="ruleForm.workAssess" placeholder=""></el-input>%
+            <el-input class="lengthStyle1" v-model="ruleForm.workAssess" oninput = "value=value.replace(/[^\d]/g,'')" placeholder=""></el-input>%
           </div>
         </el-form-item>
         <el-form-item label="考试考核比例：" prop="taskAssess">
           <div class="wrapper">
-            <el-input class="lengthStyle1" v-model="ruleForm.taskAssess" placeholder=""></el-input>%
+            <el-input class="lengthStyle1" v-model="ruleForm.taskAssess" oninput = "value=value.replace(/[^\d]/g,'')" placeholder=""></el-input>%
           </div>
         </el-form-item>
         <div class="wrapper">
           <el-form-item label="讨论考核比例：" prop="discussAssess">
             <div class="wrapper">
-              <el-input class="lengthStyle1" v-model="ruleForm.discussAssess" placeholder=""></el-input>%
+              <el-input class="lengthStyle1" v-model="ruleForm.discussAssess" oninput = "value=value.replace(/[^\d]/g,'')" placeholder=""></el-input>%
             </div>
           </el-form-item>
           <el-form-item label="发布讨论次数：" prop="discussCount">
-            <el-input class="lengthStyle1" v-model="ruleForm.discussCount" placeholder=""></el-input>
+            <el-input class="lengthStyle1" v-model="ruleForm.discussCount" oninput = "value=value.replace(/[^\d]/g,'')" placeholder=""></el-input>
           </el-form-item>
         </div>
         <el-form-item>
@@ -234,7 +234,8 @@ export default {
           { required: true, message: '请输入活动名称', trigger: 'change' }
         ],
         courseName: [
-          { required: true, message: '请输入课程名称', trigger: 'blur' }
+          { required: true, message: '请输入课程名称', trigger: 'blur' },
+          { min: 2, max: 50, message: '长度在 2 到 50 个字符', trigger: 'blur' }
         ],
         teacher: [
           { required: true, message: '请选择授课教师', trigger: 'change' }
@@ -275,10 +276,10 @@ export default {
           { required: true, message: '请输入视频观看比', trigger: 'blur' },
           {
             validator (rule, value, callback) {
-              if (Number(value) > 0) {
+              if (Number(value) > 0 && Number(value) <= 100) {
                 callback()
               } else {
-                callback(new Error('请输入大于0的数字'))
+                callback(new Error('请输入0-100的数字'))
               }
             },
             trigger: 'blur'

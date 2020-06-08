@@ -24,7 +24,8 @@
           :on-remove="handleRemove"
           :on-change="handleChange"
           :on-success="handleSuccess"
-          :on-exceed="handleExceed">
+          :on-exceed="handleExceed"
+          :before-upload="beforeAvatarUpload">
           <i class="el-icon-plus"></i>
         </el-upload>
         <el-dialog :visible.sync="dialogVisible">
@@ -119,6 +120,21 @@ export default {
     },
     handleExceed () {
       this.$message.warning('最多能够上传三张封面图')
+    },
+    beforeAvatarUpload (file) {
+      console.log(file.type)
+      let allowType = ['image/jpeg', 'image/png']
+      console.log(allowType.findIndex(e => e === file.type))
+      const isAloow = allowType.findIndex(e => e === file.type) >= 0
+      const isLt2M = file.size / 1024 / 1024 < 2
+
+      if (!isAloow) {
+        this.$message.error('上传封面图片只能是 JPG/PNG 格式!')
+      }
+      if (!isLt2M) {
+        this.$message.error('上传封面图片大小不能超过 2MB!')
+      }
+      return isAloow && isLt2M
     },
     clearFiles () {
       this.$refs.upload.clearFiles()

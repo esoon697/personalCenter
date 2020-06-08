@@ -84,7 +84,7 @@ export default {
       rules: {
         examName: [
           { required: true, message: '请选择考试名称', trigger: 'blur' },
-          { min: 2, max: 9, message: '长度在 2 到 9 个字符', trigger: 'blur' }
+          { min: 2, max: 50, message: '长度在 2 到 50 个字符', trigger: 'blur' }
         ],
         belongCourse: [
           { required: true, message: '请选择所属课程', trigger: 'change' }

@@ -690,7 +690,8 @@ export default {
       console.log(data, checked, indeterminate)
     },
     loadPermsDel (scope) {
-      this.tableData.splice(scope.index, 1)
+      console.log(scope.$index)
+      this.tableData.splice(scope.$index, 1)
     }
   },
   watch: {}

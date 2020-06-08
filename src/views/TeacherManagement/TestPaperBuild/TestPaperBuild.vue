@@ -37,13 +37,13 @@
             </el-form-item>
           </el-col>
           <el-col :sm="7" :lg="5">
-            <el-form-item label="题目数量：" :prop="'testObjs.'+index+'.testCount'" :rules="[{required: true, message: '请选择题目数量', trigger: 'blur'}]">
-              <el-input v-model.number="testObj.testCount"></el-input>
+            <el-form-item label="题目数量：" :prop="'testObjs.'+index+'.testCount'" :rules="[{type: number, required: true, message: '请选择题目数量', trigger: 'blur'}]">
+              <el-input v-model.number="testObj.testCount" oninput = "value=value.replace(/[^\d]/g,'')"></el-input>
             </el-form-item>
           </el-col>
           <el-col :sm="7" :lg="5">
             <el-form-item label="总分数：" :prop="'testObjs.'+index+'.grossScore'" :rules="[{required: true, message: '请选择总分数', trigger: 'blur'}]">
-              <el-input v-model.number="testObj.grossScore"></el-input>
+              <el-input v-model.number="testObj.grossScore" oninput = "value=value.replace(/[^\d]/g,'')"></el-input>
             </el-form-item>
           </el-col>
           <el-col :sm="8" :lg="4">
@@ -152,7 +152,7 @@ export default {
       rules: {
         testPaperName: [
           { required: true, message: '请输入活动名称', trigger: 'blur' },
-          { min: 2, max: 9, message: '长度在 2 到 9 个字符', trigger: 'blur' }
+          { min: 2, max: 50, message: '长度在 2 到 50 个字符', trigger: 'blur' }
         ],
         isAllowAdd: [
           { required: true, message: '请选择是否新增标签：', trigger: 'change' }
