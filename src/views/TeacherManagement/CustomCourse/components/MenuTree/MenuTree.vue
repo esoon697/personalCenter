@@ -18,10 +18,10 @@
         :expand-on-click-node="false">
         <span class="custom-tree-node" slot-scope="{ node, data }">
             <span class="nodeName" :class="{'parentNodeName': data.children && data.children.length}" v-if="!(isEdit && node.id == currentId)">{{ node.label }}</span>
-            <input type="text" class="edit-box" placeholder="请输入新的名称" @blur="saveChange(node, data)" v-model="editVal" v-else>
+            <input type="text" class="edit-box" placeholder="请输入新的名称" @blur="saveChange(node, data)" v-model="editVal" v-focus v-else>
             <span class="btn-group" v-show="isShowBtns && node.id == currentId">
               <button class="btn-item" @click="() => appendChildNode(data)">新增子节点</button>
-              <button class="btn-item" @click="() => appendNode(data)">新增同级节点</button>
+              <button class="btn-item" @click="() => appendNode(node, data)">新增同级节点</button>
               <button class="btn-item" @click="() => remove(node, data)">删除目录</button>
               <button class="btn-item" @click="() => editName(node, data)">编辑目录</button>
               <button class="btn-item" v-show="!(data.children&&data.children.length)" @click="() => editContent(node, data)">编辑内容</button>
@@ -488,13 +488,21 @@ export default {
     // 行拖拽
     rowDrop () {
       const tbody = document.querySelector('.el-table__body-wrapper tbody')
-      const _this = this
+      // const _this = this
       Sortable.create(tbody, {
-        onEnd ({ newIndex, oldIndex }) {
-          const newRow = _this.tableData[oldIndex]
-          const oldRow = _this.tableData[newIndex]
-          _this.tableData.splice(oldIndex, 1, newRow)
-          _this.tableData.splice(newIndex, 1, oldRow)
+        onEnd ({ oldIndex, newIndex }) {
+          let _this = this
+          const oldRow = _this.tableData[oldIndex]
+          const newRow = _this.tableData[newIndex]
+          console.log('oldIndex', oldIndex, 'oldRow', oldRow)
+          console.log('newIndex', newIndex, 'newRow', newRow)
+          // // _this.tableData.splice(oldIndex, 1)
+          // // _this.tableData.splice(newIndex, 1, newRow)
+          // console.log('1', _this.tableData)
+          // _this.tableData.splice(oldIndex, 1, oldRow)
+          // console.log('2', _this.tableData)
+          // _this.tableData.splice(newIndex, 1, newRow)
+          // console.log('3', _this.tableData)
         }
       })
     },
@@ -508,9 +516,11 @@ export default {
       data.children.push(newChild)
     },
     // 新增同级目录
-    appendNode () {
+    appendNode (node, data) {
+      const parent = node.parent
+      const children = parent.data.children || parent.data
       const newNode = { id: id++, label: '节点', children: [] }
-      this.data.push(newNode)
+      children.push(newNode)
     },
     // 删除节点
     remove (node, data) {
