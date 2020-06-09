@@ -85,8 +85,29 @@ export default {
   },
   computed: {},
   created () {},
-  mounted () {},
+  mounted () {
+    this.init()
+  },
   methods: {
+    init () {
+      if (!(this.ruleForm.courseType || this.ruleForm.courseType.length)) {
+        this.$confirm('检查到当前没有课程类型，是否新建课程类型?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning',
+          showClose: false
+        }).then(() => {
+          this.$router.push({path: '/teacherManagement/infoTypeManage'})
+        }).catch((e) => {
+          console.log(e)
+          this.belongCourse = null
+          this.$message({
+            type: 'info',
+            message: '已取消'
+          })
+        })
+      }
+    },
     submitForm (formName) {
       console.log(this.ruleForm)
       this.$refs[formName].validate((valid) => {

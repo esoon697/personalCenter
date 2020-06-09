@@ -42,49 +42,23 @@
     @confirm="editConfirm"
     v-show="isShowEdit">
       <div class="contentEdit-box" slot="dialog-content">
-        <div class="contentEdit-item" v-for="(resources, index) in resourcesList" :key="index">
+        <!-- <input type="text" v-model="val3"> -->
+        <div class="contentEdit-item" v-for="(resources, index1) in resourcesList" :key="index1">
           <div class="item-title">课前预习</div>
           <div class="item-main-box">
             <div class="item-main-left">
-              <!-- <swiper :ref="'mySwiper'+n" :options="swiperOptions">
-                  <swiper-slide>Slide 1</swiper-slide>
-                  <swiper-slide>Slide 2</swiper-slide>
-                  <swiper-slide>Slide 3</swiper-slide>
-                  <swiper-slide>Slide 4</swiper-slide>
-                  <swiper-slide>Slide 5</swiper-slide>
-              </swiper>
-              <div class="swiper-button-prev"></div>
-              <div class="swiper-button-next"></div> -->
-              <!-- <div class="block">
-                <el-carousel trigger="click" height="200px" indicator-position="none" arrow="always" :autoplay='false'>
-                  <el-carousel-item v-for="item in 4" :key="item">
-                    <div class="swiper-item">
-                      <div class="resource-item">
-                        <img class="resource" v-show="!type" src="" alt="">
-                        <video class="resource" v-show="type == 2" src=""></video>
-                        <input type="text">
-                      </div>
-                      <div class="resource-item">
-                        <img class="resource" v-show="!type" src="" alt="">
-                        <video class="resource" v-show="type == 2" src=""></video>
-                        <input type="text">
-                      </div>
-                      <div class="resource-item">
-                        <img class="resource" v-show="!type" src="" alt="">
-                        <video class="resource" v-show="type == 2" src=""></video>
-                        <input type="text">
-                      </div>
-                    </div>
-                  </el-carousel-item>
-                </el-carousel>
-              </div> -->
               <div class="slide-outer">
                 <div class="slide-inner">
-                  <div class="slide-item" v-for="(resource, index) in resources.resources" :key="index">
+                  <div class="slide-item" v-for="(resource, index2) in resources.resources" :key="index2">
                     <div class="resource-item">
-                      <img class="resource" v-show="resource.type == 1" src="" alt="">
-                      <video class="resource" v-show="resource.type == 2" src=""></video>
-                      <input type="text" v-model="resource.sort">
+                      <div class="resource-box">
+                        <div class="resource" v-show="resource.type == 1">{{index1}}{{resource.sort}}</div>
+                        <img class="resource" v-show="resource.type == 3" src="" alt="">
+                        <video class="resource" v-show="resource.type == 2" src=""></video>
+                        <i class="el-icon-delete resource-del-btn" @click="delResource(index1, index2)"></i>
+                      </div>
+                      <div class="index-box" type="text" v-if="!(isClick && index1 == currentIndex1 && index2 == currentIndex2)" @click="getCurrentIndex(index1, index2, resource)">{{index2 + 1}}</div>
+                      <input type="text" v-else v-model="targetIndex" @blur="saveTarget(index1, index2, resource)" v-focus>
                     </div>
                   </div>
                 </div>
@@ -147,6 +121,7 @@
     <div class="loadPerms-box" slot="dialog-content">
       <el-table
         stripe
+        row-key="id"
         highlight-current-row
         :data="tableData"
         max-height="470"
@@ -200,6 +175,8 @@ export default {
   props: {},
   data () {
     return {
+      isClick: false,
+      targetIndex: null,
       data: [
         {
           id: 1,
@@ -244,22 +221,6 @@ export default {
           }]
         }
       ],
-      swiperOptions: {
-        // pagination: {
-        //   el: '.swiper-pagination'
-        // },
-        // 箭头配置
-        navigation: {
-          nextEl: '.swiper-button-next',
-          prevEl: '.swiper-button-prev'
-          // hideOnClick: true,
-          // disabledClass: 'my-button-disabled'
-        },
-        // 一个屏幕展示的数量
-        slidesPerView: 3,
-        // 间距
-        spaceBetween: 30
-      },
       resourcesList: [
         {
           title: '课前预习',
@@ -278,11 +239,6 @@ export default {
               type: 1,
               url: '',
               sort: '3'
-            },
-            {
-              type: 1,
-              url: '',
-              sort: '4'
             },
             {
               type: 1,
@@ -318,6 +274,11 @@ export default {
               type: 1,
               url: '',
               sort: '10'
+            },
+            {
+              type: 1,
+              url: '',
+              sort: '11'
             }
           ]
         },
@@ -473,36 +434,41 @@ export default {
           isAllow: false,
           sort: 5
         }
-      ]
+      ],
+      currentIndex1: 0,
+      currentIndex2: 0
     }
   },
   created () {},
-  mounted () {
-  },
+  mounted () {},
   computed: {
-    // swiper () {
-    //   return this.$refs.mySwiper1.$swiper
-    // }
+    currentResour () {
+      let val = this.resourcesList[this.currentIndex1].resources[this.currentIndex2]
+      console.log(val)
+      return val
+    }
   },
   methods: {
     // 行拖拽
     rowDrop () {
       const tbody = document.querySelector('.el-table__body-wrapper tbody')
-      // const _this = this
+      const _this = this
       Sortable.create(tbody, {
-        onEnd ({ oldIndex, newIndex }) {
-          let _this = this
+        // 官网上的配置项,加到这里面来,可以实现各种效果和功能
+        animation: 150,
+        ghostClass: 'blue-background-class',
+        onEnd ({ newIndex, oldIndex }) {
           const oldRow = _this.tableData[oldIndex]
-          const newRow = _this.tableData[newIndex]
-          console.log('oldIndex', oldIndex, 'oldRow', oldRow)
-          console.log('newIndex', newIndex, 'newRow', newRow)
-          // // _this.tableData.splice(oldIndex, 1)
-          // // _this.tableData.splice(newIndex, 1, newRow)
-          // console.log('1', _this.tableData)
-          // _this.tableData.splice(oldIndex, 1, oldRow)
-          // console.log('2', _this.tableData)
-          // _this.tableData.splice(newIndex, 1, newRow)
-          // console.log('3', _this.tableData)
+          if (oldIndex < newIndex) {
+            _this.tableData.splice(newIndex + 1, 0, oldRow)
+            _this.tableData.splice(oldIndex, 1)
+          } else if (oldIndex > newIndex) {
+            _this.tableData.splice(newIndex, 0, oldRow)
+            _this.tableData.splice(oldIndex + 1, 1)
+          }
+          // const currRow = _this.tableData.splice(oldIndex, 1)[0]
+          // _this.tableData.splice(newIndex, 0, currRow)
+          console.log('xxx', _this.tableData)
         }
       })
     },
@@ -632,6 +598,44 @@ export default {
         })
       })
     },
+    // 删除选中的资源
+    delResource (index1, index2) {
+      this.$confirm('是否删除当前选中资源?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning',
+        showClose: false
+      }).then(() => {
+        this.resourcesList[index1].resources.splice(index2, 1)
+        this.$message({
+          type: 'success',
+          message: '删除成功!'
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        })
+      })
+    },
+    // 获取当前选中的资源序号
+    getCurrentIndex (index1, index2) {
+      this.isClick = true // 改变序号输入框状态
+      this.currentIndex1 = index1
+      this.currentIndex2 = index2
+      this.oldVal = index2 // 获取当前的资源序号
+    },
+    // 当前选中的资源序号失焦时的逻辑
+    saveTarget () {
+      if (this.targetIndex) {
+        // 插入排序
+        const currRow = this.resourcesList[this.currentIndex1].resources.splice(this.oldVal, 1)[0]
+        this.resourcesList[this.currentIndex1].resources.splice(this.targetIndex - 1, 0, currRow)
+      }
+      this.isClick = false // 改变序号输入框状态
+      this.oldVal = this.targetIndex
+      this.targetIndex = null // 清除目标序号
+    },
     chooseResourConfirm () {
       this.$confirm('确认提交?', '提示', {
         confirmButtonText: '确定',
@@ -704,7 +708,14 @@ export default {
       this.tableData.splice(scope.$index, 1)
     }
   },
-  watch: {}
+  watch: {
+    'currentResour.sort' (newVal, oldVal) {
+      // console.log('newVal', newVal)
+      // console.log('oldVal', oldVal)
+      // const currRow = this.resourcesList[this.currentIndex1].resources.splice(oldVal, 1)[0]
+      // this.resourcesList[this.currentIndex1].resources.splice(newVal, 0, currRow)
+    }
+  }
 }
 </script>
 <style lang="less">
@@ -830,13 +841,30 @@ export default {
                     flex-direction: column;
                     // justify-content: space-between;
                     align-items: center;
-                    .resource{
+                    .resource-box{
+                      position: relative;
                       width: 100%;
-                      height: 100px;
-                      background-color: #eee;
-                      // margin-bottom: 20px;
+                      .resource{
+                        width: 100%;
+                        height: 100px;
+                        background-color: #eee;
+                        // margin-bottom: 20px;
+                      }
+                      .resource-del-btn{
+                        position: absolute;
+                        top: 50%;
+                        left: 50%;
+                        transform: translate(-50%, -50%);
+                        opacity: 0;
+                        &:hover{
+                          opacity: 1;
+                        }
+                        &:active{
+                          opacity: .6;
+                        }
+                      }
                     }
-                    input{
+                    .index-box, input{
                       width: 30px;
                       height: 20px;
                       text-align: center;

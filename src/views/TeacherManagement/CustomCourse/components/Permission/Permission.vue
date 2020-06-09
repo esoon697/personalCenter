@@ -2,21 +2,27 @@
   <div class="permission-box">
     <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="150px" class="demo-ruleForm">
       <el-form-item label="课程共享：" prop="courseShare">
-        <el-select v-model="ruleForm.courseShare" placeholder="请选择">
+        <!-- <el-select v-model="ruleForm.courseShare" placeholder="请选择">
           <el-option label="区域一" value="shanghai"></el-option>
           <el-option label="区域二" value="beijing"></el-option>
-        </el-select>
+        </el-select> -->
+        <el-radio-group v-model="ruleForm.courseShare">
+          <el-radio :label="1">是</el-radio>
+          <el-radio :label="0">否</el-radio>
+        </el-radio-group>
+        <!-- <el-switch v-model="ruleForm.courseShare"></el-switch> -->
       </el-form-item>
-      <el-form-item label="共享范围：" prop="shareScope">
+      <el-form-item label="共享范围：" prop="shareScope" v-if="ruleForm.courseShare">
         <el-select v-model="ruleForm.shareScope" placeholder="请选择">
-          <el-option label="区域一" value="shanghai"></el-option>
-          <el-option label="区域二" value="beijing"></el-option>
+          <el-option label="全校" :value="1"></el-option>
+          <el-option label="全网" :value="2"></el-option>
+          <el-option label="选择特定人员" :value="3" @click.native="choosePerson"></el-option>
         </el-select>
       </el-form-item>
-      <el-form-item label="是否共享素材资源：" prop="isShareResource">
-        <el-radio-group v-model="ruleForm.resource">
-          <el-radio label="是"></el-radio>
-          <el-radio label="否"></el-radio>
+      <el-form-item label="是否上传素材资源：" prop="resourceShare">
+        <el-radio-group v-model="ruleForm.resourceShare">
+          <el-radio :label="1">是</el-radio>
+          <el-radio :label="0">否</el-radio>
         </el-radio-group>
       </el-form-item>
       <el-form-item prop="checked">
@@ -30,20 +36,50 @@
         <el-button type="primary" @click="submitForm('ruleForm')">下一步</el-button>
       </el-form-item>
     </el-form>
+    <myDialog
+    slot="dialog"
+    :title="'选择特定人员'"
+    :aside="true"
+    @close="choosePersonClose"
+    @confirm="choosePersonConfirm"
+    v-show="isShowChoosePerson">
+      <div class="choosePerson-btns" slot="dialog-btns">
+        <div>
+          <label for="per-input1">所属学校：</label>
+          <input type="text" name="" id="per-input1">
+          <label for="per-input2">人员名称：</label>
+          <input type="text" name="" id="per-input2">
+        </div>
+        <button class="search-btn">查询</button>
+      </div>
+      <div class="choosePerson-box" slot="dialog-content">
+        <el-tree
+        ref="personTree"
+        slot="dialog-content"
+        :data="personData"
+        :props="defaultProps"
+        @node-click="personNodeClick"
+        @check-change="personCheckChange"
+        show-checkbox></el-tree>
+      </div>
+    </myDialog>
   </div>
 </template>
 
 <script>
+import myDialog from '@/components/myDialog/myDialog'
 export default {
-  components: {},
+  components: {myDialog},
   props: [],
   data () {
     return {
+      isShowChoosePerson: false,
       ruleForm: {
-        courseShare: '',
+        courseShare: 1,
         shareScope: '',
-        isShareResource: '',
-        checked: ''
+        resourceShare: '',
+        checked: '',
+        checkedPerson: []
       },
       rules: {
         courseShare: [
@@ -52,27 +88,131 @@ export default {
         shareScope: [
           { required: true, message: '请选择名称共享范围', trigger: 'change' }
         ],
-        isShareResource: [
+        resourceShare: [
           { required: true, message: '请选择是否共享素材资源', trigger: 'change' }
         ],
         checked: [
           { required: true, message: '请仔细阅读并同意协议', trigger: 'change' }
         ]
-      }
+      },
+      personData: [
+        {
+          label: '一级 1',
+          children: [
+            {
+              label: '二级 1-1',
+              children: [
+                {
+                  id: 11,
+                  label: '三级 1-1-1'
+                }
+              ]
+            }
+          ]
+        },
+        {
+          label: '一级 2',
+          children: [
+            {
+              label: '二级 2-1',
+              children: [
+                {
+                  label: '三级 2-1-1'
+                }
+              ]
+            },
+            {
+              label: '二级 2-2',
+              children: [
+                {
+                  label: '三级 2-2-1'
+                }
+              ]
+            }
+          ]
+        },
+        {
+          label: '一级 3',
+          children: [
+            {
+              label: '二级 3-1',
+              children: [
+                {
+                  label: '三级 3-1-1'
+                }
+              ]
+            },
+            {
+              label: '二级 3-2',
+              children: [
+                {
+                  label: '三级 3-2-1'
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      defaultProps: {
+        children: 'children',
+        label: 'label'
+      },
+      checkedPerson: []
     }
   },
-  computed: {
-    fileList () {
-      return this.ruleForm.fileList
-    }
-  },
+  computed: {},
   created () {},
   mounted () {},
   methods: {
+    choosePerson () {
+      this.isShowChoosePerson = true
+    },
+    personNodeClick (data) {
+      console.log(data)
+      this.testPaper = data
+    },
+    personCheckChange () {},
+    getCheckedStu () {
+      console.log(this.$refs.personTree.getCheckedNodes())
+      let checkedNodes = this.$refs.personTree.getCheckedNodes()
+      this.checkedPerson = checkedNodes.filter(e => {
+        return !e.children
+      }).map(e => {
+        return {
+          value: e.$treeNodeId,
+          label: e.label
+        }
+      })
+      console.log(this.checkedPerson)
+    },
+    choosePersonClose () {
+      this.isShowChoosePerson = false
+    },
+    choosePersonConfirm () {
+      this.$confirm('确认提交?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning',
+        cancelButtonClass: 'cancelButton',
+        confirmButtonClass: 'confirmButton',
+        showClose: false
+      }).then(() => {
+        this.getCheckedStu()
+        this.ruleForm.checkedPerson = this.checkedPerson
+        this.isShowChoosePerson = false
+      }).catch((e) => {
+        console.log(e)
+        this.checkedPerson = null
+        this.$message({
+          type: 'info',
+          message: '已取消'
+        })
+      })
+    },
     submitForm (formName) {
-      console.log(this.ruleForm)
       this.$refs[formName].validate((valid) => {
         if (valid) {
+          console.log(this.ruleForm)
           alert('submit!')
           // this.clearFiles()
         } else {
@@ -84,42 +224,9 @@ export default {
     },
     resetForm (formName) {
       this.$refs[formName].resetFields()
-    },
-    handleRemove (file, fileList) {
-      console.log(file, fileList)
-      this.ruleForm.fileList = fileList
-    },
-    handlePictureCardPreview (file) {
-      console.log(file)
-      this.dialogImageUrl = file.url
-      this.dialogVisible = true
-    },
-    handleChange (file, fileList) {
-    },
-    handleSuccess (response, file, fileList) {
-      console.log('fileList', fileList)
-      this.ruleForm.fileList = fileList
-    },
-    handleExceed () {
-      this.$message.warning('最多能够上传三张封面图')
-    },
-    clearFiles () {
-      this.$refs.upload.clearFiles()
     }
   },
-  watch: {
-    'ruleForm.fileList': {
-      handler: function () {
-        if (this.ruleForm.fileList.length) {
-          console.log('this.ruleForm.fileList', this.ruleForm.fileList)
-          this.hasFile = true
-        } else {
-          console.log('this.ruleForm.fileList', this.ruleForm.fileList)
-          this.hasFile = false
-        }
-      }
-    }
-  }
+  watch: {}
 }
 </script>
 <style lang="less" scoped>
@@ -158,6 +265,48 @@ export default {
     width: 100%;
     background-color: #007AB7;
     border-color: #007AB7;
+  }
+  .choosePerson-btns{
+    font-size:18px;
+    font-family:Microsoft YaHei;
+    font-weight:400;
+    color:rgba(51,51,51,1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    input{
+      border:1px solid rgba(221,221,221,1);
+      border-radius:4px;
+      text-indent: 10px;
+      padding: 7px 0;
+      margin-right: 30px;
+    }
+    .search-btn{
+      background:rgba(202,56,66,1);
+      border-radius:4px;
+      font-size:18px;
+      color:rgba(255,255,255,1);
+      padding: 5px 20px;
+      &:hover{
+        opacity: .8;
+      }
+      &:active{
+        opacity: .6;
+      }
+    }
+  }
+  .choosePerson-box{
+    width: 750px;
+    height: 470px;
+    border: 1px solid #DFDFE0;
+    box-sizing: border-box;
+    overflow: auto;
+    .el-tree-node__label{
+      font-size:18px;
+      font-family:Microsoft YaHei;
+      font-weight:400;
+      // color:rgba(51,51,51,1);
+    }
   }
 }
 </style>

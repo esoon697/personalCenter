@@ -13,14 +13,8 @@
     </el-form-item>
     <el-form-item label="选择试卷：" prop="testPaper">
       <div class="wrapper">
-        <el-select class="lengthStyle" v-model="ruleForm.testPaper" filterable placeholder="请选择试卷">
-          <el-option
-            v-for="item in testPaperOptions"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value">
-          </el-option>
-        </el-select>
+        <el-input class="lengthStyle" v-model="ruleForm.testPaper.label" placeholder="请选择试卷" disabled></el-input>
+        <button class="choose-btn" @click.prevent="choosePaper">选择</button>
       </div>
     </el-form-item>
     <el-form-item label="考试时间" prop="taskTime" required>
@@ -64,6 +58,31 @@
       ></el-tree>
     </div>
   </myDialog>
+  <myDialog
+  slot="dialog"
+  :title="'选择试卷'"
+  :aside="true"
+  @close="choosePaperClose"
+  @confirm="choosePaperConfirm"
+  v-show="isShowChoosePaper">
+    <div class="chooseCour-btns" slot="dialog-btns">
+      <div>
+        <label for="input3">所属标签：</label>
+        <input type="text" name="" id="input3">
+        <label for="input4">试卷名称：</label>
+        <input type="text" name="" id="input4">
+      </div>
+      <button class="search-btn">查询</button>
+    </div>
+    <div class="chooseCour-box" slot="dialog-content">
+      <el-tree
+      slot="dialog-content"
+      :data="paperData"
+      :props="defaultProps"
+      @node-click="paperNodeClick"
+      ></el-tree>
+    </div>
+  </myDialog>
 </TMContentBox>
 </template>
 
@@ -93,10 +112,68 @@ export default {
           { required: true, message: '请选择试卷', trigger: 'change' }
         ],
         taskTime: [
-          { type: 'array', required: true, message: '请选择考试时间', trigger: 'change' }
+          { required: true, message: '请选择考试时间', trigger: 'change' }
         ]
       },
       courseData: [
+        {
+          label: '一级 1',
+          children: [
+            {
+              label: '二级 1-1',
+              children: [
+                {
+                  id: 11,
+                  label: '三级 1-1-1'
+                }
+              ]
+            }
+          ]
+        },
+        {
+          label: '一级 2',
+          children: [
+            {
+              label: '二级 2-1',
+              children: [
+                {
+                  label: '三级 2-1-1'
+                }
+              ]
+            },
+            {
+              label: '二级 2-2',
+              children: [
+                {
+                  label: '三级 2-2-1'
+                }
+              ]
+            }
+          ]
+        },
+        {
+          label: '一级 3',
+          children: [
+            {
+              label: '二级 3-1',
+              children: [
+                {
+                  label: '三级 3-1-1'
+                }
+              ]
+            },
+            {
+              label: '二级 3-2',
+              children: [
+                {
+                  label: '三级 3-2-1'
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      paperData: [
         {
           label: '一级 1',
           children: [
@@ -159,6 +236,7 @@ export default {
         label: 'label'
       },
       isShowchooseCour: false,
+      isShowChoosePaper: false,
       testPaperOptions: [
         {
           value: '选项1',
@@ -222,7 +300,41 @@ export default {
         this.belongCourse = null
         this.$message({
           type: 'info',
-          message: '已取消删除'
+          message: '已取消'
+        })
+      })
+    },
+    choosePaper () {
+      this.isShowChoosePaper = true
+    },
+    paperNodeClick (data) {
+      console.log(data)
+      this.testPaper = data
+    },
+    choosePaperClose () {
+      this.isShowChoosePaper = false
+    },
+    choosePaperConfirm () {
+      this.$confirm('确认提交?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning',
+        cancelButtonClass: 'cancelButton',
+        confirmButtonClass: 'confirmButton',
+        showClose: false
+      }).then(() => {
+        if (this.testPaper.children && this.testPaper.children.length) {
+          this.$message.warning('请选择某一张试卷')
+          return
+        }
+        this.ruleForm.testPaper = this.testPaper
+        this.isShowChoosePaper = false
+      }).catch((e) => {
+        console.log(e)
+        this.testPaper = null
+        this.$message({
+          type: 'info',
+          message: '已取消'
         })
       })
     },

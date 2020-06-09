@@ -226,16 +226,11 @@ export default {
     }
   },
   created () {},
-  mounted () {
-    this.initNav()
-  },
+  mounted () {},
   computed: {
     ...mapState(['headImgUrl', 'isLogin'])
   },
   methods: {
-    initNav () {
-      this.currentPath = this.$route.path
-    },
     handleOpen (key, keyPath) {
       console.log(key, keyPath)
     },
@@ -243,7 +238,17 @@ export default {
       console.log(key, keyPath)
     }
   },
-  watch: {}
+  watch: {
+    $route: {
+      handler: function (val, oldVal) {
+        console.log(val)
+        this.currentPath = val.path
+      },
+      // 深度观察监听
+      deep: true,
+      immediate: true
+    }
+  }
 }
 </script>
 <style lang="less" scoped>

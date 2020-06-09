@@ -67,7 +67,7 @@ export default {
     // height:29px;
     img{
       // width: 100%;
-      height: 25px;
+      height: 18px;
     }
   }
   .header-right{
