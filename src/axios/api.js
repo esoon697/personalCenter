@@ -15,7 +15,36 @@ const api = {
   // 学习地图
   getLearningMap: data => post('/course/studentCourseInfo/courseSelectionForLearningMap', data),
   // 验证token是否失效
-  checkTk: data => get('http://api.yazhuokj.com/common/api/checkJWT', data)
+  checkTk: data => get('http://api.yazhuokj.com/common/api/checkJWT', data),
+  // 自主建课-第一步-查询课程分类
+  getAddCourseType: data => get('/course/courseType/listForAddCourseInfo', data),
+  // 自主建课-第一步-上传封面
+  uploadCover: data => post('/course/coverInfo/uploadCover', data),
+  // 自主建课-第一步-创建
+  addCourseFirst: data => post('/course/courseInfo/add', data),
+  // 自主建课-第二步-获取树节点
+  getTreeList: data => get('/course/courseChapter/listForBuilding', data),
+  // 自主建课-第二步-新增同级目录/新增子级目录
+  addTreeNode: data => post('/course/courseChapter/add', data),
+  // 自主建课-第二步-编辑目录
+  uploadTreeNode: data => post('/course/courseChapter/update', data),
+  // 自主建课-第二步-删除目录
+  deleteTreeNode: data => get('/course/courseChapter/delete', data),
+  // 自主建课-第二步-查询素材库
+  findSourceInfo: data => get('/course/processInfo/findSourceInfo', data),
+  // 自主建课-第二步-课程内容编辑
+  addBatch: data => get('/course/processInfo/addBatch', data),
+  // 初始化试卷信息
+  getInitPaperInfo: data => get('/paper/querymarkandtype', data),
+  // 查询互动信息
+  getaAtivelist: data => post('/paper/searchactive', data),
+  // 创建考试
+  creatExam: data => post('/exmple/createexmple', data),
+  // 考试建设-查询课程信息
+  getCourseInfo: data => get('/exmple/courselist', data),
+  // 查询试卷
+  // 创建考试
+  creatPaper: data => post('/paper/create', data)
 }
 
 export default api

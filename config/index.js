@@ -13,8 +13,8 @@ module.exports = {
     proxyTable: {
       '/api': { // 匹配所有以 '/api'开头的请求路径
         // target: 'http://10.10.10.240:8001', // 代理目标的基础路径
-        // target: 'http://10.10.10.211:', // 代理目标的基础路径
-        target: 'http://api.yazhuokj.com', // 代理目标的基础路径
+        target: 'http://10.10.10.211:9006', // 代理目标的基础路径
+        // target: 'http://api.yazhuokj.com', // 代理目标的基础路径
         changeOrigin: true, // 支持跨域
         pathRewrite: { // 重写路径: 去掉路径中开头的'/api'
           '^/api': ''
@@ -23,8 +23,8 @@ module.exports = {
     },
 
     // Various Dev Server settings
-    host: 'localhost', // can be overwritten by process.env.HOST
-    // host: '10.10.10.213', // can be overwritten by process.env.HOST
+    // host: 'localhost', // can be overwritten by process.env.HOST
+    host: '10.10.10.213', // can be overwritten by process.env.HOST
     // host: '0.0.0.0', // can be overwritten by process.env.HOST
     port: 8080, // can be overwritten by process.env.PORT, if port is in use, a free one will be determined
     autoOpenBrowser: true,

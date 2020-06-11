@@ -2,8 +2,9 @@
   <div class="menuTree-box">
     <div class="block">
         <el-tree
-        :data="data"
+        :data="menuTreeData"
         node-key="id"
+        :props="menuTreeProps"
         default-expand-all
         highlight-current
         @node-drag-start="handleDragStart"
@@ -93,8 +94,8 @@
     <div class="ChooseResour-box" slot="dialog-content">
       <el-tree
       slot="dialog-content"
-      :data="data1"
-      :props="defaultProps"
+      :data="resourseData"
+      :props="resourseProps"
       @node-click="handleNodeClick"
       @check-change="handleCheckChange"
       show-checkbox></el-tree>
@@ -177,7 +178,7 @@ export default {
     return {
       isClick: false,
       targetIndex: null,
-      data: [
+      menuTreeData: [
         {
           id: 1,
           label: '一级 1',
@@ -341,7 +342,7 @@ export default {
       isShowEdit: false,
       isShowChooseResour: false,
       isShowLoadPerms: false,
-      data1: [
+      resourseData: [
         {
           label: '一级 1',
           children: [
@@ -398,9 +399,13 @@ export default {
           ]
         }
       ],
-      defaultProps: {
+      menuTreeProps: {
         children: 'children',
-        label: 'label'
+        label: 'menuName'
+      },
+      resourseProps: {
+        children: 'children',
+        label: 'menuName'
       },
       checked: true,
       tableData: [
@@ -440,7 +445,9 @@ export default {
     }
   },
   created () {},
-  mounted () {},
+  mounted () {
+    this.init()
+  },
   computed: {
     currentResour () {
       let val = this.resourcesList[this.currentIndex1].resources[this.currentIndex2]
@@ -449,6 +456,20 @@ export default {
     }
   },
   methods: {
+    init () {
+      this.getTreeList()
+    },
+    getTreeList () {
+      let courId = this.$store.state.courseId
+      this.$api.getTreeList({
+        courId: courId
+      }).then(res => {
+        if (res.code === 200) {
+          console.log(res.data)
+          this.menuTreeData = res.data
+        }
+      })
+    },
     // 行拖拽
     rowDrop () {
       const tbody = document.querySelector('.el-table__body-wrapper tbody')

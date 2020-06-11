@@ -44,12 +44,12 @@
         <el-form-item v-show="ruleForm.isChoice===0" label="选课学生：" prop="student">
           <div class="wrapper" @click="chooseStu">
             <el-select class="lengthStyle" v-model="checkedStuName" multiple collapse-tags disabled placeholder="请选择选课学生">
-              <!-- <el-option
+              <el-option
                 v-for="item in ruleForm.student"
                 :key="item.value"
                 :label="item.label"
                 :value="item.value">
-              </el-option> -->
+              </el-option>
             </el-select>
             <button class="choose-btn" @click.prevent="chooseStu">选择</button>
           </div>
@@ -740,6 +740,7 @@ export default {
     submitForm (formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
+          console.log(this.ruleForm)
           alert('submit!')
         } else {
           console.log('error submit!!')

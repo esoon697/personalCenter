@@ -2,12 +2,12 @@
 <TMContentBox>
   <span slot="content-title">考试建设</span>
   <el-form slot="main-content" :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
-    <el-form-item class="ExamBuild-form" label="考试名称：" placeholder="请选择考试名称" prop="examName">
-      <el-input class="lengthStyle" v-model="ruleForm.examName"></el-input>
+    <el-form-item class="ExamBuild-form" label="考试名称：" placeholder="请选择考试名称" prop="exmName">
+      <el-input class="lengthStyle" v-model="ruleForm.exmName"></el-input>
     </el-form-item>
     <el-form-item label="所属课程：" prop="belongCourse">
       <div class="wrapper">
-        <el-input class="lengthStyle" v-model="ruleForm.belongCourse.label" placeholder="请选择所属课程" disabled></el-input>
+        <el-input class="lengthStyle" v-model="ruleForm.belongCourse.courTitle" placeholder="请选择所属课程" disabled></el-input>
         <button class="choose-btn" @click.prevent="chooseCourse">选择</button>
       </div>
     </el-form-item>
@@ -17,7 +17,7 @@
         <button class="choose-btn" @click.prevent="choosePaper">选择</button>
       </div>
     </el-form-item>
-    <el-form-item label="考试时间" prop="taskTime" required>
+    <el-form-item label="考试时间：" prop="taskTime" required>
       <el-date-picker
         v-model="ruleForm.taskTime"
         type="datetimerange"
@@ -53,7 +53,7 @@
       <el-tree
       slot="dialog-content"
       :data="courseData"
-      :props="defaultProps"
+      :props="courseProps"
       @node-click="courNodeClick"
       ></el-tree>
     </div>
@@ -78,7 +78,7 @@
       <el-tree
       slot="dialog-content"
       :data="paperData"
-      :props="defaultProps"
+      :props="paperProps"
       @node-click="paperNodeClick"
       ></el-tree>
     </div>
@@ -95,13 +95,13 @@ export default {
   data () {
     return {
       ruleForm: {
-        examName: '',
+        exmName: '',
         belongCourse: '',
         testPaper: '',
         taskTime: ''
       },
       rules: {
-        examName: [
+        exmName: [
           { required: true, message: '请选择考试名称', trigger: 'blur' },
           { min: 2, max: 50, message: '长度在 2 到 50 个字符', trigger: 'blur' }
         ],
@@ -231,7 +231,11 @@ export default {
           ]
         }
       ],
-      defaultProps: {
+      courseProps: {
+        children: 'children',
+        label: 'courTitle'
+      },
+      paperProps: {
         children: 'children',
         label: 'label'
       },
@@ -265,11 +269,23 @@ export default {
 
   computed: {},
 
-  created () {},
+  created () {
+    this.getCourseInfo()
+  },
 
   mounted () {},
 
   methods: {
+    init () {
+      this.getCourseInfo()
+    },
+    getCourseInfo () {
+      this.$api.getCourseInfo().then(res => {
+        if (res.code === 200) {
+          this.courseData = res.data
+        }
+      })
+    },
     chooseCourse () {
       this.isShowchooseCour = true
     },
@@ -296,7 +312,6 @@ export default {
         this.ruleForm.belongCourse = this.belongCourse
         this.isShowchooseCour = false
       }).catch((e) => {
-        console.log(e)
         this.belongCourse = null
         this.$message({
           type: 'info',
@@ -341,9 +356,9 @@ export default {
     submitForm (formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
+          console.log(this.ruleForm)
           alert('submit!')
         } else {
-          console.log('error submit!!')
           return false
         }
       })

@@ -2,20 +2,20 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import StudyCenter from '@/views/StudyCenter/StudyCenter'
 import CenterIndex from '@/views/CenterIndex/CenterIndex'
-import Preview from '@/views/Preview/Preview'
-import Interaction from '@/views/Interaction/Interaction'
-import CourseTask from '@/views/CourseTask/CourseTask'
-import CourseEvaluation from '@/views/CourseEvaluation/CourseEvaluation'
-import StudyFeedback from '@/views/StudyFeedback/StudyFeedback'
-import MyWork from '@/views/MyWork/MyWork'
+import Preview from '@/views/StudyCenter/Preview/Preview'
+import Interaction from '@/views/StudyCenter/Interaction/Interaction'
+import CourseTask from '@/views/StudyCenter/CourseTask/CourseTask'
+import CourseEvaluation from '@/views/StudyCenter/CourseEvaluation/CourseEvaluation'
+import StudyFeedback from '@/views/StudyCenter/StudyFeedback/StudyFeedback'
+import MyWork from '@/views/StudyCenter/MyWork/MyWork'
 import TeacherManagement from '@/views/TeacherManagement/TeacherManagement'
 import InitCourseEntrance from '@/views/TeacherManagement/InitCourseEntrance/InitCourseEntrance'
 import CustomCourse from '@/views/TeacherManagement/CustomCourse/CustomCourse'
 import OpenCourse from '@/views/TeacherManagement/OpenCourse/OpenCourse'
 import ExamBuild from '@/views/TeacherManagement/ExamBuild/ExamBuild'
 import TestPaperBuild from '@/views/TeacherManagement/TestPaperBuild/TestPaperBuild'
-import InfoManage from '@/views/TeacherManagement/InfoManage/InfoManage'
-import InfoTypeManage from '@/views/TeacherManagement/InfoTypeManage/InfoTypeManage'
+import CourseManage from '@/views/TeacherManagement/CourseManage/CourseManage'
+import CourseTypeManage from '@/views/TeacherManagement/CourseTypeManage/CourseTypeManage'
 import StuChooseCourse from '@/views/TeacherManagement/StuChooseCourse/StuChooseCourse'
 import MyChooseCourse from '@/views/TeacherManagement/MyChooseCourse/MyChooseCourse'
 
@@ -126,17 +126,17 @@ export default new Router({
           children: []
         },
         {
-          title: '信息管理',
-          path: 'infoManage',
-          name: 'InfoManage',
-          component: InfoManage,
+          title: '课程管理',
+          path: 'courseManage',
+          name: 'CourseManage',
+          component: CourseManage,
           children: []
         },
         {
-          title: '信息类型管理',
-          path: 'infoTypeManage',
-          name: 'InfoTypeManage',
-          component: InfoTypeManage,
+          title: '课程类型管理',
+          path: 'courseTypeManage',
+          name: 'CourseTypeManage',
+          component: CourseTypeManage,
           children: []
         },
         {

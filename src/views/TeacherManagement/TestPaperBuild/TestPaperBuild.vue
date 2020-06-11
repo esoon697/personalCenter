@@ -2,19 +2,19 @@
   <TMContentBox>
     <span slot="content-title">试卷建设</span>
     <el-form slot="main-content" :model="ruleForm" :rules="rules" ref="ruleForm" label-width="125px" class="demo-ruleForm">
-      <el-form-item label="试卷名称：" placeholder="请输入试卷名称" prop="testPaperName">
-        <el-input class="lengthStyle" v-model="ruleForm.testPaperName"></el-input>
+      <el-form-item label="试卷名称：" prop="testPaperName">
+        <el-input class="lengthStyle" v-model="ruleForm.testPaperName" placeholder="请输入试卷名称"></el-input>
       </el-form-item>
       <el-form-item label="是否新增标签：" prop="isAllowAdd">
         <el-radio-group v-model="ruleForm.isAllowAdd">
-          <el-radio :label="1">是</el-radio>
-          <el-radio :label="0">否</el-radio>
+          <el-radio :label="true">是</el-radio>
+          <el-radio :label="false">否</el-radio>
         </el-radio-group>
       </el-form-item>
-      <el-form-item v-if="ruleForm.isAllowAdd === 1" label="新增标签：" placeholder="请输入新增标签" prop="addLabel">
-        <el-input class="lengthStyle" v-model="ruleForm.addLabel"></el-input>
+      <el-form-item v-if="ruleForm.isAllowAdd" label="新增标签：" placeholder="请输入新增标签" prop="addLabel">
+        <el-input class="lengthStyle" v-model="ruleForm.addLabel" placeholder="请输入新增标签"></el-input>
       </el-form-item>
-      <el-form-item v-if="ruleForm.isAllowAdd === 0" label="所属标签：" placeholder="请选择所属标签" prop="belongLabel">
+      <el-form-item v-else label="所属标签：" prop="belongLabel">
         <el-select class="lengthStyle" v-model="ruleForm.belongLabel" placeholder="请选择所属标签">
           <el-option label="区域一" value="shanghai"></el-option>
           <el-option label="区域二" value="beijing"></el-option>
@@ -22,34 +22,34 @@
       </el-form-item>
       <el-form-item label="随机生成试卷：" prop="isRandom">
         <el-radio-group v-model="ruleForm.isRandom">
-          <el-radio :label="1">是</el-radio>
-          <el-radio :label="0">否</el-radio>
+          <el-radio :label="true">是</el-radio>
+          <el-radio :label="false">否</el-radio>
         </el-radio-group>
       </el-form-item>
       <el-form-item label-width="0px" v-for="(testObj, index) in ruleForm.testObjs" :key="index" required>
         <!-- <el-row :gutter="20"> -->
           <el-col :sm="10" :lg="7">
-            <el-form-item label="题目类型：" :prop="'testObjs.'+index+'.testType'" :rules="[{required: true, message: '请选择题目类型', trigger: 'change'}]">
-              <el-select v-model="testObj.testType" placeholder="请选择题型">
-                <el-option label="区域一" value="shanghai"></el-option>
-                <el-option label="区域二" value="beijing"></el-option>
+            <el-form-item label="题目类型：" :prop="'testObjs.'+index+'.type'" :rules="[{required: true, message: '请选择题目类型', trigger: 'change'}]">
+              <el-select v-model="testObj.type" placeholder="请选择题型">
+                <el-option label="区域一" :value="1"></el-option>
+                <el-option label="区域二" :value="2"></el-option>
               </el-select>
             </el-form-item>
           </el-col>
           <el-col :sm="7" :lg="5">
-            <el-form-item label="题目数量：" :prop="'testObjs.'+index+'.testCount'" :rules="[{type: number, required: true, message: '请选择题目数量', trigger: 'blur'}]">
-              <el-input v-model.number="testObj.testCount" oninput = "value=value.replace(/[^\d]/g,'')"></el-input>
+            <el-form-item label="题目数量：" :prop="'testObjs.'+index+'.num'" :rules="[{required: true, message: '请选择题目数量', trigger: 'blur'}]">
+              <el-input v-model.number="testObj.num" oninput = "value=value.replace(/[^\d]/g,'')"></el-input>
             </el-form-item>
           </el-col>
           <el-col :sm="7" :lg="5">
-            <el-form-item label="总分数：" :prop="'testObjs.'+index+'.grossScore'" :rules="[{required: true, message: '请选择总分数', trigger: 'blur'}]">
-              <el-input v-model.number="testObj.grossScore" oninput = "value=value.replace(/[^\d]/g,'')"></el-input>
+            <el-form-item label="总分数：" :prop="'testObjs.'+index+'.score'" :rules="[{required: true, message: '请选择总分数', trigger: 'blur'}]">
+              <el-input v-model.number="testObj.score" oninput = "value=value.replace(/[^\d]/g,'')"></el-input>
             </el-form-item>
           </el-col>
           <el-col :sm="8" :lg="4">
-            <el-form-item v-if="ruleForm.isRandom===0" label="选择题目：" :prop="'testObjs.'+index+'.tests'" :rules="[{ type: 'array', required: true, message: '请选择总分数', trigger: 'change'}]">
-              <button v-if="!testObj.tests.length" class="uncheck-btn" @click.prevent="chooseTest(index)">选择</button>
-              <button v-else class="checked-btn" @click.prevent="chooseTest(index)">已选{{testObj.tests.length}}</button>
+            <el-form-item v-if="!ruleForm.isRandom" label="选择题目：" :prop="'testObjs.'+index+'.questionlist'" :rules="[{ type: 'array', required: true, message: '请选择总分数', trigger: 'change'}]">
+              <button v-if="!testObj.questionlist.length" class="uncheck-btn" @click.prevent="chooseTest(index)">选择</button>
+              <button v-else class="checked-btn" @click.prevent="chooseTest(index)">已选{{testObj.questionlist.length}}</button>
             </el-form-item>
           </el-col>
           <el-col :sm="16" :lg="3">
@@ -111,12 +111,12 @@
   <myDialog
   slot="dialog"
   v-if="isShowtestDetails"
-  :title="testContent.label"
+  :title="testContent.title"
   :aside="true"
   @close="testDetailsClose"
   @confirm="testDetailsConfirm">
     <div slot="dialog-content">
-      <p class="testOption" v-for="(testOption, index) in testContent.content" :key="index">{{testOption}}</p>
+      <p class="testOption" v-for="(testOption, index) in testContent.choose" :key="index">{{index+1}}、{{testOption}}</p>
     </div>
   </myDialog>
   </TMContentBox>
@@ -135,17 +135,16 @@ export default {
       isShowtestDetails: false,
       ruleForm: {
         testPaperName: '',
-        isAllowAdd: '',
+        isAllowAdd: true,
         addLabel: '',
         belongLabel: '',
-        isRandom: '',
+        isRandom: true,
         testObjs: [
           {
-            id: 1,
-            testType: '',
-            testCount: '',
-            grossScore: '',
-            tests: []
+            type: '',
+            num: '',
+            score: '',
+            questionlist: []
           }
         ]
       },
@@ -165,27 +164,6 @@ export default {
         ],
         isRandom: [
           { required: true, message: '请选择是否随机生成试卷：', trigger: 'change' }
-        ],
-        testObjs: [
-          { type: 'object',
-            required: true,
-            message: '请至少选择一个',
-            trigger: 'change',
-            fields: {
-              testType: {type: 'string', required: true, trigger: 'change'},
-              testCount: {type: 'string', required: true, trigger: 'blur'},
-              grossScore: {type: 'string', required: true, trigger: 'blur'}
-            }
-          }
-        ],
-        testType: [
-          { required: true, message: '请选择题目类型', trigger: 'change' }
-        ],
-        testCount: [
-          { required: true, message: '请输入题目数量', trigger: 'blur' }
-        ],
-        grossScore: [
-          { required: true, message: '请输入总分数', trigger: 'blur' }
         ]
       },
       testData: [
@@ -249,7 +227,7 @@ export default {
       ],
       defaultProps: {
         children: 'children',
-        label: 'label'
+        label: 'title'
       },
       testTypeCount: 1,
       checkedTest: null,
@@ -259,11 +237,57 @@ export default {
   },
   computed: {},
   created () {},
-  mounted () {},
+  mounted () {
+    this.init()
+  },
   methods: {
+    init () {
+      this.getInitPaperInfo()
+      this.getaAtivelist()
+    },
+    getInitPaperInfo () {
+      this.$api.getInitPaperInfo().then(res => {
+        if (res.code === 200) {
+          console.log(res.data)
+        }
+      })
+    },
+    getaAtivelist () {
+      this.$api.getaAtivelist({
+        type: 1
+      }).then(res => {
+        if (res.code === 200) {
+          console.log(res.data)
+          this.testData = res.data
+        }
+      })
+    },
+    creatPaper () {
+      console.log('creatPaper', this.ruleForm)
+      let tagName = this.ruleForm.isAllowAdd ? this.ruleForm.addLabel : this.ruleForm.belongLabel
+      this.$api.creatPaper({
+        paperName: this.ruleForm.testPaperName,
+        isAdd: this.ruleForm.isAllowAdd,
+        tagName: tagName,
+        flag: this.ruleForm.isRandom,
+        rowProList: this.ruleForm.testObjs
+      }).then(res => {
+        if (res.code === 200) {
+          this.$message({
+            type: 'success',
+            message: '试卷已创建成功！'
+          })
+        } else {
+          this.$message({
+            type: 'warning',
+            message: res.message
+          })
+        }
+      })
+    },
     addTestType () {
       id++
-      this.ruleForm.testObjs.push({id: id, testType: '', testCount: '', grossScore: '', tests: []})
+      this.ruleForm.testObjs.push({id: id, type: '', num: '', score: '', questionlist: []})
     },
     delTestType (id) {
       let index = this.ruleForm.testObjs.findIndex(e => e.id === id)
@@ -278,15 +302,15 @@ export default {
     testCheckChange () {},
     getCheckedTest () {
       console.log(this.$refs.stuTree.getCheckedNodes())
-      let checkedNodes = this.$refs.stuTree.getCheckedNodes()
-      this.checkedTest = checkedNodes.filter(e => {
-        return !e.children
-      }).map(e => {
-        return {
-          value: e.$treeNodeId,
-          label: e.label
-        }
-      })
+      this.checkedTest = this.$refs.stuTree.getCheckedNodes()
+      // this.checkedTest = checkedNodes.filter(e => {
+      //   return !e.children
+      // }).map(e => {
+      //   return {
+      //     value: e.$treeNodeId,
+      //     label: e.label
+      //   }
+      // })
       console.log(this.checkedTest)
     },
     chooseTestClose () {
@@ -304,14 +328,14 @@ export default {
         showClose: false
       }).then(() => {
         this.getCheckedTest()
-        this.ruleForm.testObjs[this.currentIndex].tests = this.checkedTest
+        this.ruleForm.testObjs[this.currentIndex].questionlist = this.checkedTest
         this.isShowChooseTest = false
       }).catch((e) => {
         console.log(e)
         this.checkedTest = null
         this.$message({
           type: 'info',
-          message: '已取消删除'
+          message: '已取消'
         })
       })
     },
@@ -331,19 +355,19 @@ export default {
       this.isShowtestDetails = false
     },
     submitForm (formName) {
-      console.log(this.ruleForm)
+      console.log('submitForm', this.ruleForm)
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          alert('submit!')
+          this.creatPaper()
         } else {
-          console.log('error submit!!')
+          console.log('提交失败!!')
           return false
         }
       })
     },
     resetForm (formName) {
       this.$refs[formName].resetFields()
-      this.ruleForm.testObjs = [{id: 1, testType: '', testCount: '', grossScore: '', tests: []}]
+      this.ruleForm.testObjs = [{id: 1, type: '', num: '', score: '', questionlist: []}]
       id = 1
     }
   },

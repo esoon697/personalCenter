@@ -27,20 +27,38 @@ export default {
   components: {BasicInfo, MenuTree, Permission},
   props: [],
   data () {
-    return {
-      activeName: '1'
-    }
+    return {}
   },
   computed: {
+    // ...mapState(['activeName'])
+    activeName: {
+      get () {
+        return this.$store.state.activeName
+      },
+      set (val) {
+        this.$store.state.activeName = val
+      }
+    }
   },
   created () {},
-  mounted () {},
+  mounted () {
+    this.init()
+  },
   methods: {
+    init () {
+      let activeName = sessionStorage.getItem('activeName')
+      if (activeName) {
+        this.$store.state.activeName = activeName
+      }
+    },
     handleClick (tab, event) {
       console.log(tab, event)
     }
   },
   watch: {
+    activeName (val) {
+      sessionStorage.setItem('activeName', val)
+    }
   }
 }
 </script>

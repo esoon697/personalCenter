@@ -155,15 +155,15 @@ export default {
               children: []
             },
             {
-              title: '信息管理',
-              path: '/teacherManagement/infoManage',
-              name: 'InfoManage',
+              title: '课程管理',
+              path: '/teacherManagement/courseManage',
+              name: 'CourseManage',
               children: []
             },
             {
-              title: '信息类别管理',
-              path: '/teacherManagement/infoTypeManage',
-              name: 'InfoTypeManage',
+              title: '课程类别管理',
+              path: '/teacherManagement/courseTypeManage',
+              name: 'CourseTypeManage',
               children: []
             },
             {
