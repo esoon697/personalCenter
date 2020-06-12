@@ -16,6 +16,8 @@ const api = {
   getLearningMap: data => post('/course/studentCourseInfo/courseSelectionForLearningMap', data),
   // 验证token是否失效
   checkTk: data => get('http://api.yazhuokj.com/common/api/checkJWT', data),
+  // 导入建课
+  importCourse: data => get('/course/courseInfo/courseRecycledWithCopyright', data),
   // 自主建课-第一步-查询课程分类
   getAddCourseType: data => get('/course/courseType/listForAddCourseInfo', data),
   // 自主建课-第一步-上传封面
@@ -31,7 +33,7 @@ const api = {
   // 自主建课-第二步-删除目录
   deleteTreeNode: data => get('/course/courseChapter/delete', data),
   // 自主建课-第二步-查询素材库
-  findSourceInfo: data => get('/course/processInfo/findSourceInfo', data),
+  findSourceInfo: data => post('/course/processInfo/findSourceInfo', data),
   // 自主建课-第二步-课程内容编辑
   addBatch: data => get('/course/processInfo/addBatch', data),
   // 初始化试卷信息

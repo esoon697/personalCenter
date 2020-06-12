@@ -28,10 +28,22 @@ export default {
   methods: {
     importCourseNum () {
       if (this.courseNum) {
-        this.$alert('导入成功！', '提示')
+        this.importCourse()
       } else {
         this.$message.warning('课程码不能为空')
       }
+    },
+    importCourse () {
+      this.$api.importCourse({
+        courseCode: this.courseNum
+      }).then(res => {
+        if (res.code === 200) {
+          console.log(res.data)
+          this.$alert('导入成功！', '提示')
+        } else {
+          this.$message.warning(res.message)
+        }
+      })
     }
   },
   watch: {}

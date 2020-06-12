@@ -36,7 +36,9 @@ export default {
         return this.$store.state.activeName
       },
       set (val) {
+        console.log('activeName', val)
         this.$store.state.activeName = val
+        console.log('this.$store.state.activeName', this.$store.state.activeName)
       }
     }
   },
@@ -46,19 +48,19 @@ export default {
   },
   methods: {
     init () {
-      let activeName = sessionStorage.getItem('activeName')
-      if (activeName) {
-        this.$store.state.activeName = activeName
-      }
+      // let activeName = sessionStorage.getItem('activeName')
+      // if (activeName) {
+      //   this.$store.state.activeName = activeName
+      // }
     },
     handleClick (tab, event) {
       console.log(tab, event)
     }
   },
   watch: {
-    activeName (val) {
-      sessionStorage.setItem('activeName', val)
-    }
+    // activeName (val) {
+    //   sessionStorage.setItem('activeName', val)
+    // }
   }
 }
 </script>

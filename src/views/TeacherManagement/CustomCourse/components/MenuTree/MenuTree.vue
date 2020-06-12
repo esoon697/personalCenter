@@ -2,10 +2,13 @@
   <div class="menuTree-box">
     <div class="block">
         <el-tree
+        style="width: 100%"
+        v-if="menuTreeData.length"
+        ref="menuTree"
         :data="menuTreeData"
         node-key="id"
+        :default-expanded-keys="[currentExpandedKey]"
         :props="menuTreeProps"
-        default-expand-all
         highlight-current
         @node-drag-start="handleDragStart"
         @node-drag-enter="handleDragEnter"
@@ -17,23 +20,24 @@
         :allow-drop="allowDrop"
         :allow-drag="allowDrag"
         :expand-on-click-node="false">
-        <span class="custom-tree-node" slot-scope="{ node, data }">
-            <span class="nodeName" :class="{'parentNodeName': data.children && data.children.length}" v-if="!(isEdit && node.id == currentId)">{{ node.label }}</span>
-            <input type="text" class="edit-box" placeholder="请输入新的名称" @blur="saveChange(node, data)" v-model="editVal" v-focus v-else>
-            <span class="btn-group" v-show="isShowBtns && node.id == currentId">
-              <button class="btn-item" @click="() => appendChildNode(data)">新增子节点</button>
-              <button class="btn-item" @click="() => appendNode(node, data)">新增同级节点</button>
-              <button class="btn-item" @click="() => remove(node, data)">删除目录</button>
-              <button class="btn-item" @click="() => editName(node, data)">编辑目录</button>
-              <button class="btn-item" v-show="!(data.children&&data.children.length)" @click="() => editContent(node, data)">编辑内容</button>
-              <button class="btn-item" v-show="!(data.children&&data.children.length)" @click="() => editLoad(node, data)">编辑下载</button>
-            </span>
-            <div class="less-btn" @click="ChangeShowBtns(node.id)">
-              <i class="el-icon-setting" v-if="!(isShowBtns && node.id == currentId)"></i>
-              <i class="el-icon-s-tools" v-else></i>
-              </div>
-        </span>
+          <span class="custom-tree-node" slot-scope="{ node, data }">
+              <span class="nodeName" :class="{'parentNodeName': data.children && data.children.length}" v-if="!(isEdit && node.id == currentId)">{{ node.label }}</span>
+              <input type="text" class="edit-box" placeholder="请输入新的名称" @blur="saveChange(node, data)" v-model="editVal" v-focus v-else>
+              <span class="btn-group" v-show="isShowBtns && node.id == currentId">
+                <button class="btn-item" @click="() => appendChildNode(node, data)">新增子节点</button>
+                <button class="btn-item" @click="() => appendNode(node, data)">新增同级节点</button>
+                <button class="btn-item" @click="() => remove(node, data)">删除目录</button>
+                <button class="btn-item" @click="() => editName(node, data)">编辑目录</button>
+                <button class="btn-item" v-show="!(data.children&&data.children.length)" @click="() => editContent(node, data)">编辑内容</button>
+                <button class="btn-item" v-show="!(data.children&&data.children.length)" @click="() => editLoad(node, data)">编辑下载</button>
+              </span>
+              <div class="less-btn" @click="ChangeShowBtns(node.id)">
+                <i class="el-icon-setting" v-if="!(isShowBtns && node.id == currentId)"></i>
+                <i class="el-icon-s-tools" v-else></i>
+                </div>
+          </span>
         </el-tree>
+        <div v-else class="creatTree-btn" @click="creatTree">新建课程目录 <i style="font-size: 18px" class="el-icon-plus"></i></div>
     </div>
     <!-- 课程内容编辑弹窗 -->
     <myDialog
@@ -45,7 +49,7 @@
       <div class="contentEdit-box" slot="dialog-content">
         <!-- <input type="text" v-model="val3"> -->
         <div class="contentEdit-item" v-for="(resources, index1) in resourcesList" :key="index1">
-          <div class="item-title">课前预习</div>
+          <div class="item-title">{{resources.title}}</div>
           <div class="item-main-box">
             <div class="item-main-left">
               <div class="slide-outer">
@@ -53,9 +57,9 @@
                   <div class="slide-item" v-for="(resource, index2) in resources.resources" :key="index2">
                     <div class="resource-item">
                       <div class="resource-box">
-                        <div class="resource" v-show="resource.type == 1">{{index1}}{{resource.sort}}</div>
-                        <img class="resource" v-show="resource.type == 3" src="" alt="">
-                        <video class="resource" v-show="resource.type == 2" src=""></video>
+                        <div class="resource" v-if="!resource.resourceType">{{index1}}{{resource.resourceId}}</div>
+                        <img class="resource" v-if="resource.resourceType === 'photo'" :src="resource.sourceUrl" alt="">
+                        <video class="resource" v-if="resource.resourceType === 'video'" :src="resource.sourceUrl"></video>
                         <i class="el-icon-delete resource-del-btn" @click="delResource(index1, index2)"></i>
                       </div>
                       <div class="index-box" type="text" v-if="!(isClick && index1 == currentIndex1 && index2 == currentIndex2)" @click="getCurrentIndex(index1, index2, resource)">{{index2 + 1}}</div>
@@ -66,9 +70,9 @@
               </div>
             </div>
             <div class="item-main-right">
-              <button class="sourse-btn" @click="sourseImport('isShowEdit')">资源库导入</button>
+              <button class="sourse-btn" @click="sourseImport('isShowEdit', index1)">资源库导入</button>
               <button class="local-btn">本地导入
-                <input type="file" name="file" id="file1" value="" accept="image/jpeg,image/png,image/jpg,image/gif" multiple οnchange="previewImg(this)"  @click="localImport">
+                <input type="file" name="file" :id="'editFile'+index1" value="" accept="image/jpeg,image/png,image/jpg,image/gif" multiple @change="uploadResourse"  @click="localImport('editFile'+index1)">
               </button>
             </div>
           </div>
@@ -93,6 +97,7 @@
     </div>
     <div class="ChooseResour-box" slot="dialog-content">
       <el-tree
+      ref="resourseTree"
       slot="dialog-content"
       :data="resourseData"
       :props="resourseProps"
@@ -115,7 +120,7 @@
       <div>
         <button class="lp-resourse-btn" @click="sourseImport('isShowLoadPerms')">选择资源</button>
         <button class="lp-upload-btn">上传资源
-          <input type="file" name="file" id="file1" value="" accept="image/jpeg,image/png,image/jpg,image/gif" multiple οnchange="previewImg(this)"  @click="localImport">
+          <input type="file" name="file" id="loadPermsFile" value="" accept="image/jpeg,image/png,image/jpg,image/gif" multiple @change="uploadResourse"  @click="localImport('loadPermsFile')">
         </button>
       </div>
     </div>
@@ -176,52 +181,10 @@ export default {
   props: {},
   data () {
     return {
+      currentExpandedKey: 1,
       isClick: false,
       targetIndex: null,
-      menuTreeData: [
-        {
-          id: 1,
-          label: '一级 1',
-          children: [
-            {
-              id: 4,
-              label: '二级 1-1',
-              children: [
-                {
-                  id: 9,
-                  label: '三级 1-1-11111111111111'
-                },
-                {
-                  id: 10,
-                  label: '三级 1-1-2'
-                }
-              ]
-            }
-          ]
-        },
-        {
-          id: 2,
-          label: '一级 2',
-          children: [{
-            id: 5,
-            label: '二级 2-1'
-          }, {
-            id: 6,
-            label: '二级 2-2'
-          }]
-        },
-        {
-          id: 3,
-          label: '一级 3',
-          children: [{
-            id: 7,
-            label: '二级 3-1'
-          }, {
-            id: 8,
-            label: '二级 3-2'
-          }]
-        }
-      ],
+      menuTreeData: [],
       resourcesList: [
         {
           title: '课前预习',
@@ -284,7 +247,7 @@ export default {
           ]
         },
         {
-          title: '课前预习',
+          title: '课堂内容',
           resources: [
             {
               type: 1,
@@ -309,7 +272,32 @@ export default {
           ]
         },
         {
-          title: '课前预习',
+          title: '课堂作业',
+          resources: [
+            {
+              type: 1,
+              url: '',
+              sort: '1'
+            },
+            {
+              type: 1,
+              url: '',
+              sort: '2'
+            },
+            {
+              type: 1,
+              url: '',
+              sort: '3'
+            },
+            {
+              type: 1,
+              url: '',
+              sort: '4'
+            }
+          ]
+        },
+        {
+          title: '课后拓展',
           resources: [
             {
               type: 1,
@@ -342,70 +330,14 @@ export default {
       isShowEdit: false,
       isShowChooseResour: false,
       isShowLoadPerms: false,
-      resourseData: [
-        {
-          label: '一级 1',
-          children: [
-            {
-              label: '二级 1-1',
-              children: [
-                {
-                  label: '三级 1-1-1'
-                }
-              ]
-            }
-          ]
-        },
-        {
-          label: '一级 2',
-          children: [
-            {
-              label: '二级 2-1',
-              children: [
-                {
-                  label: '三级 2-1-1'
-                }
-              ]
-            },
-            {
-              label: '二级 2-2',
-              children: [
-                {
-                  label: '三级 2-2-1'
-                }
-              ]
-            }
-          ]
-        },
-        {
-          label: '一级 3',
-          children: [
-            {
-              label: '二级 3-1',
-              children: [
-                {
-                  label: '三级 3-1-1'
-                }
-              ]
-            },
-            {
-              label: '二级 3-2',
-              children: [
-                {
-                  label: '三级 3-2-1'
-                }
-              ]
-            }
-          ]
-        }
-      ],
+      resourseData: [],
       menuTreeProps: {
         children: 'children',
         label: 'menuName'
       },
       resourseProps: {
         children: 'children',
-        label: 'menuName'
+        label: 'sourcename'
       },
       checked: true,
       tableData: [
@@ -446,13 +378,16 @@ export default {
   },
   created () {},
   mounted () {
-    this.init()
+    // this.init()
   },
   computed: {
     currentResour () {
       let val = this.resourcesList[this.currentIndex1].resources[this.currentIndex2]
       console.log(val)
       return val
+    },
+    activeName () {
+      return this.$store.state.activeName
     }
   },
   methods: {
@@ -466,7 +401,28 @@ export default {
       }).then(res => {
         if (res.code === 200) {
           console.log(res.data)
-          this.menuTreeData = res.data
+          let newData = deepMap(res.data)
+          console.log('newData', newData)
+          this.menuTreeData = newData
+        }
+      })
+      let num = 0
+      let deepMap = (data) => {
+        for (let i in data) {
+          data[i].id = num++
+          if (data[i].children && data[i].children.length > 0) {
+            deepMap(data[i].children)
+          }
+        }
+        return data
+      }
+    },
+    // 查询资源库
+    findSourceInfo () {
+      this.$api.findSourceInfo().then(res => {
+        if (res.code === 200) {
+          console.log('findSourceInfo', res.data)
+          this.resourseData = res.data
         }
       })
     },
@@ -493,30 +449,111 @@ export default {
         }
       })
     },
+    // 创建初始树
+    creatTree () {
+      this.$api.addTreeNode({
+        chaTitle: '新增目录',
+        courId: this.$store.state.courseId,
+        parentId: 0,
+        isPublic: 0,
+        level: '0'
+      }).then(res => {
+        if (res.code === 200) {
+          console.log('addTreeNode', res.data)
+          let menuCode = res.data.chapterId
+          const newChild = {
+            id: id,
+            menuName: '新增子目录' + id,
+            menuCode: menuCode,
+            isPublic: 0,
+            parentId: 0,
+            level: 0,
+            children: []
+          }
+          this.menuTreeData.push(newChild)
+        }
+      })
+    },
     // 新增子目录
-    appendChildNode (data) {
-      const newChild = { id: id++, label: '子节点', children: [] }
-      if (!data.children) {
-        this.$set(data, 'children', [])
-      }
-      console.log('data---------', data)
-      data.children.push(newChild)
+    appendChildNode (node, data) {
+      // let menuCode
+      let level = parseInt(data.level)
+      this.$api.addTreeNode({
+        chaTitle: data.menuName,
+        courId: this.$store.state.courseId,
+        parentId: data.menuCode,
+        isPublic: 0,
+        level: level + 1 + ''
+      }).then(res => {
+        if (res.code === 200) {
+          console.log('addTreeNode', res.data)
+          let menuCode = res.data.chapterId
+          const newChild = {
+            id: id++,
+            menuName: '新增子目录' + id,
+            menuCode: menuCode,
+            isPublic: 0,
+            parentId: data.menuCode,
+            level: level + 1 + '',
+            children: []
+          }
+          if (!data.children) {
+            this.$set(data, 'children', [])
+          }
+          console.log('data---------', data)
+          data.children.push(newChild)
+          this.currentExpandedKey = data.id
+        }
+      })
     },
     // 新增同级目录
+    // appendNode (node, data) {
+    //   const parent = node.parent
+    //   const children = parent.data.children || parent.data
+    //   const newNode = { id: id++, menuName: '新增目录' + id, children: [] }
+    //   children.push(newNode)
+    // },
     appendNode (node, data) {
-      const parent = node.parent
-      const children = parent.data.children || parent.data
-      const newNode = { id: id++, label: '节点', children: [] }
-      children.push(newNode)
+      console.log('dataaaaaaaaaaaaaa', data)
+      this.$api.addTreeNode({
+        chaTitle: data.menuName,
+        courId: this.$store.state.courseId,
+        parentId: data.parentId,
+        isPublic: 0,
+        level: data.level
+      }).then(res => {
+        if (res.code === 200) {
+          console.log('addTreeNode', res.data)
+          let menuCode = res.data.chapterId
+          const newNode = {
+            id: id++,
+            menuName: '新增目录' + id,
+            menuCode: menuCode,
+            isPublic: 0,
+            parentId: data.parentId,
+            level: data.level,
+            children: []
+          }
+          this.$refs.menuTree.insertAfter(newNode, node)
+        }
+      })
     },
     // 删除节点
     remove (node, data) {
-      const parent = node.parent
-      const children = parent.data.children || parent.data
-      const index = children.findIndex(d => d.id === data.id)
-      children.splice(index, 1)
-      // console.log(this.data)
-      console.log(children)
+      this.$api.deleteTreeNode({
+        id: data.menuCode
+      }).then(res => {
+        if (res.code === 200) {
+          const parent = node.parent
+          const children = parent.data.children || parent.data
+          const index = children.findIndex(d => d.id === data.id)
+          children.splice(index, 1)
+          this.$message({
+            type: 'info',
+            message: '删除成功！'
+          })
+        }
+      })
     },
     // 编辑节点名称
     editName (node, data) {
@@ -527,10 +564,17 @@ export default {
     // 保存修改节点名称
     saveChange (node, data) {
       if (this.editVal) {
+        this.$api.uploadTreeNode({
+          chaId: data.menuCode,
+          chaTitle: this.editVal,
+          isDemonstration: 1,
+          level: data.level,
+          'sort': 0
+        }).then()
         const parent = node.parent
         const children = parent.data.children || parent.data
         const index = children.findIndex(d => d.id === data.id)
-        children[index].label = this.editVal
+        children[index].menuName = this.editVal
       }
       this.isEdit = false
       this.editVal = null
@@ -610,12 +654,12 @@ export default {
         this.isShowEdit = false
         this.$message({
           type: 'success',
-          message: '删除成功!'
+          message: '成功!'
         })
       }).catch(() => {
         this.$message({
           type: 'info',
-          message: '已取消删除'
+          message: '已取消'
         })
       })
     },
@@ -657,6 +701,13 @@ export default {
       this.oldVal = this.targetIndex
       this.targetIndex = null // 清除目标序号
     },
+    getCheckedResour (refName) {
+      console.log(this.$refs[refName].getCheckedNodes())
+      let checkedNodes = this.$refs[refName].getCheckedNodes()
+      this.checkedResour = checkedNodes.filter(e => {
+        return !e.children
+      })
+    },
     chooseResourConfirm () {
       this.$confirm('确认提交?', '提示', {
         confirmButtonText: '确定',
@@ -668,6 +719,8 @@ export default {
       }).then(() => {
         if (this.fromState == 'isShowEdit') {
           this.isShowEdit = true
+          this.getCheckedResour('resourseTree')
+          this.resourcesList[this.currentResourIndex].resources = this.checkedResour
         }
         if (this.fromState == 'isShowLoadPerms') {
           this.isShowLoadPerms = true
@@ -675,12 +728,12 @@ export default {
         this.isShowChooseResour = false
         this.$message({
           type: 'success',
-          message: '删除成功!'
+          message: '提交成功!'
         })
       }).catch(() => {
         this.$message({
           type: 'info',
-          message: '已取消删除'
+          message: '已取消'
         })
       })
     },
@@ -696,28 +749,34 @@ export default {
         this.isShowLoadPerms = false
         this.$message({
           type: 'success',
-          message: '删除成功!'
+          message: '成功!'
         })
       }).catch(() => {
         this.$message({
           type: 'info',
-          message: '已取消删除'
+          message: '已取消'
         })
       })
     },
-    sourseImport (from) {
+    sourseImport (from, index) {
       this.fromState = from
       this.isShowChooseResour = true
       this.isShowEdit = false
       this.isShowLoadPerms = false
+      this.currentResourIndex = index
     },
-    localImport () {
-      var oFiles = document.querySelector('#file1').files
+    localImport (fileName) {
+      console.log(fileName)
+      console.log(document.querySelector('#' + fileName))
+      var oFiles = document.querySelector('#' + fileName).files
       console.log(oFiles)
     },
-    // previewImg (input, imgObj) {
-    //   console.log(input)
-    // },
+    uploadResourse (event) {
+      var e = window.event || event
+      // 获取当前选中的文件
+      var oFile = e.target.files[0]
+      console.log(oFile)
+    },
     handleNodeClick (data) {
       console.log(data)
     },
@@ -735,6 +794,21 @@ export default {
       // console.log('oldVal', oldVal)
       // const currRow = this.resourcesList[this.currentIndex1].resources.splice(oldVal, 1)[0]
       // this.resourcesList[this.currentIndex1].resources.splice(newVal, 0, currRow)
+    },
+    activeName: {
+      handler (val) {
+        if (val === '2') {
+          this.init()
+        }
+      },
+      immediate: true
+    },
+    isShowChooseResour: {
+      handler (val) {
+        if (val) {
+          this.findSourceInfo()
+        }
+      }
     }
   }
 }
@@ -748,7 +822,27 @@ export default {
     box-sizing: border-box;
     .block{
       width: 90%;
-    .custom-tree-node {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      .creatTree-btn{
+        font-size:16px;
+        font-family:Microsoft YaHei;
+        font-weight:bold;
+        color:#666;
+        border: 2px solid #666;
+        padding: 8px 25px;
+        cursor: pointer;
+        &:hover{
+          color: #007AB7;
+          border: 2px solid #007AB7;
+        }
+        &:active{
+          opacity: .6;
+        }
+      }
+      .custom-tree-node {
       flex: 1;
       display: flex;
       align-items: center;
@@ -838,7 +932,7 @@ export default {
           // box-sizing: border-box;
             .slide-outer{
               width: 100%;
-              height: 100%;
+              // height: 100%;
               overflow: auto;
               .slide-inner{
                 width: 100%;
@@ -849,7 +943,6 @@ export default {
                 overflow: auto;
                 .slide-item{
                   flex-shrink: 0;
-                  // display: inline-block;
                   width: 75px;
                   height: 100%;
                   margin-right: 20px;
