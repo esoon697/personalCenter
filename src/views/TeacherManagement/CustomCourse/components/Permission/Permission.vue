@@ -185,9 +185,6 @@ export default {
       })
       console.log(this.checkedPerson)
     },
-    choosePersonClose () {
-      this.isShowChoosePerson = false
-    },
     choosePersonConfirm () {
       this.$confirm('确认提交?', '提示', {
         confirmButtonText: '确定',
@@ -207,6 +204,17 @@ export default {
           type: 'info',
           message: '已取消'
         })
+      })
+    },
+    choosePersonClose () {
+      this.isShowChoosePerson = false
+    },
+    // 自主建课-第三步-设置课程权限
+    setCourPermission () {
+      this.$api.setCourPermission(this.ruleForm).then(res => {
+        if (res.code === 200) {
+          console.log('setCourPermission', res.data)
+        }
       })
     },
     submitForm (formName) {

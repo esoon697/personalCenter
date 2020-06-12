@@ -32,10 +32,22 @@ const api = {
   uploadTreeNode: data => post('/course/courseChapter/update', data),
   // 自主建课-第二步-删除目录
   deleteTreeNode: data => get('/course/courseChapter/delete', data),
+  // 自主建课-第二步-获取课程内容类型
+  getCourContentType: data => post('/course/processType/list', data),
   // 自主建课-第二步-查询素材库
   findSourceInfo: data => post('/course/processInfo/findSourceInfo', data),
+  // 自主建课-第二步-本地上传
+  uploadLocal: data => post('/course/processInfo/uploadSourceInfoToBaoLiWeiShi', data),
   // 自主建课-第二步-课程内容编辑
-  addBatch: data => get('/course/processInfo/addBatch', data),
+  addBatch: data => post('/course/processInfo/addBatch', data),
+  // 自主建课-第二步-查询可下载编辑资源包列表
+  getLoadPerms: data => post('/course/courseResource/list', data),
+  // 自主建课-第二步-批量更新可下载编辑资源包列表
+  uploadLoadPerms: data => post('/course/courseResource/updateBatch', data),
+  // 自主建课-第二步-查询下载资源包
+  getLoadPackage: data => post('/course/resourcePackage/list', data),
+  // 自主建课-第三步-设置课程权限
+  setCourPermission: data => get('/course/courseInfo/updateForLastStepBuilding', data),
   // 初始化试卷信息
   getInitPaperInfo: data => get('/paper/querymarkandtype', data),
   // 查询互动信息
@@ -46,7 +58,28 @@ const api = {
   getCourseInfo: data => get('/exmple/courselist', data),
   // 查询试卷
   // 创建考试
-  creatPaper: data => post('/paper/create', data)
+  creatPaper: data => post('/paper/create', data),
+  // 开课
+  openCourse: data => post('/course/courseEvent/add', data),
+  // 学生选课列表
+  // 学生选课
+  stuSelectCourse: data => post('/course/studentCourseInfo/courseSelectionForStu', data),
+  // 学生选课详情
+  // 课程管理-查询/搜索
+  getCourManageInfo: data => post('/course/studentCourseInfo/courseSelectionForStu', data),
+  // 课程管理-新增
+  // 课程管理-编辑
+  uploadCourManageInfo: data => post('/course/courseInfo/update', data),
+  // 课程管理-删除
+  delCourManageInfo: data => get('/course/courseInfo/delete', data),
+  // 课程类别管理-查询/搜索
+  getCourTypeManageInfo: data => post('/course/courseType/list', data),
+  // 课程类别管理-新增
+  addCourTypeManageInfo: data => post('/course/courseType/add', data),
+  // 课程类别管理-编辑
+  uploadCourTypeManageInfo: data => post('/course/courseType/update', data),
+  // 课程类别管理-删除
+  delCourTypeManageInfo: data => get('/course/courseType/delete', data)
 }
 
 export default api

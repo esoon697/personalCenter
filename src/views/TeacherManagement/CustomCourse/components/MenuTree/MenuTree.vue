@@ -53,7 +53,7 @@
           <div class="item-main-box">
             <div class="item-main-left">
               <div class="slide-outer">
-                <div class="slide-inner">
+                <div class="slide-inner" v-if="resources.resources&&resources.resources.length">
                   <div class="slide-item" v-for="(resource, index2) in resources.resources" :key="index2">
                     <div class="resource-item">
                       <div class="resource-box">
@@ -67,6 +67,7 @@
                     </div>
                   </div>
                 </div>
+                <div class="no-data" v-else>请选择课程资源</div>
               </div>
             </div>
             <div class="item-main-right">
@@ -89,11 +90,11 @@
     <div class="ChooseResour-btns" slot="dialog-btns">
       <div>
         <label for="input1">资源类别：</label>
-        <input type="text" name="" id="input1">
+        <input type="text" name="" id="input1" v-model="resourseType">
         <label for="input2">资源名称：</label>
-        <input type="text" name="" id="input2">
+        <input type="text" name="" id="input2" v-model="resourseName">
       </div>
-      <button class="search-btn">查询</button>
+      <button class="search-btn" @click="findSourceInfo">查询</button>
     </div>
     <div class="ChooseResour-box" slot="dialog-content">
       <el-tree
@@ -373,7 +374,9 @@ export default {
         }
       ],
       currentIndex1: 0,
-      currentIndex2: 0
+      currentIndex2: 0,
+      resourseType: null,
+      resourseName: null
     }
   },
   created () {},
@@ -381,18 +384,26 @@ export default {
     // this.init()
   },
   computed: {
-    currentResour () {
-      let val = this.resourcesList[this.currentIndex1].resources[this.currentIndex2]
-      console.log(val)
-      return val
-    },
     activeName () {
       return this.$store.state.activeName
+    },
+    allowFlag () {
+      let flag
+      for (let i = 0; i < this.resourcesList.length; i++) {
+        if (this.resourcesList[i].resources.length) {
+          flag = true
+          break
+        } else {
+          flag = false
+        }
+      }
+      return flag
     }
   },
   methods: {
     init () {
       this.getTreeList()
+      this.getCourContentType()
     },
     getTreeList () {
       let courId = this.$store.state.courseId
@@ -417,14 +428,32 @@ export default {
         return data
       }
     },
+    // 课程内容类型
+    getCourContentType () {
+      this.$api.getCourContentType().then(res => {
+        if (res.code === 200) {
+          console.log('getCourContentType', res.data)
+          this.resourcesList = res.data.list.map(e => {
+            return {
+              title: e.proTypeName,
+              proTypeId: e.id,
+              resources: []
+            }
+          })
+        }
+      })
+    },
     // 查询资源库
     findSourceInfo () {
-      this.$api.findSourceInfo().then(res => {
+      this.$api.findSourceInfo({
+        resourceName: this.resourseName
+      }).then(res => {
         if (res.code === 200) {
           console.log('findSourceInfo', res.data)
           this.resourseData = res.data
         }
       })
+      this.resourseName = null
     },
     // 行拖拽
     rowDrop () {
@@ -627,22 +656,23 @@ export default {
         this.isShowBtns = true
       }
     },
-    editClose () {
-      this.isShowEdit = false
-    },
-    chooseResourClose () {
-      if (this.fromState == 'isShowEdit') {
-        this.isShowEdit = true
-      }
-      if (this.fromState == 'isShowLoadPerms') {
-        this.isShowLoadPerms = true
-      }
-      this.isShowChooseResour = false
-    },
-    loadPermsClose () {
-      this.isShowLoadPerms = false
+    addBatch () {
+      this.$api.addBatch(this.resourcesList).then(res => {
+        if (res.code === 200) {
+          console.log('addBatch', res.data)
+          this.$store.state.activeName = '3'
+          this.isShowEdit = false
+        } else {
+          this.$message.warning('错误代码' + res.code)
+        }
+      })
     },
     editConfirm () {
+      console.log(this.allowFlag)
+      if (!this.allowFlag) {
+        this.$message.warning('请按照提示完成课程上传')
+        return
+      }
       this.$confirm('确认提交?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
@@ -651,11 +681,28 @@ export default {
         confirmButtonClass: 'confirmButton',
         showClose: false
       }).then(() => {
-        this.isShowEdit = false
+        this.addBatch()
         this.$message({
           type: 'success',
           message: '成功!'
         })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消'
+        })
+      })
+    },
+    editClose () {
+      this.$confirm('关闭后数据将丢失，是否确认关闭?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning',
+        cancelButtonClass: 'cancelButton',
+        confirmButtonClass: 'confirmButton',
+        showClose: false
+      }).then(() => {
+        this.isShowEdit = false
       }).catch(() => {
         this.$message({
           type: 'info',
@@ -720,7 +767,10 @@ export default {
         if (this.fromState == 'isShowEdit') {
           this.isShowEdit = true
           this.getCheckedResour('resourseTree')
+          console.log('this.checkedResour', this.checkedResour)
+          console.log('this.resourcesList', this.resourcesList)
           this.resourcesList[this.currentResourIndex].resources = this.checkedResour
+          // this.$forceUpdate()
         }
         if (this.fromState == 'isShowLoadPerms') {
           this.isShowLoadPerms = true
@@ -737,6 +787,53 @@ export default {
         })
       })
     },
+    chooseResourClose () {
+      this.$confirm('关闭后数据可能会丢失，是否确认关闭?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning',
+        cancelButtonClass: 'cancelButton',
+        confirmButtonClass: 'confirmButton',
+        showClose: false
+      }).then(() => {
+        if (this.fromState == 'isShowEdit') {
+          this.isShowEdit = true
+        }
+        if (this.fromState == 'isShowLoadPerms') {
+          this.isShowLoadPerms = true
+        }
+        this.isShowChooseResour = false
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消'
+        })
+      })
+    },
+    // 自主建课-第二步-查询可下载编辑资源包列表
+    getLoadPerms () {
+      this.$api.getLoadPerms().then(res => {
+        if (res.code === 200) {
+          console.log('getLoadPerms', res.data)
+        }
+      })
+    },
+    // 自主建课-第二步-批量更新可下载编辑资源包列表
+    uploadLoadPerms () {
+      this.$api.uploadLoadPerms({}).then(res => {
+        if (res.code === 200) {
+          console.log('uploadLoadPerms', res.data)
+        }
+      })
+    },
+    // 自主建课-第二步-查询下载资源包
+    getLoadPackage () {
+      this.$api.getLoadPackage({}).then(res => {
+        if (res.code === 200) {
+          console.log('getLoadPackage', res.data)
+        }
+      })
+    },
     loadPermsConfirm () {
       this.$confirm('确认提交?', '提示', {
         confirmButtonText: '确定',
@@ -751,6 +848,23 @@ export default {
           type: 'success',
           message: '成功!'
         })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消'
+        })
+      })
+    },
+    loadPermsClose () {
+      this.$confirm('关闭后数据可能会丢失，是否确认关闭?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning',
+        cancelButtonClass: 'cancelButton',
+        confirmButtonClass: 'confirmButton',
+        showClose: false
+      }).then(() => {
+        this.isShowLoadPerms = false
       }).catch(() => {
         this.$message({
           type: 'info',
@@ -776,6 +890,11 @@ export default {
       // 获取当前选中的文件
       var oFile = e.target.files[0]
       console.log(oFile)
+      this.$api.uploadLocal(oFile).then(res => {
+        if (res.data === 200) {
+          console.log('uploadLocal', res.data)
+        }
+      })
     },
     handleNodeClick (data) {
       console.log(data)
@@ -789,12 +908,6 @@ export default {
     }
   },
   watch: {
-    'currentResour.sort' (newVal, oldVal) {
-      // console.log('newVal', newVal)
-      // console.log('oldVal', oldVal)
-      // const currRow = this.resourcesList[this.currentIndex1].resources.splice(oldVal, 1)[0]
-      // this.resourcesList[this.currentIndex1].resources.splice(newVal, 0, currRow)
-    },
     activeName: {
       handler (val) {
         if (val === '2') {
@@ -809,6 +922,19 @@ export default {
           this.findSourceInfo()
         }
       }
+    },
+    // isShowEdit: {
+    //   handler (val) {
+    //     if (val) {
+    //       this.getCourContentType()
+    //     }
+    //   }
+    // },
+    resourcesList: {
+      handler (val) {
+        console.log('resourcesList', val)
+      },
+      deep: true
     }
   }
 }
@@ -932,15 +1058,25 @@ export default {
           // box-sizing: border-box;
             .slide-outer{
               width: 100%;
-              // height: 100%;
+              height: 100%;
+              border: 1px solid #eee;
               overflow: auto;
+              .no-data{
+                font-size: 16px;
+                height: 180px;
+                color: #666;
+                text-align: center;
+                line-height: 180px;
+              }
               .slide-inner{
+                padding: 10px;
                 width: 100%;
                 height: 100%;
                 display: flex;
                 justify-content: flex-start;
                 align-items: center;
                 overflow: auto;
+                box-sizing: border-box;
                 .slide-item{
                   flex-shrink: 0;
                   width: 75px;
@@ -982,7 +1118,7 @@ export default {
                       width: 30px;
                       height: 20px;
                       text-align: center;
-                      margin: 20px 0;
+                      margin: 15px 0;
                       padding: 5px;
                       border: 1px solid #ddd;
                       color: #999;
