@@ -90,11 +90,14 @@
     <div class="ChooseResour-btns" slot="dialog-btns">
       <div>
         <label for="input1">资源类别：</label>
-        <input type="text" name="" id="input1" v-model="resourseType">
+        <!-- <input type="text" name="" id="input1" v-model="resourseType"> -->
+        <el-select v-model="resourseType" placeholder="请选择">
+          <el-option v-for="(resourTypeOpt, index) in resourTypeOpts" :key="index" :label="resourTypeOpt.name" :value="resourTypeOpt.typeId"></el-option>
+        </el-select>
         <label for="input2">资源名称：</label>
         <input type="text" name="" id="input2" v-model="resourseName">
       </div>
-      <button class="search-btn" @click="findSourceInfo">查询</button>
+      <button class="search-btn" @click="searchResourse">查询</button>
     </div>
     <div class="ChooseResour-box" slot="dialog-content">
       <el-tree
@@ -128,23 +131,23 @@
     <div class="loadPerms-box" slot="dialog-content">
       <el-table
         stripe
-        row-key="id"
+        row-key="sort"
         highlight-current-row
         :data="tableData"
         max-height="470"
         style="width: 100%">
         <el-table-column
-          prop="id"
+          prop="sort"
           align="center"
           label="序号">
         </el-table-column>
         <el-table-column
-          prop="name"
+          prop="resourceName"
           label="资源名称"
           width="180">
         </el-table-column>
         <el-table-column
-          prop="isAllow"
+          prop="status"
           align="center"
           label="学生可下载">
           <template slot-scope="scope">
@@ -174,6 +177,7 @@
 </template>
 
 <script>
+import axios from 'axios'
 import Sortable from 'sortablejs'
 import myDialog from '@/components/myDialog/myDialog'
 let id = 1000
@@ -376,7 +380,8 @@ export default {
       currentIndex1: 0,
       currentIndex2: 0,
       resourseType: null,
-      resourseName: null
+      resourseName: null,
+      resourTypeOpts: []
     }
   },
   created () {},
@@ -404,6 +409,7 @@ export default {
     init () {
       this.getTreeList()
       this.getCourContentType()
+      this.getLoadPerms()
     },
     getTreeList () {
       let courId = this.$store.state.courseId
@@ -464,16 +470,16 @@ export default {
         animation: 150,
         ghostClass: 'blue-background-class',
         onEnd ({ newIndex, oldIndex }) {
-          const oldRow = _this.tableData[oldIndex]
-          if (oldIndex < newIndex) {
-            _this.tableData.splice(newIndex + 1, 0, oldRow)
-            _this.tableData.splice(oldIndex, 1)
-          } else if (oldIndex > newIndex) {
-            _this.tableData.splice(newIndex, 0, oldRow)
-            _this.tableData.splice(oldIndex + 1, 1)
-          }
-          // const currRow = _this.tableData.splice(oldIndex, 1)[0]
-          // _this.tableData.splice(newIndex, 0, currRow)
+          // const oldRow = _this.tableData[oldIndex]
+          // if (oldIndex < newIndex) {
+          //   _this.tableData.splice(newIndex + 1, 0, oldRow)
+          //   _this.tableData.splice(oldIndex, 1)
+          // } else if (oldIndex > newIndex) {
+          //   _this.tableData.splice(newIndex, 0, oldRow)
+          //   _this.tableData.splice(oldIndex + 1, 1)
+          // }
+          const currRow = _this.tableData.splice(oldIndex, 1)[0]
+          _this.tableData.splice(newIndex, 0, currRow)
           console.log('xxx', _this.tableData)
         }
       })
@@ -748,6 +754,14 @@ export default {
       this.oldVal = this.targetIndex
       this.targetIndex = null // 清除目标序号
     },
+    searchResourse () {
+      if (this.fromState === 'isShowEdit') {
+        this.findSourceInfo()
+      }
+      if (this.fromState === 'isShowLoadPerms') {
+        this.getLoadPackage()
+      }
+    },
     getCheckedResour (refName) {
       console.log(this.$refs[refName].getCheckedNodes())
       let checkedNodes = this.$refs[refName].getCheckedNodes()
@@ -764,16 +778,19 @@ export default {
         confirmButtonClass: 'confirmButton',
         showClose: false
       }).then(() => {
-        if (this.fromState == 'isShowEdit') {
+        this.getCheckedResour('resourseTree')
+        if (this.fromState === 'isShowEdit') {
           this.isShowEdit = true
-          this.getCheckedResour('resourseTree')
           console.log('this.checkedResour', this.checkedResour)
           console.log('this.resourcesList', this.resourcesList)
           this.resourcesList[this.currentResourIndex].resources = this.checkedResour
           // this.$forceUpdate()
         }
-        if (this.fromState == 'isShowLoadPerms') {
+        if (this.fromState === 'isShowLoadPerms') {
           this.isShowLoadPerms = true
+          console.log('this.checkedResour', this.checkedResour)
+          console.log('this.resourcesList', this.resourcesList)
+          this.tableData[this.currentResourIndex].resources = this.checkedResour
         }
         this.isShowChooseResour = false
         this.$message({
@@ -815,6 +832,7 @@ export default {
       this.$api.getLoadPerms().then(res => {
         if (res.code === 200) {
           console.log('getLoadPerms', res.data)
+          this.tableData = res.data.list
         }
       })
     },
@@ -828,9 +846,32 @@ export default {
     },
     // 自主建课-第二步-查询下载资源包
     getLoadPackage () {
-      this.$api.getLoadPackage({}).then(res => {
+      this.$api.getLoadPackage({
+        typeId: this.resourseType,
+        name: this.resourseName
+      }).then(res => {
         if (res.code === 200) {
           console.log('getLoadPackage', res.data)
+          this.resourseData = res.data.list.map(e => {
+            return {
+              resourceId: e.typeId,
+              resourceType: '',
+              sourceName: e.typeName,
+              sourceUrl: '',
+              children: e.resourcePackages
+            }
+          })
+        }
+      })
+      this.resourseType = null
+      this.resourseName = null
+    },
+    // 自主建课-第二步-查询资源包类型
+    getLoadPackageType () {
+      this.$api.getLoadPackageType({}).then(res => {
+        if (res.code === 200) {
+          console.log('getLoadPackageType', res.data)
+          this.resourTypeOpts = res.data
         }
       })
     },
@@ -873,7 +914,6 @@ export default {
       })
     },
     sourseImport (from, index) {
-      this.fromState = from
       this.isShowChooseResour = true
       this.isShowEdit = false
       this.isShowLoadPerms = false
@@ -890,11 +930,26 @@ export default {
       // 获取当前选中的文件
       var oFile = e.target.files[0]
       console.log(oFile)
-      this.$api.uploadLocal(oFile).then(res => {
-        if (res.data === 200) {
-          console.log('uploadLocal', res.data)
-        }
-      })
+      let param = new FormData() // 创建form对象
+      param.append('file', oFile)// 通过append向form对象添加数据
+      console.log(param.get('file')) // FormData私有类对象，访问不到，可以通过get判断值是否传进去
+      let token = localStorage.getItem('token')
+      let config = {
+        headers: {'Content-Type': 'multipart/form-data', 'Authorization': token}
+      } // 添加请求头
+      console.log(this.fromState)
+      if (this.fromState === 'isShowEdit') {
+        axios.post('http://api.yazhuokj.com/course/processInfo/uploadSourceInfoToBaoLiWeiShi', param, config)
+          .then(response => {
+            console.log(response.data)
+          })
+      }
+      if (this.fromState === 'isShowLoadPerms') {
+        axios.post('http://api.yazhuokj.com/course/resourcePackage/uploadPackage', param, config)
+          .then(response => {
+            console.log(response.data)
+          })
+      }
     },
     handleNodeClick (data) {
       console.log(data)
@@ -918,18 +973,33 @@ export default {
     },
     isShowChooseResour: {
       handler (val) {
-        if (val) {
+        if (val && this.fromState == 'isShowEdit') {
           this.findSourceInfo()
+        } else if (val && this.fromState == 'isShowLoadPerms') {
+          this.getLoadPackage()
+          this.getLoadPackageType()
+        } else {
+          this.resourseData = []
+          this.resourTypeOpts = []
         }
       }
     },
-    // isShowEdit: {
-    //   handler (val) {
-    //     if (val) {
-    //       this.getCourContentType()
-    //     }
-    //   }
-    // },
+    isShowLoadPerms: {
+      handler (val) {
+        if (val) {
+          // this.getLoadPerms()
+          this.fromState = 'isShowLoadPerms'
+        }
+      }
+    },
+    isShowEdit: {
+      handler (val) {
+        if (val) {
+          // this.getCourContentType()
+          this.fromState = 'isShowEdit'
+        }
+      }
+    },
     resourcesList: {
       handler (val) {
         console.log('resourcesList', val)

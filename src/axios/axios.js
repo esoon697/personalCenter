@@ -39,6 +39,11 @@ _axios.interceptors.request.use(
     if (config.method == 'post') {
       // 可做字符串化传参数据
       // config.data = qs.stringify(config.data)
+      // if (config.headers['Content-Type'] !== 'application/json') {
+      //   config.data = qs.stringify(config.data)
+      // } else {
+      //   config.data = config.data
+      // }
     }
     return config
   },

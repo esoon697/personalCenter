@@ -46,8 +46,14 @@ const api = {
   uploadLoadPerms: data => post('/course/courseResource/updateBatch', data),
   // 自主建课-第二步-查询下载资源包
   getLoadPackage: data => post('/course/resourcePackage/list', data),
+  // 自主建课-第二步-查询资源包类型
+  getLoadPackageType: data => post('/course/resourcePackageType/list', data),
+  // 自主建课-第二步-可下载资源本地上传
+  uploadLocalPackage: data => post('/course/resourcePackage/uploadLocalPackageToDownLoad', data),
+  // 自主建课-第三步-查询特定人员/老师
+  getTeacher: data => get('/course/courseEvent/queryTeacher', data),
   // 自主建课-第三步-设置课程权限
-  setCourPermission: data => get('/course/courseInfo/updateForLastStepBuilding', data),
+  setCourPermission: data => post('/course/courseInfo/updateForLastStepBuilding', data),
   // 初始化试卷信息
   getInitPaperInfo: data => get('/paper/querymarkandtype', data),
   // 查询互动信息
@@ -59,6 +65,8 @@ const api = {
   // 查询试卷
   // 创建考试
   creatPaper: data => post('/paper/create', data),
+  // 查询学生
+  getStudent: data => get('/course/courseEvent/queryStudent', data),
   // 开课
   openCourse: data => post('/course/courseEvent/add', data),
   // 学生选课列表

@@ -1,26 +1,36 @@
 <template>
   <div class="permission-box">
     <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="150px" class="demo-ruleForm">
-      <el-form-item label="课程共享：" prop="courseShare">
-        <!-- <el-select v-model="ruleForm.courseShare" placeholder="请选择">
+      <el-form-item label="课程共享：" prop="isPublic">
+        <!-- <el-select v-model="ruleForm.isPublic" placeholder="请选择">
           <el-option label="区域一" value="shanghai"></el-option>
           <el-option label="区域二" value="beijing"></el-option>
         </el-select> -->
-        <el-radio-group v-model="ruleForm.courseShare">
+        <el-radio-group v-model="ruleForm.isPublic">
           <el-radio :label="1">是</el-radio>
           <el-radio :label="0">否</el-radio>
         </el-radio-group>
-        <!-- <el-switch v-model="ruleForm.courseShare"></el-switch> -->
+        <!-- <el-switch v-model="ruleForm.isPublic"></el-switch> -->
       </el-form-item>
-      <el-form-item label="共享范围：" prop="shareScope" v-if="ruleForm.courseShare">
-        <el-select v-model="ruleForm.shareScope" placeholder="请选择">
+      <el-form-item label="共享范围：" prop="shareType" v-if="ruleForm.isPublic">
+        <el-select v-model="ruleForm.shareType" placeholder="请选择">
           <el-option label="全校" :value="1"></el-option>
           <el-option label="全网" :value="2"></el-option>
           <el-option label="选择特定人员" :value="3" @click.native="choosePerson"></el-option>
         </el-select>
       </el-form-item>
-      <el-form-item label="是否上传素材资源：" prop="resourceShare">
-        <el-radio-group v-model="ruleForm.resourceShare">
+        <el-form-item label="特定人员：" prop="shared" v-if="ruleForm.shared.length">
+          <el-select class="lengthStyle" v-model="checkedPersonName" multiple collapse-tags disabled placeholder="请选择特定人员">
+            <el-option
+              v-for="item in ruleForm.shared"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value">
+            </el-option>
+          </el-select>
+        </el-form-item>
+      <el-form-item label="是否上传素材资源：" prop="shareResource">
+        <el-radio-group v-model="ruleForm.shareResource">
           <el-radio :label="1">是</el-radio>
           <el-radio :label="0">否</el-radio>
         </el-radio-group>
@@ -40,6 +50,7 @@
     slot="dialog"
     :title="'选择特定人员'"
     :aside="true"
+    node-key="id"
     @close="choosePersonClose"
     @confirm="choosePersonConfirm"
     v-show="isShowChoosePerson">
@@ -72,27 +83,37 @@ export default {
   components: {myDialog},
   props: [],
   data () {
+    var checkedvalidate = (rule, value, callback) => {
+      if (!value) {
+        callback(new Error('请仔细阅读并同意协议'))
+      } else {
+        callback()
+      }
+    }
     return {
       isShowChoosePerson: false,
       ruleForm: {
-        courseShare: 1,
-        shareScope: '',
-        resourceShare: '',
-        checked: '',
-        checkedPerson: []
+        isPublic: '',
+        shareType: '',
+        shareResource: '',
+        shared: [],
+        checked: ''
       },
       rules: {
-        courseShare: [
+        isPublic: [
           { required: true, message: '请选择课程共享', trigger: 'change' }
         ],
-        shareScope: [
+        shareType: [
           { required: true, message: '请选择名称共享范围', trigger: 'change' }
         ],
-        resourceShare: [
+        shareResource: [
           { required: true, message: '请选择是否共享素材资源', trigger: 'change' }
         ],
+        shared: [
+          { required: true, message: '请选择特定人员', trigger: 'change' }
+        ],
         checked: [
-          { required: true, message: '请仔细阅读并同意协议', trigger: 'change' }
+          { required: true, validator: checkedvalidate, trigger: 'change' }
         ]
       },
       personData: [
@@ -155,15 +176,32 @@ export default {
       ],
       defaultProps: {
         children: 'children',
-        label: 'label'
+        label: 'teacherName'
       },
-      checkedPerson: []
+      shared: []
     }
   },
-  computed: {},
+  computed: {
+    checkedPersonName () {
+      return this.ruleForm.shared.map(e => e.teacherName)
+    }
+  },
   created () {},
-  mounted () {},
+  mounted () {
+    this.init()
+  },
   methods: {
+    init () {
+      this.getTeacher()
+    },
+    getTeacher () {
+      this.$api.getTeacher().then(res => {
+        if (res.code === 200) {
+          console.log(res.data)
+          this.personData = res.data
+        }
+      })
+    },
     choosePerson () {
       this.isShowChoosePerson = true
     },
@@ -172,18 +210,12 @@ export default {
       this.testPaper = data
     },
     personCheckChange () {},
-    getCheckedStu () {
-      console.log(this.$refs.personTree.getCheckedNodes())
-      let checkedNodes = this.$refs.personTree.getCheckedNodes()
-      this.checkedPerson = checkedNodes.filter(e => {
+    getCheckedPerson (refName) {
+      console.log(this.$refs[refName].getCheckedNodes())
+      let checkedNodes = this.$refs[refName].getCheckedNodes()
+      this.shared = checkedNodes.filter(e => {
         return !e.children
-      }).map(e => {
-        return {
-          value: e.$treeNodeId,
-          label: e.label
-        }
       })
-      console.log(this.checkedPerson)
     },
     choosePersonConfirm () {
       this.$confirm('确认提交?', '提示', {
@@ -194,12 +226,13 @@ export default {
         confirmButtonClass: 'confirmButton',
         showClose: false
       }).then(() => {
-        this.getCheckedStu()
-        this.ruleForm.checkedPerson = this.checkedPerson
+        this.getCheckedPerson('personTree')
+        console.log('this.shared', this.shared)
+        this.ruleForm.shared = this.shared
         this.isShowChoosePerson = false
       }).catch((e) => {
         console.log(e)
-        this.checkedPerson = null
+        this.shared = null
         this.$message({
           type: 'info',
           message: '已取消'
@@ -211,9 +244,20 @@ export default {
     },
     // 自主建课-第三步-设置课程权限
     setCourPermission () {
+      this.ruleForm.courseId = 112
       this.$api.setCourPermission(this.ruleForm).then(res => {
         if (res.code === 200) {
           console.log('setCourPermission', res.data)
+          this.$message({
+            type: 'success',
+            message: '恭喜您，创建成功！'
+          })
+          this.resetForm('ruleForm')
+        } else {
+          this.$message({
+            type: 'error',
+            message: res.message
+          })
         }
       })
     },
@@ -223,6 +267,7 @@ export default {
           console.log(this.ruleForm)
           alert('submit!')
           // this.clearFiles()
+          this.setCourPermission()
         } else {
           console.log('error submit!!')
           this.$message.error('必填项不能为空')
