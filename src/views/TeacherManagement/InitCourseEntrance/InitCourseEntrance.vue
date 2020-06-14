@@ -69,7 +69,7 @@ export default {
       display: flex;
       flex-direction: column;
       align-items: flex-end;
-      padding: 40px 70px;
+      padding: 30px 60px;
       box-sizing: border-box;
       .courseNum-box{
         font-size:24px;

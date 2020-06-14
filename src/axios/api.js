@@ -33,13 +33,17 @@ const api = {
   // 自主建课-第二步-删除目录
   deleteTreeNode: data => get('/course/courseChapter/delete', data),
   // 自主建课-第二步-获取课程内容类型
-  getCourContentType: data => post('/course/processType/list', data),
+  // getCourContentType: data => post('/course/processType/list', data),
+  getCourContentType: data => get('/course/processInfo/listInnerProcessType', data),
   // 自主建课-第二步-查询素材库
   findSourceInfo: data => post('/course/processInfo/findSourceInfo', data),
-  // 自主建课-第二步-本地上传
-  uploadLocal: data => post('/course/processInfo/uploadSourceInfoToBaoLiWeiShi', data),
-  // 自主建课-第二步-课程内容编辑
-  addBatch: data => post('/course/processInfo/addBatch', data),
+  // 自主建课-第二步-课程内容本地上传
+  uploadLocal: data => post('/course/processInfo/uploadSourceInfo', data),
+  // 自主建课-第二步-课程内容更新
+  // addBatch: data => post('/course/processInfo/addBatch', data),
+  uploadBatch: data => post('/course/processInfo/updateBatch', data),
+  // 自主建课-第二步-资源库选择新增
+  addResourseBatch: data => post('/course/processInfo/addBatch', data),
   // 自主建课-第二步-查询可下载编辑资源包列表
   getLoadPerms: data => post('/course/courseResource/list', data),
   // 自主建课-第二步-批量更新可下载编辑资源包列表
@@ -48,8 +52,10 @@ const api = {
   getLoadPackage: data => post('/course/resourcePackage/list', data),
   // 自主建课-第二步-查询资源包类型
   getLoadPackageType: data => post('/course/resourcePackageType/list', data),
+  // 自主建课-第二步-选择可下载资源包
+  uploadPackage: data => post('/course/resourcePackage/uploadLocalPackageToDownLoad', data),
   // 自主建课-第二步-可下载资源本地上传
-  uploadLocalPackage: data => post('/course/resourcePackage/uploadLocalPackageToDownLoad', data),
+  uploadLocalPackage: data => post('/course/resourcePackage/uploadPackage', data),
   // 自主建课-第三步-查询特定人员/老师
   getTeacher: data => get('/course/courseEvent/queryTeacher', data),
   // 自主建课-第三步-设置课程权限
@@ -65,16 +71,21 @@ const api = {
   // 查询试卷
   // 创建考试
   creatPaper: data => post('/paper/create', data),
-  // 查询学生
+  // 开课-查询学生
   getStudent: data => get('/course/courseEvent/queryStudent', data),
   // 开课
   openCourse: data => post('/course/courseEvent/add', data),
-  // 学生选课列表
-  // 学生选课
+  // 开课-课程列表
+  getCourseList: data => post('/course/courseInfo/listForPersonnelCenter', data),
+  // 学生选课-查询选课列表
+  getStuCourseList: data => post('/course/courseEvent/listForStudentsSelecting', data),
+  // 学生选课-选课
   stuSelectCourse: data => post('/course/studentCourseInfo/courseSelectionForStu', data),
+  // 学生选课-课程详情
+  getStuCourseDetail: data => get('/course/courseEvent/detail', data),
   // 学生选课详情
   // 课程管理-查询/搜索
-  getCourManageInfo: data => post('/course/studentCourseInfo/courseSelectionForStu', data),
+  getCourManageInfo: data => post('/course/courseInfo/list', data),
   // 课程管理-新增
   // 课程管理-编辑
   uploadCourManageInfo: data => post('/course/courseInfo/update', data),

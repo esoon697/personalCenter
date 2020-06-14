@@ -3,10 +3,10 @@
     <div class="left">
       <img :src="base+'card_eg.jpg'" alt="">
       <div class="item-info">
-        <h2>班主任职业能力构建与提升线下培训</h2>
-        <p class="teacher">授课老师：张三</p>
-        <p class="time">开课时间：2020-3-26 10:00</p>
-        <p class="count">学时数：30</p>
+        <h2>{{stuCourse.openName}}</h2>
+        <p class="teacher">授课老师：{{stuCourse.lectureName}}</p>
+        <p class="time">开课时间：{{stuCourse.startTime}}</p>
+        <p class="count">学时数：{{stuCourse.courHour}}</p>
       </div>
     </div>
     <div class="right">
@@ -19,7 +19,7 @@
 <script>
 export default {
   components: {},
-  props: ['index'],
+  props: ['index', 'stuCourse'],
   data () {
     return {
     }
@@ -29,7 +29,21 @@ export default {
   mounted () {},
   methods: {
     chooseCourse () {
-      this.$message.info('选课成功' + this.index)
+      this.$api.stuSelectCourse({
+        courEventId: this.index
+      }).then(res => {
+        if (res.code === 200) {
+          this.$message({
+            type: 'success',
+            $message: '选课成功！'
+          })
+        } else {
+          this.$message({
+            type: 'error',
+            $message: res.message
+          })
+        }
+      })
     },
     viewCourse () {
       this.$router.push({path: '/teacherManagement/myChooseCourse', query: {index: this.index}})

@@ -15,7 +15,7 @@
 <script>
 export default {
   components: {},
-  props: ['index'],
+  props: ['index', 'stuCourseDetail'],
   data () {
     return {
     }

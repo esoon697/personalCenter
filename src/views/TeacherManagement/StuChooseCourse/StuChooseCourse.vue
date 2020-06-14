@@ -2,16 +2,16 @@
   <TMContentBox>
     <span slot="content-title">学生选课</span>
     <div slot="main-content" class="view-outer">
-      <ChosCourItem v-for="n in 3" :key="n" :index="n"></ChosCourItem>
+      <ChosCourItem v-for="(stuCourse, index) in stuCourseList" :key="index" :stuCourse=stuCourse :index="index"></ChosCourItem>
       <div class="view-footer">
         <el-pagination
           background
           @size-change="handleSizeChange"
           @current-change="handleCurrentChange"
           :current-page.sync="currentPage"
-          :page-size="100"
+          :page-size="pageSize"
           layout="prev, pager, next, jumper"
-          :total="1000">
+          :total="total">
         </el-pagination>
       </div>
     </div>
@@ -26,18 +26,41 @@ export default {
   props: [],
   data () {
     return {
-      currentPage: 1
+      currentPage: 1,
+      stuCourseList: [],
+      total: 0,
+      pageSize: 0
     }
   },
   computed: {},
   created () {},
-  mounted () {},
+  mounted () {
+    this.init()
+  },
   methods: {
+    init () {
+      this.getStuCourseList()
+    },
+    getStuCourseList () {
+      this.$api.getStuCourseList({
+        page: this.currentPage
+      }).then(res => {
+        if (res.code === 200) {
+          console.log('getStuCourseList', res.data)
+          this.stuCourseList = res.data.list
+          this.total = res.data.total
+          this.pageSize = res.data.pageSize
+        }
+      })
+    },
     handleSizeChange (val) {
       console.log(`每页 ${val} 条`)
+      this.currentPage = val
     },
     handleCurrentChange (val) {
       console.log(`当前页: ${val}`)
+      this.currentPage = val
+      this.getStuCourseList()
     }
   },
   watch: {}

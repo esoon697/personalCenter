@@ -5,7 +5,7 @@
       <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="150px" class="demo-ruleForm" label-position="right">
         <el-form-item label="选择课程：" prop="course">
           <div class="wrapper">
-            <el-input class="lengthStyle" v-model="ruleForm.course.label" placeholder="请选择课程" disabled></el-input>
+            <el-input class="lengthStyle" v-model="ruleForm.course.title" placeholder="请选择课程" disabled></el-input>
             <button class="choose-btn" @click.prevent="chooseCourse">选择</button>
           </div>
         </el-form-item>
@@ -17,9 +17,9 @@
             <el-select class="lengthStyle" v-model="ruleForm.teacher" filterable placeholder="请选择授课教师">
               <el-option
                 v-for="item in teacherOptions"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value">
+                :key="item.teacherId"
+                :label="item.teacherName"
+                :value="item.teacherId">
               </el-option>
             </el-select>
             <!-- <el-input  class="lengthStyle" v-model="ruleForm.name" placeholder="请选择授课教师" disabled></el-input>
@@ -41,7 +41,7 @@
             <el-radio :label="0">否</el-radio>
           </el-radio-group>
         </el-form-item>
-        <el-form-item v-show="ruleForm.isChoice===0" label="选课学生：" prop="student">
+        <el-form-item v-if="ruleForm.isChoice===0" label="选课学生：" prop="student">
           <div class="wrapper" @click="chooseStu">
             <el-select class="lengthStyle" v-model="checkedStuName" multiple collapse-tags disabled placeholder="请选择选课学生">
               <el-option
@@ -147,7 +147,7 @@
         <el-tree
         slot="dialog-content"
         :data="courseData"
-        :props="defaultProps"
+        :props="courseProps"
         @node-click="courNodeClick"
         ></el-tree>
       </div>
@@ -193,7 +193,7 @@
         ref="stuTree"
         slot="dialog-content"
         :data="studentData"
-        :props="defaultProps"
+        :props="studentProps"
         @node-click="stuNodeClick"
         @check-change="stuCheckChange"
         show-checkbox></el-tree>
@@ -214,7 +214,7 @@ export default {
         course: '',
         courseName: '',
         teacher: '',
-        courseTime: '',
+        courseTime: [],
         isChoice: '',
         student: [],
         chooseNum: '',
@@ -402,9 +402,13 @@ export default {
           ]
         }
       ],
-      defaultProps: {
+      courseProps: {
+        children: 'courseInfoList',
+        label: 'title'
+      },
+      studentProps: {
         children: 'children',
-        label: 'label'
+        label: 'studentName'
       },
       isShowchooseCour: false,
       course: null,
@@ -731,17 +735,87 @@ export default {
   },
   computed: {
     checkedStuName () {
-      return this.ruleForm.student.map(e => e.label)
+      return this.ruleForm.student.map(e => e.studentName)
     }
   },
   created () {},
-  mounted () {},
+  mounted () {
+    this.init()
+  },
   methods: {
+    init () {
+      this.getCourseList()
+      this.getStudent()
+      this.getTeacher()
+    },
+    // 获取课程信息
+    getCourseList () {
+      this.$api.getCourseList().then(res => {
+        if (res.code === 200) {
+          console.log('getCourseList', res.data)
+          this.courseData = res.data.list
+        }
+      })
+    },
+    // 获取授课教师
+    getTeacher () {
+      this.$api.getTeacher().then(res => {
+        if (res.code === 200) {
+          console.log(res.data)
+          this.teacherOptions = res.data
+        }
+      })
+    },
+    // 获取学生信息
+    getStudent () {
+      this.$api.getStudent().then(res => {
+        if (res.code === 200) {
+          console.log(res.data)
+          this.studentData = res.data
+        }
+      })
+    },
+    openCourse () {
+      const ruleForm = this.ruleForm
+      this.$api.openCourse({
+        courseId: ruleForm.course,
+        openName: ruleForm.courseName,
+        lectureId: ruleForm.teacher,
+        startTimeAndEndTime: ruleForm.courseTime,
+        selectStartTime: ruleForm.timeValue1,
+        selectEndTime: ruleForm.timeValue2,
+        openFLag: ruleForm.isChoice,
+        student: ruleForm.student,
+        stuNum: ruleForm.chooseNum,
+        openDescription: ruleForm.desc,
+        passScore: ruleForm.passVal,
+        vedioRatio: ruleForm.watched,
+        assessmentVedio: ruleForm.videoAssess,
+        assessmentWork: ruleForm.workAssess,
+        assessmentExam: ruleForm.taskAssess,
+        assessmentDiscussion: ruleForm.discussAssess,
+        discussionNum: ruleForm.discussCount
+      }).then(res => {
+        if (res.code === 200) {
+          console.log(res.data)
+          this.$message({
+            type: 'success',
+            message: '开课成功！'
+          })
+        } else {
+          this.$message({
+            type: 'error',
+            message: res.message
+          })
+        }
+      })
+    },
     submitForm (formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
           console.log(this.ruleForm)
-          alert('submit!')
+          this.openCourse()
+          // alert('submit!')
         } else {
           console.log('error submit!!')
           return false
@@ -801,11 +875,6 @@ export default {
       let checkedNodes = this.$refs.stuTree.getCheckedNodes()
       this.checkedStu = checkedNodes.filter(e => {
         return !e.children
-      }).map(e => {
-        return {
-          value: e.$treeNodeId,
-          label: e.label
-        }
       })
       console.log(this.checkedStu)
     },
@@ -840,6 +909,11 @@ export default {
   watch: {
     'ruleForm.isChoice' (val) {
       console.log(val)
+      if (val) {
+        this.ruleForm.student = []
+        this.student = []
+        console.log(this.ruleForm, this.student)
+      }
     }
   }
 }

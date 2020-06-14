@@ -39,6 +39,7 @@
         </el-tree>
         <div v-else class="creatTree-btn" @click="creatTree">新建课程目录 <i style="font-size: 18px" class="el-icon-plus"></i></div>
     </div>
+    <el-button class="next-btn" type="primary" @click="next()">下一步</el-button>
     <!-- 课程内容编辑弹窗 -->
     <myDialog
     :title="'课程内容编辑'"
@@ -71,9 +72,9 @@
               </div>
             </div>
             <div class="item-main-right">
-              <button class="sourse-btn" @click="sourseImport('isShowEdit', index1)">资源库导入</button>
+              <button class="sourse-btn" @click="sourseImport('isShowEdit', resources.proTypeId)">资源库导入</button>
               <button class="local-btn">本地导入
-                <input type="file" name="file" :id="'editFile'+index1" value="" accept="image/jpeg,image/png,image/jpg,image/gif" multiple @change="uploadResourse"  @click="localImport('editFile'+index1)">
+                <input type="file" name="file" :id="'editFile'+index1" value="" accept="image/jpeg,image/png,image/jpg,image/gif" multiple @change="uploadResourse">
               </button>
             </div>
           </div>
@@ -124,7 +125,7 @@
       <div>
         <button class="lp-resourse-btn" @click="sourseImport('isShowLoadPerms')">选择资源</button>
         <button class="lp-upload-btn">上传资源
-          <input type="file" name="file" id="loadPermsFile" value="" accept="image/jpeg,image/png,image/jpg,image/gif" multiple @change="uploadResourse"  @click="localImport('loadPermsFile')">
+          <input type="file" name="file" id="loadPermsFile" value="" accept="image/jpeg,image/png,image/jpg,image/gif" multiple @change="uploadResourse">
         </button>
       </div>
     </div>
@@ -190,143 +191,7 @@ export default {
       isClick: false,
       targetIndex: null,
       menuTreeData: [],
-      resourcesList: [
-        {
-          title: '课前预习',
-          resources: [
-            {
-              type: 1,
-              url: '',
-              sort: '1'
-            },
-            {
-              type: 1,
-              url: '',
-              sort: '2'
-            },
-            {
-              type: 1,
-              url: '',
-              sort: '3'
-            },
-            {
-              type: 1,
-              url: '',
-              sort: '4'
-            },
-            {
-              type: 1,
-              url: '',
-              sort: '5'
-            },
-            {
-              type: 1,
-              url: '',
-              sort: '6'
-            },
-            {
-              type: 1,
-              url: '',
-              sort: '7'
-            },
-            {
-              type: 1,
-              url: '',
-              sort: '8'
-            },
-            {
-              type: 1,
-              url: '',
-              sort: '9'
-            },
-            {
-              type: 1,
-              url: '',
-              sort: '10'
-            },
-            {
-              type: 1,
-              url: '',
-              sort: '11'
-            }
-          ]
-        },
-        {
-          title: '课堂内容',
-          resources: [
-            {
-              type: 1,
-              url: '',
-              sort: '1'
-            },
-            {
-              type: 1,
-              url: '',
-              sort: '2'
-            },
-            {
-              type: 1,
-              url: '',
-              sort: '3'
-            },
-            {
-              type: 1,
-              url: '',
-              sort: '4'
-            }
-          ]
-        },
-        {
-          title: '课堂作业',
-          resources: [
-            {
-              type: 1,
-              url: '',
-              sort: '1'
-            },
-            {
-              type: 1,
-              url: '',
-              sort: '2'
-            },
-            {
-              type: 1,
-              url: '',
-              sort: '3'
-            },
-            {
-              type: 1,
-              url: '',
-              sort: '4'
-            }
-          ]
-        },
-        {
-          title: '课后拓展',
-          resources: [
-            {
-              type: 1,
-              url: '',
-              sort: '1'
-            },
-            {
-              type: 1,
-              url: '',
-              sort: '2'
-            },
-            {
-              type: 1,
-              url: '',
-              sort: '3'
-            },
-            {
-              type: 1,
-              url: '',
-              sort: '4'
-            }
-          ]
-        }
-      ],
+      resourcesList: [],
       hasChlid: false,
       isShowBtns: false,
       currentId: null,
@@ -342,7 +207,7 @@ export default {
       },
       resourseProps: {
         children: 'children',
-        label: 'sourcename'
+        label: 'typeName'
       },
       checked: true,
       tableData: [
@@ -408,9 +273,10 @@ export default {
   methods: {
     init () {
       this.getTreeList()
-      this.getCourContentType()
-      this.getLoadPerms()
+      // this.getCourContentType()
+      // this.getLoadPerms()
     },
+    // 获取树信息
     getTreeList () {
       let courId = this.$store.state.courseId
       this.$api.getTreeList({
@@ -433,33 +299,6 @@ export default {
         }
         return data
       }
-    },
-    // 课程内容类型
-    getCourContentType () {
-      this.$api.getCourContentType().then(res => {
-        if (res.code === 200) {
-          console.log('getCourContentType', res.data)
-          this.resourcesList = res.data.list.map(e => {
-            return {
-              title: e.proTypeName,
-              proTypeId: e.id,
-              resources: []
-            }
-          })
-        }
-      })
-    },
-    // 查询资源库
-    findSourceInfo () {
-      this.$api.findSourceInfo({
-        resourceName: this.resourseName
-      }).then(res => {
-        if (res.code === 200) {
-          console.log('findSourceInfo', res.data)
-          this.resourseData = res.data
-        }
-      })
-      this.resourseName = null
     },
     // 行拖拽
     rowDrop () {
@@ -562,7 +401,7 @@ export default {
           let menuCode = res.data.chapterId
           const newNode = {
             id: id++,
-            menuName: '新增目录' + id,
+            menuName: '新增目录',
             menuCode: menuCode,
             isPublic: 0,
             parentId: data.parentId,
@@ -662,10 +501,54 @@ export default {
         this.isShowBtns = true
       }
     },
-    addBatch () {
-      this.$api.addBatch(this.resourcesList).then(res => {
+    // 课程内容-查询资源库
+    findSourceInfo () {
+      this.$api.findSourceInfo({
+        resourceName: this.resourseName
+      }).then(res => {
         if (res.code === 200) {
-          console.log('addBatch', res.data)
+          console.log('findSourceInfo', res.data)
+          this.resourseData = res.data
+        }
+      })
+      this.resourseName = null
+    },
+    // 自主建课-第二步-资源库选择新增-------------------------
+    addResourseBatch () {
+      const checkedResour = this.checkedResour
+      this.$api.addResourseBatch({
+        processType: checkedResour.processType,
+        activeId: checkedResour.activeId,
+        resourceId: checkedResour.resourceId,
+        sort: 0
+      }).then(res => {
+        if (res.code === 200) {
+          console.log('addResourseBatch', res.data)
+        }
+      })
+    },
+    // 查询课程内容信息
+    getCourContentType () {
+      this.$api.getCourContentType({
+        chapterId: 646
+      }).then(res => {
+        if (res.code === 200) {
+          console.log('getCourContentType', res.data)
+          this.resourcesList = res.data.map(e => {
+            return {
+              title: e.proTypeName,
+              proTypeId: e.proTypeId,
+              resources: []
+            }
+          })
+        }
+      })
+    },
+    // 自主建课-第二步-课程内容更新
+    uploadBatch () {
+      this.$api.uploadBatch(this.resourcesList).then(res => {
+        if (res.code === 200) {
+          console.log('uploadBatch', res.data)
           this.$store.state.activeName = '3'
           this.isShowEdit = false
         } else {
@@ -673,6 +556,7 @@ export default {
         }
       })
     },
+    // 编辑内容确定
     editConfirm () {
       console.log(this.allowFlag)
       if (!this.allowFlag) {
@@ -687,7 +571,7 @@ export default {
         confirmButtonClass: 'confirmButton',
         showClose: false
       }).then(() => {
-        this.addBatch()
+        this.uploadBatch()
         this.$message({
           type: 'success',
           message: '成功!'
@@ -699,6 +583,7 @@ export default {
         })
       })
     },
+    // 编辑内容取消
     editClose () {
       this.$confirm('关闭后数据将丢失，是否确认关闭?', '提示', {
         confirmButtonText: '确定',
@@ -754,6 +639,14 @@ export default {
       this.oldVal = this.targetIndex
       this.targetIndex = null // 清除目标序号
     },
+    // 选择资源弹窗显示/隐藏
+    sourseImport (from, proTypeId) {
+      this.isShowChooseResour = true
+      this.isShowEdit = false
+      this.isShowLoadPerms = false
+      this.currentResourIndex = proTypeId
+    },
+    // 查询资源判断逻辑
     searchResourse () {
       if (this.fromState === 'isShowEdit') {
         this.findSourceInfo()
@@ -762,6 +655,7 @@ export default {
         this.getLoadPackage()
       }
     },
+    // 获取选择的资源包装为数组
     getCheckedResour (refName) {
       console.log(this.$refs[refName].getCheckedNodes())
       let checkedNodes = this.$refs[refName].getCheckedNodes()
@@ -769,6 +663,7 @@ export default {
         return !e.children
       })
     },
+    // 选择资源确定
     chooseResourConfirm () {
       this.$confirm('确认提交?', '提示', {
         confirmButtonText: '确定',
@@ -780,17 +675,19 @@ export default {
       }).then(() => {
         this.getCheckedResour('resourseTree')
         if (this.fromState === 'isShowEdit') {
+          this.resourcesList[this.currentResourIndex].resources = this.checkedResour
+          this.uploadBatch()
           this.isShowEdit = true
           console.log('this.checkedResour', this.checkedResour)
           console.log('this.resourcesList', this.resourcesList)
-          this.resourcesList[this.currentResourIndex].resources = this.checkedResour
           // this.$forceUpdate()
         }
         if (this.fromState === 'isShowLoadPerms') {
+          this.tableData[this.currentResourIndex].resources = this.checkedResour
+          this.uploadPackage()
           this.isShowLoadPerms = true
           console.log('this.checkedResour', this.checkedResour)
           console.log('this.resourcesList', this.resourcesList)
-          this.tableData[this.currentResourIndex].resources = this.checkedResour
         }
         this.isShowChooseResour = false
         this.$message({
@@ -804,6 +701,7 @@ export default {
         })
       })
     },
+    // 选择资源取消
     chooseResourClose () {
       this.$confirm('关闭后数据可能会丢失，是否确认关闭?', '提示', {
         confirmButtonText: '确定',
@@ -875,6 +773,26 @@ export default {
         }
       })
     },
+    // 自主建课-第二步-选择可下载资源包------------------------------------------------------------------
+    uploadPackage () {
+      this.$api.uploadPackage({
+        resourceId: this.resourceId,
+        resourceUrl: this.resourceUrl
+      }).then(res => {
+        if (res.code === 200) {
+          console.log('uploadPackage', res.data)
+        }
+      })
+    },
+    // 自主建课-第二步-可下载资源本地上传
+    uploadLocalPackage () {
+      this.$api.uploadLocalPackage().then(res => {
+        if (res.code === 200) {
+          console.log('uploadLocalPackage', res.data)
+        }
+      })
+    },
+    // 下载资源权限确定
     loadPermsConfirm () {
       this.$confirm('确认提交?', '提示', {
         confirmButtonText: '确定',
@@ -896,6 +814,7 @@ export default {
         })
       })
     },
+    // 下载资源权限取消
     loadPermsClose () {
       this.$confirm('关闭后数据可能会丢失，是否确认关闭?', '提示', {
         confirmButtonText: '确定',
@@ -913,18 +832,7 @@ export default {
         })
       })
     },
-    sourseImport (from, index) {
-      this.isShowChooseResour = true
-      this.isShowEdit = false
-      this.isShowLoadPerms = false
-      this.currentResourIndex = index
-    },
-    localImport (fileName) {
-      console.log(fileName)
-      console.log(document.querySelector('#' + fileName))
-      var oFiles = document.querySelector('#' + fileName).files
-      console.log(oFiles)
-    },
+    // 本地上传判断逻辑
     uploadResourse (event) {
       var e = window.event || event
       // 获取当前选中的文件
@@ -939,12 +847,14 @@ export default {
       } // 添加请求头
       console.log(this.fromState)
       if (this.fromState === 'isShowEdit') {
-        axios.post('http://api.yazhuokj.com/course/processInfo/uploadSourceInfoToBaoLiWeiShi', param, config)
+        // 自主建课-第二步-课程内容本地上传
+        axios.post('http://api.yazhuokj.com/course/processInfo/uploadSourceInfo', param, config)
           .then(response => {
             console.log(response.data)
           })
       }
       if (this.fromState === 'isShowLoadPerms') {
+        // 自主建课-第二步-可下载资源本地上传
         axios.post('http://api.yazhuokj.com/course/resourcePackage/uploadPackage', param, config)
           .then(response => {
             console.log(response.data)
@@ -960,6 +870,10 @@ export default {
     loadPermsDel (scope) {
       console.log(scope.$index)
       this.tableData.splice(scope.$index, 1)
+    },
+    // 下一步
+    next () {
+      this.$store.state.activeName = '3'
     }
   },
   watch: {
@@ -987,7 +901,7 @@ export default {
     isShowLoadPerms: {
       handler (val) {
         if (val) {
-          // this.getLoadPerms()
+          this.getLoadPerms()
           this.fromState = 'isShowLoadPerms'
         }
       }
@@ -995,7 +909,7 @@ export default {
     isShowEdit: {
       handler (val) {
         if (val) {
-          // this.getCourContentType()
+          this.getCourContentType()
           this.fromState = 'isShowEdit'
         }
       }
@@ -1013,9 +927,16 @@ export default {
 .menuTree-box{
     width: 100%;
     display: flex;
+    flex-direction: column;
     justify-content: center;
+    align-items: center;
     padding: 50px 0;
     box-sizing: border-box;
+    .next-btn{
+      width: 130px;
+      height: 40px;
+      margin-top: 20px;
+    }
     .block{
       width: 90%;
       display: flex;

@@ -2,15 +2,15 @@
   <div class="initCourse-wrapper">
     <div class="main-box">
       <el-tabs v-model="activeName" @tab-click="handleClick">
-        <el-tab-pane name="1">
+        <el-tab-pane :disabled="activeName=='1'" name="1">
           <span slot="label"  class="teb-item" :class="{'teb-item-active':activeName === '1'}"><span class="circle-icon" :class="{'circle-icon-active':activeName === '1'}">1</span> <span>课程基本信息</span></span>
           <BasicInfo/>
         </el-tab-pane>
-        <el-tab-pane name="2">
+        <el-tab-pane :disabled="activeName=='2'" name="2">
           <span slot="label"  class="teb-item" :class="{'teb-item-active':activeName === '2'}"><span class="circle-icon" :class="{'circle-icon-active':activeName === '2'}">2</span> <span>目录内容编辑</span></span>
           <MenuTree/>
         </el-tab-pane>
-        <el-tab-pane name="3">
+        <el-tab-pane :disabled="activeName=='3'" name="3">
           <span slot="label"  class="teb-item" :class="{'teb-item-active':activeName === '3'}"><span class="circle-icon" :class="{'circle-icon-active':activeName === '3'}">3</span> <span>课程权限设置</span></span>
           <Permission/>
         </el-tab-pane>

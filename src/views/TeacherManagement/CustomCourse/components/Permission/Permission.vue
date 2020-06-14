@@ -61,7 +61,7 @@
           <label for="per-input2">人员名称：</label>
           <input type="text" name="" id="per-input2">
         </div>
-        <button class="search-btn">查询</button>
+        <button class="search-btn" @click="getTeacher">查询</button>
       </div>
       <div class="choosePerson-box" slot="dialog-content">
         <el-tree
@@ -253,6 +253,7 @@ export default {
             message: '恭喜您，创建成功！'
           })
           this.resetForm('ruleForm')
+          this.$store.state.activeName = '1'
         } else {
           this.$message({
             type: 'error',
@@ -265,8 +266,6 @@ export default {
       this.$refs[formName].validate((valid) => {
         if (valid) {
           console.log(this.ruleForm)
-          alert('submit!')
-          // this.clearFiles()
           this.setCourPermission()
         } else {
           console.log('error submit!!')
@@ -279,7 +278,14 @@ export default {
       this.$refs[formName].resetFields()
     }
   },
-  watch: {}
+  watch: {
+    'ruleForm.isPublic' (val) {
+      if (!val) {
+        this.ruleForm.shareType = ''
+        this.ruleForm.shared = []
+      }
+    }
+  }
 }
 </script>
 <style lang="less" scoped>
