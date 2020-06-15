@@ -137,6 +137,12 @@ export default {
               children: []
             },
             {
+              title: '自主建课',
+              path: '/teacherManagement/customCourse',
+              name: 'CustomCourse',
+              children: []
+            },
+            {
               title: '开课管理',
               path: '/teacherManagement/OpenCourse',
               name: 'OpenCourse',
@@ -173,9 +179,9 @@ export default {
               children: []
             },
             {
-              title: '自主建课',
-              path: '/teacherManagement/customCourse',
-              name: 'CustomCourse',
+              title: '我的选课',
+              path: '/teacherManagement/myChooseCourse',
+              name: 'MyChooseCourse',
               children: []
             }
           ]

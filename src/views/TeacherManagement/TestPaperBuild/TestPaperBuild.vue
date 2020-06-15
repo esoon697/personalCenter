@@ -16,8 +16,7 @@
       </el-form-item>
       <el-form-item v-else label="所属标签：" prop="belongLabel">
         <el-select class="lengthStyle" v-model="ruleForm.belongLabel" placeholder="请选择所属标签">
-          <el-option label="区域一" value="shanghai"></el-option>
-          <el-option label="区域二" value="beijing"></el-option>
+          <el-option v-for="(labelOpt, index) in labelOpts" :key="index" :label="labelOpt.name" :value="labelOpt.tag_name"></el-option>
         </el-select>
       </el-form-item>
       <el-form-item label="随机生成试卷：" prop="isRandom">
@@ -31,8 +30,7 @@
           <el-col :sm="10" :lg="7">
             <el-form-item label="题目类型：" :prop="'testObjs.'+index+'.type'" :rules="[{required: true, message: '请选择题目类型', trigger: 'change'}]">
               <el-select v-model="testObj.type" placeholder="请选择题型">
-                <el-option label="区域一" :value="1"></el-option>
-                <el-option label="区域二" :value="2"></el-option>
+                <el-option v-for="(paperTypeOpt, index) in paperTypeOpts" :key="index" :label="paperTypeOpt.name" :value="paperTypeOpt.type"></el-option>
               </el-select>
             </el-form-item>
           </el-col>
@@ -232,7 +230,9 @@ export default {
       testTypeCount: 1,
       checkedTest: null,
       currentIndex: null,
-      testContent: null
+      testContent: null,
+      labelOpts: [],
+      paperTypeOpts: []
     }
   },
   computed: {},
@@ -243,18 +243,19 @@ export default {
   methods: {
     init () {
       this.getInitPaperInfo()
-      this.getaAtivelist()
     },
     getInitPaperInfo () {
       this.$api.getInitPaperInfo().then(res => {
         if (res.code === 200) {
           console.log(res.data)
+          this.labelOpts = res.data.marklist
+          this.paperTypeOpts = res.data.typelist
         }
       })
     },
     getaAtivelist () {
       this.$api.getaAtivelist({
-        type: 1
+        type: this.ruleForm.testObjs[this.currentIndex].type
       }).then(res => {
         if (res.code === 200) {
           console.log(res.data)
@@ -279,7 +280,7 @@ export default {
           })
         } else {
           this.$message({
-            type: 'warning',
+            type: 'error',
             message: res.message
           })
         }
@@ -297,6 +298,7 @@ export default {
       this.$refs.stuTree.setCheckedKeys([])
       this.isShowChooseTest = true
       this.currentIndex = index
+      this.getaAtivelist()
     },
     testNodeClick () {},
     testCheckChange () {},

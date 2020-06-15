@@ -13,7 +13,7 @@
     </el-form-item>
     <el-form-item label="选择试卷：" prop="testPaper">
       <div class="wrapper">
-        <el-input class="lengthStyle" v-model="ruleForm.testPaper.label" placeholder="请选择试卷" disabled></el-input>
+        <el-input class="lengthStyle" v-model="ruleForm.testPaper.paperName" placeholder="请选择试卷" disabled></el-input>
         <button class="choose-btn" @click.prevent="choosePaper">选择</button>
       </div>
     </el-form-item>
@@ -42,12 +42,12 @@
   v-show="isShowchooseCour">
     <div class="chooseCour-btns" slot="dialog-btns">
       <div>
-        <label for="input1">资源类别：</label>
-        <input type="text" name="" id="input1">
-        <label for="input2">资源名称：</label>
-        <input type="text" name="" id="input2">
+        <label for="input1">课程类别：</label>
+        <input type="text" name="" v-model="courseType" id="input1">
+        <label for="input2">课程名称：</label>
+        <input type="text" name="" v-model="courseName" id="input2">
       </div>
-      <button class="search-btn">查询</button>
+      <button class="search-btn" @click="getCourseInfo">查询</button>
     </div>
     <div class="chooseCour-box" slot="dialog-content">
       <el-tree
@@ -68,11 +68,11 @@
     <div class="chooseCour-btns" slot="dialog-btns">
       <div>
         <label for="input3">所属标签：</label>
-        <input type="text" name="" id="input3">
+        <input type="text" name="" v-model="belongLabel" id="input3">
         <label for="input4">试卷名称：</label>
-        <input type="text" name="" id="input4">
+        <input type="text" name="" v-model="paperName" id="input4">
       </div>
-      <button class="search-btn">查询</button>
+      <button class="search-btn" @click="getExamList">查询</button>
     </div>
     <div class="chooseCour-box" slot="dialog-content">
       <el-tree
@@ -115,129 +115,15 @@ export default {
           { required: true, message: '请选择考试时间', trigger: 'change' }
         ]
       },
-      courseData: [
-        {
-          label: '一级 1',
-          children: [
-            {
-              label: '二级 1-1',
-              children: [
-                {
-                  id: 11,
-                  label: '三级 1-1-1'
-                }
-              ]
-            }
-          ]
-        },
-        {
-          label: '一级 2',
-          children: [
-            {
-              label: '二级 2-1',
-              children: [
-                {
-                  label: '三级 2-1-1'
-                }
-              ]
-            },
-            {
-              label: '二级 2-2',
-              children: [
-                {
-                  label: '三级 2-2-1'
-                }
-              ]
-            }
-          ]
-        },
-        {
-          label: '一级 3',
-          children: [
-            {
-              label: '二级 3-1',
-              children: [
-                {
-                  label: '三级 3-1-1'
-                }
-              ]
-            },
-            {
-              label: '二级 3-2',
-              children: [
-                {
-                  label: '三级 3-2-1'
-                }
-              ]
-            }
-          ]
-        }
-      ],
-      paperData: [
-        {
-          label: '一级 1',
-          children: [
-            {
-              label: '二级 1-1',
-              children: [
-                {
-                  id: 11,
-                  label: '三级 1-1-1'
-                }
-              ]
-            }
-          ]
-        },
-        {
-          label: '一级 2',
-          children: [
-            {
-              label: '二级 2-1',
-              children: [
-                {
-                  label: '三级 2-1-1'
-                }
-              ]
-            },
-            {
-              label: '二级 2-2',
-              children: [
-                {
-                  label: '三级 2-2-1'
-                }
-              ]
-            }
-          ]
-        },
-        {
-          label: '一级 3',
-          children: [
-            {
-              label: '二级 3-1',
-              children: [
-                {
-                  label: '三级 3-1-1'
-                }
-              ]
-            },
-            {
-              label: '二级 3-2',
-              children: [
-                {
-                  label: '三级 3-2-1'
-                }
-              ]
-            }
-          ]
-        }
-      ],
+      courseData: [],
+      paperData: [],
       courseProps: {
         children: 'children',
         label: 'courTitle'
       },
       paperProps: {
         children: 'children',
-        label: 'label'
+        label: 'paperName'
       },
       isShowchooseCour: false,
       isShowChoosePaper: false,
@@ -263,7 +149,11 @@ export default {
           label: '北京烤鸭'
         }
       ],
-      taskTime: null
+      taskTime: null,
+      belongLabel: null,
+      paperName: null,
+      courseType: null,
+      courseName: null
     }
   },
 
@@ -280,9 +170,23 @@ export default {
       this.getCourseInfo()
     },
     getCourseInfo () {
-      this.$api.getCourseInfo().then(res => {
+      this.$api.getCourseInfo({
+        courseType: this.courseType,
+        courseName: this.courseName
+      }).then(res => {
         if (res.code === 200) {
           this.courseData = res.data
+        }
+      })
+    },
+    getExamList () {
+      this.$api.getExamList({
+        belongLabel: this.belongLabel,
+        paperName: this.paperName
+      }).then(res => {
+        if (res.code === 200) {
+          console.log('getExamList', res.data)
+          this.paperData = res.data
         }
       })
     },
@@ -320,6 +224,7 @@ export default {
       })
     },
     choosePaper () {
+      this.getExamList()
       this.isShowChoosePaper = true
     },
     paperNodeClick (data) {
@@ -353,11 +258,33 @@ export default {
         })
       })
     },
+    // 创建考试接口
+    creatExam () {
+      const ruleForm = this.ruleForm
+      this.$api.creatExam({
+        exmName: ruleForm.exmName,
+        coursePojo: ruleForm.belongCourse,
+        dates: ruleForm.taskTime,
+        paperPojo: ruleForm.testPaper
+      }).then(res => {
+        if (res.code === 200) {
+          this.$message({
+            type: 'success',
+            message: '创建考试成功！'
+          })
+        } else {
+          this.$message({
+            type: 'error',
+            message: res.message
+          })
+        }
+      })
+    },
     submitForm (formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
           console.log(this.ruleForm)
-          alert('submit!')
+          this.creatExam()
         } else {
           return false
         }

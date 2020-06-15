@@ -64,6 +64,8 @@ export default {
       width: 100%;
       height: 180px;
       background-color: #eee;
+      // background: url();
+      background-image: url(http://182.148.48.236:54321/source/personalCenter/importCourse-bg.png);
     }
     .inner-box{
       display: flex;

@@ -46,7 +46,7 @@ export default {
       })
     },
     viewCourse () {
-      this.$router.push({path: '/teacherManagement/myChooseCourse', query: {index: this.index}})
+      this.$router.push({path: '/teacherManagement/myChooseCourse', query: {openId: this.stuCourse.openId}})
     }
   },
   watch: {}

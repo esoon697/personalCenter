@@ -53,7 +53,7 @@ const api = {
   // 自主建课-第二步-查询资源包类型
   getLoadPackageType: data => post('/course/resourcePackageType/list', data),
   // 自主建课-第二步-选择可下载资源包
-  uploadPackage: data => post('/course/resourcePackage/uploadLocalPackageToDownLoad', data),
+  uploadPackage: data => post('/course/courseResource/addBatch', data),
   // 自主建课-第二步-可下载资源本地上传
   uploadLocalPackage: data => post('/course/resourcePackage/uploadPackage', data),
   // 自主建课-第三步-查询特定人员/老师
@@ -61,16 +61,17 @@ const api = {
   // 自主建课-第三步-设置课程权限
   setCourPermission: data => post('/course/courseInfo/updateForLastStepBuilding', data),
   // 初始化试卷信息
-  getInitPaperInfo: data => get('/paper/querymarkandtype', data),
+  getInitPaperInfo: data => get('/education/paper/querymarkandtype', data),
   // 查询互动信息
-  getaAtivelist: data => post('/paper/searchactive', data),
-  // 创建考试
-  creatExam: data => post('/exmple/createexmple', data),
+  getaAtivelist: data => post('/education/paper/searchactive', data),
+  // 创建试卷
+  creatPaper: data => post('/education/paper/create', data),
   // 考试建设-查询课程信息
-  getCourseInfo: data => get('/exmple/courselist', data),
+  getCourseInfo: data => get('/education/exmple/courselist', data),
   // 查询试卷
+  getExamList: data => post('/education/exmple/paperlist', data),
   // 创建考试
-  creatPaper: data => post('/paper/create', data),
+  creatExam: data => post('/education/exmple/initexample', data),
   // 开课-查询学生
   getStudent: data => get('/course/courseEvent/queryStudent', data),
   // 开课
@@ -79,11 +80,12 @@ const api = {
   getCourseList: data => post('/course/courseInfo/listForPersonnelCenter', data),
   // 学生选课-查询选课列表
   getStuCourseList: data => post('/course/courseEvent/listForStudentsSelecting', data),
-  // 学生选课-选课
+  // 学生选课-学生选课
   stuSelectCourse: data => post('/course/studentCourseInfo/courseSelectionForStu', data),
+  // 学生选课-我的选课
+  selectMyCourse: data => post('/course/studentCourseInfo/list', data),
   // 学生选课-课程详情
   getStuCourseDetail: data => get('/course/courseEvent/detail', data),
-  // 学生选课详情
   // 课程管理-查询/搜索
   getCourManageInfo: data => post('/course/courseInfo/list', data),
   // 课程管理-新增

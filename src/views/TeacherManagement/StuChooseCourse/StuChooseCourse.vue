@@ -43,7 +43,7 @@ export default {
     },
     getStuCourseList () {
       this.$api.getStuCourseList({
-        page: this.currentPage
+        pageNum: this.currentPage
       }).then(res => {
         if (res.code === 200) {
           console.log('getStuCourseList', res.data)

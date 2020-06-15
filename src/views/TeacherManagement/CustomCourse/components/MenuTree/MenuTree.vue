@@ -54,8 +54,8 @@
           <div class="item-main-box">
             <div class="item-main-left">
               <div class="slide-outer">
-                <div class="slide-inner" v-if="resources.resources&&resources.resources.length">
-                  <div class="slide-item" v-for="(resource, index2) in resources.resources" :key="index2">
+                <div class="slide-inner" v-if="resources.children&&resources.children.length">
+                  <div class="slide-item" v-for="(resource, index2) in resources.children" :key="index2">
                     <div class="resource-item">
                       <div class="resource-box">
                         <div class="resource" v-if="!resource.resourceType">{{index1}}{{resource.resourceId}}</div>
@@ -111,7 +111,7 @@
       show-checkbox></el-tree>
     </div>
     <div class="checkbox-box" slot="custom">
-      <el-checkbox v-model="checked">将选中项设置为学生课下载</el-checkbox>
+      <el-checkbox v-if="fromState === 'isShowLoadPerms'" v-model="checked">将选中项设置为学生可下载</el-checkbox>
     </div>
     </myDialog>
      <!-- 可下载内容编辑弹窗 -->
@@ -207,46 +207,16 @@ export default {
       },
       resourseProps: {
         children: 'children',
-        label: 'typeName'
+        label: 'title'
       },
       checked: true,
-      tableData: [
-        {
-          id: 1,
-          name: '白夜行',
-          isAllow: false,
-          sort: 1
-        },
-        {
-          id: 2,
-          name: '沉默的大多数',
-          isAllow: false,
-          sort: 2
-        },
-        {
-          id: 3,
-          name: '乌合之众',
-          isAllow: false,
-          sort: 3
-        },
-        {
-          id: 4,
-          name: '人间失格',
-          isAllow: false,
-          sort: 4
-        },
-        {
-          id: 5,
-          name: '活着',
-          isAllow: false,
-          sort: 5
-        }
-      ],
+      tableData: [],
       currentIndex1: 0,
       currentIndex2: 0,
       resourseType: null,
       resourseName: null,
-      resourTypeOpts: []
+      resourTypeOpts: [],
+      fromState: ''
     }
   },
   created () {},
@@ -260,7 +230,7 @@ export default {
     allowFlag () {
       let flag
       for (let i = 0; i < this.resourcesList.length; i++) {
-        if (this.resourcesList[i].resources.length) {
+        if (this.resourcesList[i].children.length) {
           flag = true
           break
         } else {
@@ -456,6 +426,9 @@ export default {
     // 编辑课程内容
     editContent (node, data) {
       this.isShowEdit = true
+      console.log(data)
+      this.chapterId = data.menuCode
+      this.courseId = data.courseId
       // this.isShowEdit = false
       // this.isShowChooseResour = false
       // this.isShowLoadPerms = false
@@ -463,6 +436,7 @@ export default {
     // 编辑下载权限
     editLoad (node, data) {
       this.isShowLoadPerms = true
+      this.courseId = data.courseId
       this.rowDrop()
     },
     handleDragStart (node, ev) {
@@ -515,32 +489,34 @@ export default {
     },
     // 自主建课-第二步-资源库选择新增-------------------------
     addResourseBatch () {
-      const checkedResour = this.checkedResour
-      this.$api.addResourseBatch({
-        processType: checkedResour.processType,
-        activeId: checkedResour.activeId,
-        resourceId: checkedResour.resourceId,
-        sort: 0
-      }).then(res => {
+      const checkedResour = this.checkedResour.map(e => {
+        return {
+          processType: this.currentResourIndex,
+          activeId: '',
+          chapterId: this.chapterId,
+          resourceId: e.resourceId,
+          sort: 0
+        }
+      })
+      this.$api.addResourseBatch(checkedResour).then(res => {
         if (res.code === 200) {
           console.log('addResourseBatch', res.data)
+        } else {
+          this.$message({
+            type: 'error',
+            message: res.message
+          })
         }
       })
     },
     // 查询课程内容信息
     getCourContentType () {
       this.$api.getCourContentType({
-        chapterId: 646
+        chapterId: this.chapterId
       }).then(res => {
         if (res.code === 200) {
           console.log('getCourContentType', res.data)
-          this.resourcesList = res.data.map(e => {
-            return {
-              title: e.proTypeName,
-              proTypeId: e.proTypeId,
-              resources: []
-            }
-          })
+          this.resourcesList = res.data
         }
       })
     },
@@ -609,7 +585,7 @@ export default {
         type: 'warning',
         showClose: false
       }).then(() => {
-        this.resourcesList[index1].resources.splice(index2, 1)
+        this.resourcesList[index1].children.splice(index2, 1)
         this.$message({
           type: 'success',
           message: '删除成功!'
@@ -632,111 +608,27 @@ export default {
     saveTarget () {
       if (this.targetIndex) {
         // 插入排序
-        const currRow = this.resourcesList[this.currentIndex1].resources.splice(this.oldVal, 1)[0]
-        this.resourcesList[this.currentIndex1].resources.splice(this.targetIndex - 1, 0, currRow)
+        const currRow = this.resourcesList[this.currentIndex1].children.splice(this.oldVal, 1)[0]
+        this.resourcesList[this.currentIndex1].children.splice(this.targetIndex - 1, 0, currRow)
       }
       this.isClick = false // 改变序号输入框状态
       this.oldVal = this.targetIndex
       this.targetIndex = null // 清除目标序号
     },
-    // 选择资源弹窗显示/隐藏
-    sourseImport (from, proTypeId) {
-      this.isShowChooseResour = true
-      this.isShowEdit = false
-      this.isShowLoadPerms = false
-      this.currentResourIndex = proTypeId
-    },
-    // 查询资源判断逻辑
-    searchResourse () {
-      if (this.fromState === 'isShowEdit') {
-        this.findSourceInfo()
-      }
-      if (this.fromState === 'isShowLoadPerms') {
-        this.getLoadPackage()
-      }
-    },
-    // 获取选择的资源包装为数组
-    getCheckedResour (refName) {
-      console.log(this.$refs[refName].getCheckedNodes())
-      let checkedNodes = this.$refs[refName].getCheckedNodes()
-      this.checkedResour = checkedNodes.filter(e => {
-        return !e.children
-      })
-    },
-    // 选择资源确定
-    chooseResourConfirm () {
-      this.$confirm('确认提交?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning',
-        cancelButtonClass: 'cancelButton',
-        confirmButtonClass: 'confirmButton',
-        showClose: false
-      }).then(() => {
-        this.getCheckedResour('resourseTree')
-        if (this.fromState === 'isShowEdit') {
-          this.resourcesList[this.currentResourIndex].resources = this.checkedResour
-          this.uploadBatch()
-          this.isShowEdit = true
-          console.log('this.checkedResour', this.checkedResour)
-          console.log('this.resourcesList', this.resourcesList)
-          // this.$forceUpdate()
-        }
-        if (this.fromState === 'isShowLoadPerms') {
-          this.tableData[this.currentResourIndex].resources = this.checkedResour
-          this.uploadPackage()
-          this.isShowLoadPerms = true
-          console.log('this.checkedResour', this.checkedResour)
-          console.log('this.resourcesList', this.resourcesList)
-        }
-        this.isShowChooseResour = false
-        this.$message({
-          type: 'success',
-          message: '提交成功!'
-        })
-      }).catch(() => {
-        this.$message({
-          type: 'info',
-          message: '已取消'
-        })
-      })
-    },
-    // 选择资源取消
-    chooseResourClose () {
-      this.$confirm('关闭后数据可能会丢失，是否确认关闭?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning',
-        cancelButtonClass: 'cancelButton',
-        confirmButtonClass: 'confirmButton',
-        showClose: false
-      }).then(() => {
-        if (this.fromState == 'isShowEdit') {
-          this.isShowEdit = true
-        }
-        if (this.fromState == 'isShowLoadPerms') {
-          this.isShowLoadPerms = true
-        }
-        this.isShowChooseResour = false
-      }).catch(() => {
-        this.$message({
-          type: 'info',
-          message: '已取消'
-        })
-      })
-    },
     // 自主建课-第二步-查询可下载编辑资源包列表
     getLoadPerms () {
-      this.$api.getLoadPerms().then(res => {
+      this.$api.getLoadPerms({
+        courseId: this.courseId
+      }).then(res => {
         if (res.code === 200) {
           console.log('getLoadPerms', res.data)
           this.tableData = res.data.list
         }
       })
     },
-    // 自主建课-第二步-批量更新可下载编辑资源包列表
+    // 自主建课-第二步-批量更新可下载编辑资源包列表-----------------------------------
     uploadLoadPerms () {
-      this.$api.uploadLoadPerms({}).then(res => {
+      this.$api.uploadLoadPerms(this.tableData).then(res => {
         if (res.code === 200) {
           console.log('uploadLoadPerms', res.data)
         }
@@ -750,15 +642,7 @@ export default {
       }).then(res => {
         if (res.code === 200) {
           console.log('getLoadPackage', res.data)
-          this.resourseData = res.data.list.map(e => {
-            return {
-              resourceId: e.typeId,
-              resourceType: '',
-              sourceName: e.typeName,
-              sourceUrl: '',
-              children: e.resourcePackages
-            }
-          })
+          this.resourseData = res.data.list
         }
       })
       this.resourseType = null
@@ -775,12 +659,23 @@ export default {
     },
     // 自主建课-第二步-选择可下载资源包------------------------------------------------------------------
     uploadPackage () {
-      this.$api.uploadPackage({
-        resourceId: this.resourceId,
-        resourceUrl: this.resourceUrl
-      }).then(res => {
+      console.log('this.checkedResour.resourceId', this.checkedResour)
+      const checkedResour = this.checkedResour.map(e => {
+        return {
+          resourceId: e.resourceId,
+          courseId: this.courseId
+        }
+      })
+      this.$api.uploadPackage(checkedResour).then(res => {
         if (res.code === 200) {
           console.log('uploadPackage', res.data)
+          this.tableData = res.data
+          this.isShowLoadPerms = true
+        } else {
+          this.$message({
+            type: 'error',
+            message: res.message
+          })
         }
       })
     },
@@ -861,6 +756,86 @@ export default {
           })
       }
     },
+    // 选择资源弹窗显示/隐藏
+    sourseImport (from, proTypeId) {
+      this.isShowChooseResour = true
+      this.isShowEdit = false
+      this.isShowLoadPerms = false
+      this.currentResourIndex = proTypeId
+    },
+    // 查询资源判断逻辑
+    searchResourse () {
+      if (this.fromState === 'isShowEdit') {
+        this.findSourceInfo()
+      }
+      if (this.fromState === 'isShowLoadPerms') {
+        this.getLoadPackage()
+      }
+    },
+    // 获取选择的资源包装为数组
+    getCheckedResour (refName) {
+      console.log(this.$refs[refName].getCheckedNodes())
+      let checkedNodes = this.$refs[refName].getCheckedNodes()
+      this.checkedResour = checkedNodes.filter(e => {
+        return !e.children
+      })
+    },
+    // 选择资源确定
+    chooseResourConfirm () {
+      this.$confirm('确认提交?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning',
+        cancelButtonClass: 'cancelButton',
+        confirmButtonClass: 'confirmButton',
+        showClose: false
+      }).then(() => {
+        this.getCheckedResour('resourseTree')
+        console.log('this.fromState', this.fromState)
+        if (this.fromState === 'isShowEdit') {
+          this.addResourseBatch()
+          this.isShowEdit = true
+        }
+        if (this.fromState === 'isShowLoadPerms') {
+          console.log('this.checkedResour', this.checkedResour)
+          this.uploadPackage()
+        }
+        this.isShowChooseResour = false
+        this.$message({
+          type: 'success',
+          message: '提交成功!'
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消'
+        })
+      })
+    },
+    // 选择资源取消
+    chooseResourClose () {
+      this.$confirm('关闭后数据可能会丢失，是否确认关闭?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning',
+        cancelButtonClass: 'cancelButton',
+        confirmButtonClass: 'confirmButton',
+        showClose: false
+      }).then(() => {
+        if (this.fromState == 'isShowEdit') {
+          this.isShowEdit = true
+        }
+        if (this.fromState == 'isShowLoadPerms') {
+          this.isShowLoadPerms = true
+        }
+        this.isShowChooseResour = false
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消'
+        })
+      })
+    },
     handleNodeClick (data) {
       console.log(data)
     },
@@ -933,7 +908,7 @@ export default {
     padding: 50px 0;
     box-sizing: border-box;
     .next-btn{
-      width: 130px;
+      width: 175px;
       height: 40px;
       margin-top: 20px;
     }
@@ -950,6 +925,7 @@ export default {
         color:#666;
         border: 2px solid #666;
         padding: 8px 25px;
+        border-radius: 5px;
         cursor: pointer;
         &:hover{
           color: #007AB7;

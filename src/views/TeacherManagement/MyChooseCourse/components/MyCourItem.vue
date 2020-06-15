@@ -3,10 +3,10 @@
     <div class="left">
       <img :src="base+'card_eg.jpg'" alt="">
       <div class="item-info">
-        <h2>班主任职业能力构建与提升线下培训</h2>
-        <p class="teacher">授课老师：张三</p>
-        <p class="time">开课时间：2020-3-26 10:00</p>
-        <p class="count">学时数：30</p>
+        <h2>{{myCourse.openName}}</h2>
+        <p class="teacher">授课老师：{{myCourse.lectureName}}</p>
+        <p class="time">开课时间：{{myCourse.startTime}}</p>
+        <p class="count">学时数：{{myCourse.courHour}}</p>
       </div>
     </div>
   </div>
@@ -15,7 +15,7 @@
 <script>
 export default {
   components: {},
-  props: ['index', 'stuCourseDetail'],
+  props: ['index', 'myCourse'],
   data () {
     return {
     }

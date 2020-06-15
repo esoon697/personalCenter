@@ -46,6 +46,9 @@ export default {
   mounted () {
     this.init()
   },
+  destroyed () {
+    // this.$store.state.activeName = '1'
+  },
   methods: {
     init () {
       // let activeName = sessionStorage.getItem('activeName')
