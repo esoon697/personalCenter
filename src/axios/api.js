@@ -53,7 +53,7 @@ const api = {
   // 自主建课-第二步-查询资源包类型
   getLoadPackageType: data => post('/course/resourcePackageType/list', data),
   // 自主建课-第二步-选择可下载资源包
-  uploadPackage: data => post('/course/courseResource/addBatch', data),
+  addPackage: data => post('/course/courseResource/addBatch', data),
   // 自主建课-第二步-可下载资源本地上传
   uploadLocalPackage: data => post('/course/resourcePackage/uploadPackage', data),
   // 自主建课-第三步-查询特定人员/老师

@@ -306,8 +306,8 @@ export default {
           console.log('addTreeNode', res.data)
           let menuCode = res.data.chapterId
           const newChild = {
-            id: id,
-            menuName: '新增子目录' + id,
+            id: id++,
+            menuName: '新增子目录',
             menuCode: menuCode,
             isPublic: 0,
             parentId: 0,
@@ -501,6 +501,7 @@ export default {
       this.$api.addResourseBatch(checkedResour).then(res => {
         if (res.code === 200) {
           console.log('addResourseBatch', res.data)
+          this.isShowEdit = true
         } else {
           this.$message({
             type: 'error',
@@ -525,7 +526,7 @@ export default {
       this.$api.uploadBatch(this.resourcesList).then(res => {
         if (res.code === 200) {
           console.log('uploadBatch', res.data)
-          this.$store.state.activeName = '3'
+          // this.$store.state.activeName = '3'
           this.isShowEdit = false
         } else {
           this.$message.warning('错误代码' + res.code)
@@ -621,8 +622,11 @@ export default {
         courseId: this.courseId
       }).then(res => {
         if (res.code === 200) {
-          console.log('getLoadPerms', res.data)
           this.tableData = res.data.list
+          this.tableData.forEach((e, index) => {
+            e.sort = index + 1
+          })
+          console.log('getLoadPerms', this.tableData)
         }
       })
     },
@@ -631,6 +635,16 @@ export default {
       this.$api.uploadLoadPerms(this.tableData).then(res => {
         if (res.code === 200) {
           console.log('uploadLoadPerms', res.data)
+          this.isShowLoadPerms = false
+          this.$message({
+            type: 'success',
+            message: '下载权限设置成功!'
+          })
+        } else {
+          this.$message({
+            type: 'error',
+            message: res.message || '服务器错误，请稍后再试'
+          })
         }
       })
     },
@@ -658,7 +672,7 @@ export default {
       })
     },
     // 自主建课-第二步-选择可下载资源包------------------------------------------------------------------
-    uploadPackage () {
+    addPackage () {
       console.log('this.checkedResour.resourceId', this.checkedResour)
       const checkedResour = this.checkedResour.map(e => {
         return {
@@ -666,9 +680,9 @@ export default {
           courseId: this.courseId
         }
       })
-      this.$api.uploadPackage(checkedResour).then(res => {
+      this.$api.addPackage(checkedResour).then(res => {
         if (res.code === 200) {
-          console.log('uploadPackage', res.data)
+          console.log('addPackage', res.data)
           this.tableData = res.data
           this.isShowLoadPerms = true
         } else {
@@ -697,11 +711,7 @@ export default {
         confirmButtonClass: 'confirmButton',
         showClose: false
       }).then(() => {
-        this.isShowLoadPerms = false
-        this.$message({
-          type: 'success',
-          message: '成功!'
-        })
+        this.uploadLoadPerms()
       }).catch(() => {
         this.$message({
           type: 'info',
@@ -794,11 +804,10 @@ export default {
         console.log('this.fromState', this.fromState)
         if (this.fromState === 'isShowEdit') {
           this.addResourseBatch()
-          this.isShowEdit = true
         }
         if (this.fromState === 'isShowLoadPerms') {
           console.log('this.checkedResour', this.checkedResour)
-          this.uploadPackage()
+          this.addPackage()
         }
         this.isShowChooseResour = false
         this.$message({

@@ -1,7 +1,7 @@
 <template>
   <div class="ChosCourItem-box">
     <div class="left">
-      <img :src="base+'card_eg.jpg'" alt="">
+      <img :src="stuCourse.coverUri" alt="">
       <div class="item-info">
         <h2>{{stuCourse.openName}}</h2>
         <p class="teacher">授课老师：{{stuCourse.lectureName}}</p>
@@ -30,17 +30,17 @@ export default {
   methods: {
     chooseCourse () {
       this.$api.stuSelectCourse({
-        courEventId: this.index
+        courEventId: this.stuCourse.openId
       }).then(res => {
         if (res.code === 200) {
           this.$message({
             type: 'success',
-            $message: '选课成功！'
+            message: '选课成功！'
           })
         } else {
           this.$message({
             type: 'error',
-            $message: res.message
+            message: res.message || '服务器内部错误，请稍后再试'
           })
         }
       })
