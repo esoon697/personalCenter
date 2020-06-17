@@ -1,7 +1,7 @@
 <template>
   <TMContentBox>
     <span slot="content-title">学生选课</span>
-    <div slot="main-content" class="view-outer">
+    <div v-loading="loading" element-loading-background="rgba(244,245,252,.8)" style="min-height: 500px" slot="main-content" class="view-outer">
       <ChosCourItem v-for="(stuCourse, index) in stuCourseList" :key="index" :stuCourse=stuCourse :index="index"></ChosCourItem>
       <div class="view-footer">
         <el-pagination
@@ -26,6 +26,7 @@ export default {
   props: [],
   data () {
     return {
+      loading: true,
       currentPage: 1,
       stuCourseList: [],
       total: 0,
@@ -51,6 +52,7 @@ export default {
           this.stuCourseList = res.data.list
           this.total = res.data.total
           this.pageSize = res.data.pageSize
+          this.loading = false
         }
       })
     },

@@ -1,7 +1,7 @@
 <template>
   <TMContentBox>
     <span slot="content-title">我的选课</span>
-    <div slot="main-content" class="view-outer">
+    <div v-loading="loading" element-loading-background="rgba(244,245,252,.8)" style="min-height: 500px" slot="main-content" class="view-outer">
       <div class="myCourse-mian-box">
         <MyCourItem v-for="(myCourse, index) in myCourses" :key="index" :myCourse=myCourse></MyCourItem>
       </div>
@@ -28,6 +28,7 @@ export default {
   props: [],
   data () {
     return {
+      loading: true,
       currentPage: 1,
       myCourses: [],
       total: 10,
@@ -46,14 +47,15 @@ export default {
     selectMyCourse () {
       // let id = this.$route.query.openId
       this.$api.selectMyCourse({
-        pageSize: this.currentPage,
-        pageNum: this.pageSize
+        pageSize: this.pageSize,
+        pageNum: this.currentPage
       }).then(res => {
         if (res.code === 200) {
           console.log('stuCourseDetails', res.data)
           this.myCourses = res.data.list
           this.total = res.data.total
           this.pageSize = res.data.pageSize
+          this.loading = false
         }
       })
     },
@@ -77,7 +79,7 @@ export default {
   align-items: center;
   .myCourse-mian-box{
     display: flex;
-    justify-content: center;
+    justify-content: flex-start;
     flex-wrap: wrap;
   }
   .view-footer{

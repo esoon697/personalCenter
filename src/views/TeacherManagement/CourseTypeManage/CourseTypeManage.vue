@@ -34,6 +34,7 @@
       <div class="view-inner">
         <el-table
           :data="tableData"
+          v-loading="loading"
           border
           :header-cell-style="{background: '#F2F2F2'}"
           style="width: 100%">
@@ -220,6 +221,7 @@ export default {
   props: [],
   data () {
     return {
+      loading: true,
       courTypeName: null,
       status: null,
       courTypeHour: null,
@@ -283,6 +285,7 @@ export default {
         if (res.code === 200) {
           console.log('getCourTypeManageInfo', res.data)
           this.tableData = res.data.list
+          this.loading = false
         }
       })
     },
@@ -312,7 +315,7 @@ export default {
     },
     uploadCourTypeManageInfo () {
       const addForm = this.editForm
-      this.$api.addCourTypeManageInfo({
+      this.$api.uploadCourTypeManageInfo({
         courTypeId: addForm.courTypeId,
         courTypeName: addForm.courTypeName,
         courTypeScore: addForm.courTypeScore,

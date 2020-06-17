@@ -1,6 +1,6 @@
 <template>
 <TMContentBox>
-  <span slot="content-title">考试建设</span>
+  <span slot="content-title">考试管理</span>
   <el-form slot="main-content" :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
     <el-form-item class="ExamBuild-form" label="考试名称：" placeholder="请选择考试名称" prop="exmName">
       <el-input class="lengthStyle" v-model="ruleForm.exmName"></el-input>

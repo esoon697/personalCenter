@@ -30,7 +30,8 @@ export default {
 <style lang="less" scoped>
 @theme: #007AB7;
 .ChosCourItem-box{
-  max-width: 600px;
+  // flex: 1;
+  width: 555px;
   padding: 20px 30px;
   display: flex;
   justify-content: space-between;
@@ -57,6 +58,10 @@ export default {
         font-weight:bold;
         color:rgba(51,51,51,1);
         margin-bottom: 15px;
+        width: 280px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
       }
       .teacher{
         font-size:16px;

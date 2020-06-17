@@ -1,6 +1,6 @@
 <template>
   <TMContentBox>
-    <span slot="content-title">试卷建设</span>
+    <span slot="content-title">试卷管理</span>
     <el-form slot="main-content" :model="ruleForm" :rules="rules" ref="ruleForm" label-width="125px" class="demo-ruleForm">
       <el-form-item label="试卷名称：" prop="testPaperName">
         <el-input class="lengthStyle" v-model="ruleForm.testPaperName" placeholder="请输入试卷名称"></el-input>

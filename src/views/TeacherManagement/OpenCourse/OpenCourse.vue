@@ -1,7 +1,7 @@
 <template>
   <div class="openCourse-box">
     <div class="openCourse-inner">
-      <div class="title">开设建课</div>
+      <div class="title">开课管理</div>
       <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="150px" class="demo-ruleForm" label-position="right">
         <el-form-item label="选择课程：" prop="course">
           <div class="wrapper">
@@ -26,7 +26,7 @@
             <button class="choose-btn" @click="chooseTeacher">选择</button> -->
           </div>
         </el-form-item>
-        <el-form-item label="课程时间：" prop="courseTime" disabled>
+        <el-form-item label="开放时间：" prop="courseTime" disabled>
           <el-date-picker
             v-model="ruleForm.courseTime"
             type="daterange"
@@ -63,7 +63,7 @@
               <el-time-picker
                 v-model="ruleForm.timeValue1"
                 :picker-options="{
-                  selectableRange: '18:30:00 - 20:30:00'
+                  selectableRange: '00:00:00 - 23:59:59'
                 }"
                 placeholder="开始时间">
               </el-time-picker>
@@ -76,7 +76,7 @@
                 arrow-control
                 v-model="ruleForm.timeValue2"
                 :picker-options="{
-                  selectableRange: '18:30:00 - 20:30:00'
+                  selectableRange: '00:00:00 - 23:59:59'
                 }"
                 placeholder="结束时间">
               </el-time-picker>
@@ -95,30 +95,31 @@
             <span class="annotation">（参加考试前，需要完成视频观看百分比）</span>
           </div>
         </el-form-item>
-        <el-form-item label="视频考核比例：" prop="videoAssess">
+        <div class="divider"></div>
+        <el-form-item label="视频考核权重：" prop="videoAssess">
           <div class="wrapper">
-            <el-input class="lengthStyle1" v-model="ruleForm.videoAssess" oninput = "value=value.replace(/[^\d]/g,'')" placeholder=""></el-input>%
+            <el-input class="lengthStyle1" v-model="ruleForm.videoAssess" placeholder="请输入0-100的整数" oninput = "value=value.replace(/[^\d]/g,'')"></el-input>%
           </div>
         </el-form-item>
-        <el-form-item label="作业考核比例：" prop="workAssess">
+        <el-form-item label="作业考核权重：" prop="workAssess">
           <div class="wrapper">
-            <el-input class="lengthStyle1" v-model="ruleForm.workAssess" oninput = "value=value.replace(/[^\d]/g,'')" placeholder=""></el-input>%
+            <el-input class="lengthStyle1" v-model="ruleForm.workAssess" placeholder="请输入0-100的整数" oninput = "value=value.replace(/[^\d]/g,'')"></el-input>%
           </div>
         </el-form-item>
-        <el-form-item label="考试考核比例：" prop="taskAssess">
+        <el-form-item label="考试考核权重：" prop="taskAssess">
           <div class="wrapper">
-            <el-input class="lengthStyle1" v-model="ruleForm.taskAssess" oninput = "value=value.replace(/[^\d]/g,'')" placeholder=""></el-input>%
+            <el-input class="lengthStyle1" v-model="ruleForm.taskAssess" placeholder="请输入0-100的整数" oninput = "value=value.replace(/[^\d]/g,'')"></el-input>%
           </div>
         </el-form-item>
         <div class="wrapper">
-          <el-form-item label="讨论考核比例：" prop="discussAssess">
+          <el-form-item label="讨论考核权重：" prop="discussAssess">
             <div class="wrapper">
-              <el-input class="lengthStyle1" v-model="ruleForm.discussAssess" oninput = "value=value.replace(/[^\d]/g,'')" placeholder=""></el-input>%
+              <el-input class="lengthStyle1" v-model="ruleForm.discussAssess" placeholder="请输入0-100的整数" oninput = "value=value.replace(/[^\d]/g,'')"></el-input>%
             </div>
           </el-form-item>
-          <el-form-item label="发布讨论次数：" prop="discussCount">
+          <!-- <el-form-item label="发布讨论次数：" prop="discussCount">
             <el-input class="lengthStyle1" v-model="ruleForm.discussCount" oninput = "value=value.replace(/[^\d]/g,'')" placeholder=""></el-input>
-          </el-form-item>
+          </el-form-item> -->
         </div>
         <el-form-item>
           <div class="btn-group">
@@ -226,8 +227,8 @@ export default {
         videoAssess: '',
         workAssess: '',
         taskAssess: '',
-        discussAssess: '',
-        discussCount: ''
+        discussAssess: ''
+        // discussCount: ''
       },
       rules: {
         course: [
@@ -286,122 +287,8 @@ export default {
           }
         ]
       },
-      courseData: [
-        {
-          label: '一级 1',
-          children: [
-            {
-              label: '二级 1-1',
-              children: [
-                {
-                  id: 11,
-                  label: '三级 1-1-1'
-                }
-              ]
-            }
-          ]
-        },
-        {
-          label: '一级 2',
-          children: [
-            {
-              label: '二级 2-1',
-              children: [
-                {
-                  label: '三级 2-1-1'
-                }
-              ]
-            },
-            {
-              label: '二级 2-2',
-              children: [
-                {
-                  label: '三级 2-2-1'
-                }
-              ]
-            }
-          ]
-        },
-        {
-          label: '一级 3',
-          children: [
-            {
-              label: '二级 3-1',
-              children: [
-                {
-                  label: '三级 3-1-1'
-                }
-              ]
-            },
-            {
-              label: '二级 3-2',
-              children: [
-                {
-                  label: '三级 3-2-1'
-                }
-              ]
-            }
-          ]
-        }
-      ],
-      studentData: [
-        {
-          label: '一级 1',
-          children: [
-            {
-              label: '二级 1-1',
-              children: [
-                {
-                  id: 11,
-                  label: '三级 1-1-1'
-                }
-              ]
-            }
-          ]
-        },
-        {
-          label: '一级 2',
-          children: [
-            {
-              label: '二级 2-1',
-              children: [
-                {
-                  label: '三级 2-1-1'
-                }
-              ]
-            },
-            {
-              label: '二级 2-2',
-              children: [
-                {
-                  label: '三级 2-2-1'
-                }
-              ]
-            }
-          ]
-        },
-        {
-          label: '一级 3',
-          children: [
-            {
-              label: '二级 3-1',
-              children: [
-                {
-                  label: '三级 3-1-1'
-                }
-              ]
-            },
-            {
-              label: '二级 3-2',
-              children: [
-                {
-                  label: '三级 3-2-1'
-                }
-              ]
-            }
-          ]
-        }
-      ],
+      courseData: [],
+      studentData: [],
       courseProps: {
         children: 'courseInfoList',
         label: 'title'
@@ -751,8 +638,8 @@ export default {
         assessmentVedio: ruleForm.videoAssess,
         assessmentWork: ruleForm.workAssess,
         assessmentExam: ruleForm.taskAssess,
-        assessmentDiscussion: ruleForm.discussAssess,
-        discussionNum: ruleForm.discussCount
+        assessmentDiscussion: ruleForm.discussAssess
+        // discussionNum: ruleForm.discussCount
       }).then(res => {
         if (res.code === 200) {
           console.log(res.data)
@@ -772,6 +659,15 @@ export default {
       this.$refs[formName].validate((valid) => {
         if (valid) {
           console.log(this.ruleForm)
+          let [videoAssess, workAssess, taskAssess, discussAssess] = this.ruleForm
+          let total = videoAssess + workAssess + taskAssess + discussAssess
+          if (total !== 100) {
+            this.$message({
+              type: 'warning',
+              message: '考核权重之和必须为100%'
+            })
+            return
+          }
           this.openCourse()
           // alert('submit!')
         } else {
@@ -894,14 +790,17 @@ export default {
     }
     .el-form{
       // width: 60%;
+      .divider{
+        width: 100%;
+        height: 1px;
+        background-color: #ccc;
+        margin: 24px 40px;
+      }
       .wrapper{
         display: flex;
       }
       .lengthStyle{
         width: 260px;
-      }
-      .lengthStyle1{
-        width: 150px;
       }
       .el-input{
         // width: 90%;
@@ -1028,7 +927,7 @@ export default {
     width: 260px;
   }
   .lengthStyle1{
-    width: 150px;
+    width: 200px;
   }
 }
 </style>

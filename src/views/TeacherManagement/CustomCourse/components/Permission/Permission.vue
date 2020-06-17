@@ -29,7 +29,7 @@
             </el-option>
           </el-select>
         </el-form-item>
-      <el-form-item label="是否上传素材资源：" prop="shareResource">
+      <el-form-item label="是否分享素材资源：" prop="shareResource">
         <el-radio-group v-model="ruleForm.shareResource">
           <el-radio :label="1">是</el-radio>
           <el-radio :label="0">否</el-radio>
@@ -63,7 +63,7 @@
         </div>
         <button class="search-btn" @click="getTeacher">查询</button>
       </div>
-      <div class="choosePerson-box" slot="dialog-content">
+      <div v-loading="loading" class="choosePerson-box" slot="dialog-content">
         <el-tree
         ref="personTree"
         slot="dialog-content"
@@ -91,6 +91,7 @@ export default {
       }
     }
     return {
+      loading: true,
       isShowChoosePerson: false,
       ruleForm: {
         isPublic: '',
@@ -116,64 +117,7 @@ export default {
           { required: true, validator: checkedvalidate, trigger: 'change' }
         ]
       },
-      personData: [
-        {
-          label: '一级 1',
-          children: [
-            {
-              label: '二级 1-1',
-              children: [
-                {
-                  id: 11,
-                  label: '三级 1-1-1'
-                }
-              ]
-            }
-          ]
-        },
-        {
-          label: '一级 2',
-          children: [
-            {
-              label: '二级 2-1',
-              children: [
-                {
-                  label: '三级 2-1-1'
-                }
-              ]
-            },
-            {
-              label: '二级 2-2',
-              children: [
-                {
-                  label: '三级 2-2-1'
-                }
-              ]
-            }
-          ]
-        },
-        {
-          label: '一级 3',
-          children: [
-            {
-              label: '二级 3-1',
-              children: [
-                {
-                  label: '三级 3-1-1'
-                }
-              ]
-            },
-            {
-              label: '二级 3-2',
-              children: [
-                {
-                  label: '三级 3-2-1'
-                }
-              ]
-            }
-          ]
-        }
-      ],
+      personData: [],
       defaultProps: {
         children: 'children',
         label: 'teacherName'
@@ -199,6 +143,7 @@ export default {
         if (res.code === 200) {
           console.log(res.data)
           this.personData = res.data
+          this.loading = false
         }
       })
     },

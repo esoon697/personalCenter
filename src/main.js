@@ -13,7 +13,7 @@ import {
   Button,
   Message,
   MessageBox,
-  // Loading,
+  Loading,
   Dialog,
   Popover,
   Submenu,
@@ -44,7 +44,8 @@ import {
   TimeSelect,
   TimePicker,
   Cascader,
-  Switch
+  Switch,
+  Divider
 } from 'element-ui'
 import '../static/theme/index.css'
 
@@ -63,7 +64,7 @@ require('echarts/lib/component/legend')
 Vue.component(Button.name, Button)
 Vue.component(Message.name, Message)
 Vue.component(MessageBox.name, MessageBox)
-// Vue.component(Loading.name, Loading)
+Vue.component(Loading)
 Vue.component(Dialog.name, Dialog)
 Vue.component(Popover.name, Popover)
 Vue.component(Menu.name, Menu)
@@ -95,6 +96,11 @@ Vue.component(TimeSelect.name, TimeSelect)
 Vue.component(TimePicker.name, TimePicker)
 Vue.component(Cascader.name, Cascader)
 Vue.component(Switch.name, Switch)
+Vue.component(Divider.name, Divider)
+
+Vue.use(Loading.directive)
+
+Vue.prototype.$loading = Loading.service
 Vue.prototype.$message = Message
 Vue.prototype.$msgbox = MessageBox
 Vue.prototype.$alert = MessageBox.alert

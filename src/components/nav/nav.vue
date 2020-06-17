@@ -149,13 +149,13 @@ export default {
               children: []
             },
             {
-              title: '考试建设',
+              title: '考试管理',
               path: '/teacherManagement/examBuild',
               name: 'ExamBuild',
               children: []
             },
             {
-              title: '试卷建设',
+              title: '试卷管理',
               path: '/teacherManagement/testPaperBuild',
               name: 'TestPaperBuild',
               children: []

@@ -84,6 +84,9 @@ export default {
         line-height: 1.3;
         color:rgba(51,51,51,1);
         margin-bottom: 15px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
       }
       .teacher{
         font-size:16px;

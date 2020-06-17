@@ -1,5 +1,5 @@
 <template>
-  <div class="menuTree-box">
+  <div v-loading="loading2" class="menuTree-box">
     <div class="block">
         <el-tree
         style="width: 100%"
@@ -24,7 +24,7 @@
               <span class="nodeName" :class="{'parentNodeName': data.children && data.children.length}" v-if="!(isEdit && node.id == currentId)">{{ node.label }}</span>
               <input type="text" class="edit-box" placeholder="请输入新的名称" @blur="saveChange(node, data)" v-model="editVal" v-focus v-else>
               <span class="btn-group" v-show="isShowBtns && node.id == currentId">
-                <button class="btn-item" @click="() => appendChildNode(node, data)">新增子节点</button>
+                <button @mouseover="mouseoverHandle" class="btn-item" @click="() => appendChildNode(node, data)">新增子节点</button>
                 <button class="btn-item" @click="() => appendNode(node, data)">新增同级节点</button>
                 <button class="btn-item" @click="() => remove(node, data)">删除目录</button>
                 <button class="btn-item" @click="() => editName(node, data)">编辑目录</button>
@@ -47,7 +47,7 @@
     @close="editClose"
     @confirm="editConfirm"
     v-show="isShowEdit">
-      <div class="contentEdit-box" slot="dialog-content">
+      <div v-loading="loading3" class="contentEdit-box" slot="dialog-content">
         <!-- <input type="text" v-model="val3"> -->
         <div class="contentEdit-item" v-for="(resources, index1) in resourcesList" :key="index1">
           <div class="item-title">{{resources.title}}</div>
@@ -100,7 +100,7 @@
       </div>
       <button class="search-btn" @click="searchResourse">查询</button>
     </div>
-    <div class="ChooseResour-box" slot="dialog-content">
+    <div v-loading="loading1" class="ChooseResour-box" slot="dialog-content">
       <el-tree
       ref="resourseTree"
       slot="dialog-content"
@@ -132,10 +132,11 @@
     <div class="loadPerms-box" slot="dialog-content">
       <el-table
         stripe
+        v-loading="loading"
         row-key="sort"
         highlight-current-row
         :data="tableData"
-        max-height="470"
+        max-height="460"
         style="width: 100%">
         <el-table-column
           prop="sort"
@@ -187,11 +188,24 @@ export default {
   props: {},
   data () {
     return {
+      loading: false,
+      loading1: false,
+      loading2: false,
+      loading3: false,
       currentExpandedKey: 1,
       isClick: false,
       targetIndex: null,
-      menuTreeData: [],
-      resourcesList: [],
+      menuTreeData: [
+        {
+          label: '第一张'
+        }
+      ],
+      resourcesList: [
+        {
+          title: '课前',
+          children: []
+        }
+      ],
       hasChlid: false,
       isShowBtns: false,
       currentId: null,
@@ -200,7 +214,25 @@ export default {
       isShowEdit: false,
       isShowChooseResour: false,
       isShowLoadPerms: false,
-      resourseData: [],
+      resourseData: [
+        {
+          title: 'one',
+          children: [
+            {
+              title: '1-1',
+              children: []
+            }
+          ]
+        },
+        {
+          title: 'two',
+          children: []
+        },
+        {
+          title: 'three',
+          children: []
+        }
+      ],
       menuTreeProps: {
         children: 'children',
         label: 'menuName'
@@ -222,6 +254,11 @@ export default {
   created () {},
   mounted () {
     // this.init()
+    let treeItems = document.querySelectorAll('ChooseResour-box>.el-tree-node')
+    console.log('treeItems', treeItems)
+    treeItems.forEach(e => {
+      e.addEventListener('mouseover', this.mouseoverHandle, false)
+    })
   },
   computed: {
     activeName () {
@@ -241,6 +278,9 @@ export default {
     }
   },
   methods: {
+    mouseoverHandle () {
+      console.log(id++)
+    },
     init () {
       this.getTreeList()
       // this.getCourContentType()
@@ -257,9 +297,10 @@ export default {
           let newData = deepMap(res.data)
           console.log('newData', newData)
           this.menuTreeData = newData
+          this.loading2 = false
         }
       })
-      let num = 0
+      let num = 1
       let deepMap = (data) => {
         for (let i in data) {
           data[i].id = num++
@@ -315,6 +356,7 @@ export default {
             children: []
           }
           this.menuTreeData.push(newChild)
+          this.loading2 = false
         }
       })
     },
@@ -483,6 +525,7 @@ export default {
         if (res.code === 200) {
           console.log('findSourceInfo', res.data)
           this.resourseData = res.data
+          this.loading1 = false
         }
       })
       this.resourseName = null
@@ -518,6 +561,7 @@ export default {
         if (res.code === 200) {
           console.log('getCourContentType', res.data)
           this.resourcesList = res.data
+          this.loading3 = false
         }
       })
     },
@@ -626,6 +670,7 @@ export default {
           this.tableData.forEach((e, index) => {
             e.sort = index + 1
           })
+          this.loading = false
           console.log('getLoadPerms', this.tableData)
         }
       })
@@ -657,6 +702,7 @@ export default {
         if (res.code === 200) {
           console.log('getLoadPackage', res.data)
           this.resourseData = res.data.list
+          this.loading1 = false
         }
       })
       this.resourseType = null
@@ -677,18 +723,18 @@ export default {
       const checkedResour = this.checkedResour.map(e => {
         return {
           resourceId: e.resourceId,
-          courseId: this.courseId
+          courseId: this.courseId,
+          status: this.checked
         }
       })
       this.$api.addPackage(checkedResour).then(res => {
         if (res.code === 200) {
-          console.log('addPackage', res.data)
-          this.tableData = res.data
+          // this.tableData = res.data
           this.isShowLoadPerms = true
         } else {
           this.$message({
             type: 'error',
-            message: res.message
+            message: res.message + ''
           })
         }
       })
