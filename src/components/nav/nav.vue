@@ -73,57 +73,57 @@ export default {
           icon: 'http://182.148.48.236:54321/source/personalCenter/nav_icon0.png',
           children: []
         },
-        {
-          title: '学习中心',
-          path: '/studyCenter',
-          name: 'StudyCenter',
-          // icon: 'el-icon-menu',
-          icon: 'http://182.148.48.236:54321/source/personalCenter/nav_icon1.png',
-          children: [
-            // {
-            //   title: '个人中心',
-            //   path: '/studyCenter/centerIndex',
-            //   name: 'CenterIndex',
-            //   children: []
-            // },
-            {
-              title: '课前预习',
-              path: '/studyCenter/preview',
-              name: 'Preview',
-              children: []
-            },
-            {
-              title: '课堂互动',
-              path: '/studyCenter/interaction',
-              name: 'Interaction',
-              children: []
-            },
-            {
-              title: '课后任务',
-              path: '/studyCenter/courseTask',
-              name: 'CourseTask',
-              children: []
-            },
-            {
-              title: '课程评价',
-              path: '/studyCenter/courseEvaluation',
-              name: 'CourseEvaluation ',
-              children: []
-            },
-            {
-              title: '学习反馈',
-              path: '/studyCenter/studyFeedback',
-              name: 'StudyFeedback',
-              children: []
-            },
-            {
-              title: '我的作业',
-              path: '/studyCenter/myWork',
-              name: 'MyWork',
-              children: []
-            }
-          ]
-        },
+        // {
+        //   title: '学习中心',
+        //   path: '/studyCenter',
+        //   name: 'StudyCenter',
+        //   // icon: 'el-icon-menu',
+        //   icon: 'http://182.148.48.236:54321/source/personalCenter/nav_icon1.png',
+        //   children: [
+        //     // {
+        //     //   title: '个人中心',
+        //     //   path: '/studyCenter/centerIndex',
+        //     //   name: 'CenterIndex',
+        //     //   children: []
+        //     // },
+        //     {
+        //       title: '课前预习',
+        //       path: '/studyCenter/preview',
+        //       name: 'Preview',
+        //       children: []
+        //     },
+        //     {
+        //       title: '课堂互动',
+        //       path: '/studyCenter/interaction',
+        //       name: 'Interaction',
+        //       children: []
+        //     },
+        //     {
+        //       title: '课后任务',
+        //       path: '/studyCenter/courseTask',
+        //       name: 'CourseTask',
+        //       children: []
+        //     },
+        //     {
+        //       title: '课程评价',
+        //       path: '/studyCenter/courseEvaluation',
+        //       name: 'CourseEvaluation ',
+        //       children: []
+        //     },
+        //     {
+        //       title: '学习反馈',
+        //       path: '/studyCenter/studyFeedback',
+        //       name: 'StudyFeedback',
+        //       children: []
+        //     },
+        //     {
+        //       title: '我的作业',
+        //       path: '/studyCenter/myWork',
+        //       name: 'MyWork',
+        //       children: []
+        //     }
+        //   ]
+        // },
         {
           title: '教师管理',
           path: '/teacherManagement',
@@ -185,49 +185,49 @@ export default {
               children: []
             }
           ]
-        },
-        {
-          title: '讨论中心',
-          path: '/',
-          name: 'DiscussionCenter',
-          icon: 'http://182.148.48.236:54321/source/personalCenter/nav_icon2.png',
-          children: [
-            {
-              title: '讨论中心',
-              path: '/',
-              name: 'DiscussionCenter',
-              children: []
-            }
-          ]
-        },
-        {
-          title: '我的考试',
-          path: '/',
-          name: 'MyExam',
-          icon: 'http://182.148.48.236:54321/source/personalCenter/nav_icon3.png',
-          children: [
-            {
-              title: '我的考试',
-              path: '/',
-              name: 'MyExam',
-              children: []
-            }
-          ]
-        },
-        {
-          title: '个人设置',
-          path: '/',
-          name: 'MySitting',
-          icon: 'http://182.148.48.236:54321/source/personalCenter/nav_icon4.png',
-          children: [
-            {
-              title: '个人设置',
-              path: '/',
-              name: 'MySitting',
-              children: []
-            }
-          ]
         }
+        // {
+        //   title: '讨论中心',
+        //   path: '/',
+        //   name: 'DiscussionCenter',
+        //   icon: 'http://182.148.48.236:54321/source/personalCenter/nav_icon2.png',
+        //   children: [
+        //     {
+        //       title: '讨论中心',
+        //       path: '/',
+        //       name: 'DiscussionCenter',
+        //       children: []
+        //     }
+        //   ]
+        // },
+        // {
+        //   title: '我的考试',
+        //   path: '/',
+        //   name: 'MyExam',
+        //   icon: 'http://182.148.48.236:54321/source/personalCenter/nav_icon3.png',
+        //   children: [
+        //     {
+        //       title: '我的考试',
+        //       path: '/',
+        //       name: 'MyExam',
+        //       children: []
+        //     }
+        //   ]
+        // },
+        // {
+        //   title: '个人设置',
+        //   path: '/',
+        //   name: 'MySitting',
+        //   icon: 'http://182.148.48.236:54321/source/personalCenter/nav_icon4.png',
+        //   children: [
+        //     {
+        //       title: '个人设置',
+        //       path: '/',
+        //       name: 'MySitting',
+        //       children: []
+        //     }
+        //   ]
+        // }
       ]
     }
   },

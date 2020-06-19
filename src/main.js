@@ -6,6 +6,7 @@ import App from './App'
 import router from './router'
 import store from './store/index'
 import api from './axios/api'
+import * as dd from 'dingtalk-jsapi'
 // 引入工具文件
 import './utils/utils'
 // 引入element-ui相关组件
@@ -110,6 +111,8 @@ Vue.prototype.$prompt = MessageBox.prompt
 
 // vue全局注入echarts
 Vue.prototype.$echarts = echarts
+
+Vue.prototype.$dd = dd // 将api挂载到vue的原型上
 
 // 将api挂载到vue的原型上
 Vue.prototype.$api = api

@@ -41,6 +41,7 @@ export default {
   watch: {},
   created () {
     this.init()
+    // this.dingdingInt()
   },
   mounted () {},
   methods: {
@@ -100,6 +101,44 @@ export default {
           }
         })
       }
+    },
+    dingdingInt () {
+      let dd = this.$dd
+      const host = window.location.host
+      this.ipUrl = 'http://' + host + '/centerIndex'
+      let that = this
+      dd.ready(function () {
+        var strs
+        var url = location.search
+        if (url.indexOf('?') !== -1) {
+          var str = url.substr(1)
+          strs = str.split('=')
+          that.corpId = strs[1]
+        }
+        dd.runtime.permission.requestAuthCode({
+          corpId: that.corpId,
+          onSuccess: function (result) {
+            console.log('res:::::', result)
+            that.code = result.code
+            that.postDingLogin()
+          },
+          onFail: function (err) {
+            console.log(err)
+          }
+        })
+      })
+    },
+    postDingLogin () {
+      this.$api.postDingLogin({
+        code: this.code,
+        corpId: this.corpId,
+        flag: 1
+      }).then(res => {
+        if (res.code === 200) {
+          console.log(res)
+          window.location.href = this.ipUrl
+        }
+      })
     }
   }
 }

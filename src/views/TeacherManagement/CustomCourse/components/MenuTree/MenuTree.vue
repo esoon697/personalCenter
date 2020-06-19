@@ -30,11 +30,12 @@
                 <button class="btn-item" @click="() => editName(node, data)">编辑目录</button>
                 <button class="btn-item" v-show="!(data.children&&data.children.length)" @click="() => editContent(node, data)">编辑内容</button>
                 <button class="btn-item" v-show="!(data.children&&data.children.length)" @click="() => editLoad(node, data)">编辑下载</button>
+                <button class="btn-item" v-show="!(data.children&&data.children.length)" @click="() => choosePaper(node, data)">编辑作业</button>
               </span>
               <div class="less-btn" @click="ChangeShowBtns(node.id)">
                 <i class="el-icon-setting" v-if="!(isShowBtns && node.id == currentId)"></i>
                 <i class="el-icon-s-tools" v-else></i>
-                </div>
+              </div>
           </span>
         </el-tree>
         <div v-else class="creatTree-btn" @click="creatTree">新建课程目录 <i style="font-size: 18px" class="el-icon-plus"></i></div>
@@ -88,31 +89,31 @@
     @close="chooseResourClose"
     @confirm="chooseResourConfirm"
     v-show="isShowChooseResour">
-    <div class="ChooseResour-btns" slot="dialog-btns">
-      <div>
-        <label for="input1">资源类别：</label>
-        <!-- <input type="text" name="" id="input1" v-model="resourseType"> -->
-        <el-select v-model="resourseType" placeholder="请选择">
-          <el-option v-for="(resourTypeOpt, index) in resourTypeOpts" :key="index" :label="resourTypeOpt.name" :value="resourTypeOpt.typeId"></el-option>
-        </el-select>
-        <label for="input2">资源名称：</label>
-        <input type="text" name="" id="input2" v-model="resourseName">
+      <div class="ChooseResour-btns" slot="dialog-btns">
+        <div>
+          <label for="input1">资源类别：</label>
+          <!-- <input type="text" name="" id="input1" v-model="resourseType"> -->
+          <el-select v-model="resourseType" placeholder="请选择">
+            <el-option v-for="(resourTypeOpt, index) in resourTypeOpts" :key="index" :label="resourTypeOpt.name" :value="resourTypeOpt.typeId"></el-option>
+          </el-select>
+          <label for="input2">资源名称：</label>
+          <input type="text" name="" id="input2" v-model="resourseName">
+        </div>
+        <button class="search-btn" @click="searchResourse">查询</button>
       </div>
-      <button class="search-btn" @click="searchResourse">查询</button>
-    </div>
-    <div v-loading="loading1" class="ChooseResour-box" slot="dialog-content">
-      <el-tree
-      ref="resourseTree"
-      slot="dialog-content"
-      :data="resourseData"
-      :props="resourseProps"
-      @node-click="handleNodeClick"
-      @check-change="handleCheckChange"
-      show-checkbox></el-tree>
-    </div>
-    <div class="checkbox-box" slot="custom">
-      <el-checkbox v-if="fromState === 'isShowLoadPerms'" v-model="checked">将选中项设置为学生可下载</el-checkbox>
-    </div>
+      <div v-loading="loading1" class="ChooseResour-box" slot="dialog-content">
+        <el-tree
+        ref="resourseTree"
+        slot="dialog-content"
+        :data="resourseData"
+        :props="resourseProps"
+        @node-click="handleNodeClick"
+        @check-change="handleCheckChange"
+        show-checkbox></el-tree>
+      </div>
+      <div class="checkbox-box" slot="custom">
+        <el-checkbox v-if="fromState === 'isShowLoadPerms'" v-model="checked">将选中项设置为学生可下载</el-checkbox>
+      </div>
     </myDialog>
      <!-- 可下载内容编辑弹窗 -->
     <myDialog
@@ -121,59 +122,137 @@
     @close="loadPermsClose"
     @confirm="loadPermsConfirm"
     v-show="isShowLoadPerms">
-    <div class="loadPerms-btns" slot="dialog-btns">
-      <div>
-        <button class="lp-resourse-btn" @click="sourseImport('isShowLoadPerms')">选择资源</button>
-        <button class="lp-upload-btn">上传资源
-          <input type="file" name="file" id="loadPermsFile" value="" accept="image/jpeg,image/png,image/jpg,image/gif" multiple @change="uploadResourse">
-        </button>
+      <div class="loadPerms-btns" slot="dialog-btns">
+        <div>
+          <button class="lp-resourse-btn" @click="sourseImport('isShowLoadPerms')">选择资源</button>
+          <button class="lp-upload-btn">上传资源
+            <input type="file" name="file" id="loadPermsFile" value="" accept="image/jpeg,image/png,image/jpg,image/gif" multiple @change="uploadResourse">
+          </button>
+        </div>
       </div>
-    </div>
-    <div class="loadPerms-box" slot="dialog-content">
-      <el-table
-        stripe
-        v-loading="loading"
-        row-key="sort"
-        highlight-current-row
-        :data="tableData"
-        max-height="460"
-        style="width: 100%">
-        <el-table-column
-          prop="sort"
-          align="center"
-          label="序号">
-        </el-table-column>
-        <el-table-column
-          prop="resourceName"
-          label="资源名称"
-          width="180">
-        </el-table-column>
-        <el-table-column
-          prop="status"
-          align="center"
-          label="学生可下载">
-          <template slot-scope="scope">
-            <el-switch v-model="scope.row.isAllow" active-color="#007AB7"></el-switch>
-          </template>
-        </el-table-column>
-        <el-table-column
-          prop="rank"
-          align="center"
-          label="顺序调整">
-          <template>
-            <span class="el-icon-sort"></span>
-          </template>
-        </el-table-column>
-        <el-table-column
-          prop="operation"
-          align="center"
-          label="操作">
-          <template slot-scope="scope">
-            <el-button @click="loadPermsDel(scope)" type="text" size="small">删除</el-button>
-          </template>
-        </el-table-column>
-      </el-table>
-    </div>
+      <div class="loadPerms-box" slot="dialog-content">
+        <el-table
+          stripe
+          v-loading="loading"
+          row-key="sort"
+          highlight-current-row
+          :data="tableData"
+          max-height="460"
+          style="width: 100%">
+          <el-table-column
+            prop="sort"
+            align="center"
+            label="序号">
+          </el-table-column>
+          <el-table-column
+            prop="resourceName"
+            label="资源名称"
+            width="180">
+          </el-table-column>
+          <el-table-column
+            prop="status"
+            align="center"
+            label="学生可下载">
+            <template slot-scope="scope">
+              <el-switch v-model="scope.row.isAllow" active-color="#007AB7"></el-switch>
+            </template>
+          </el-table-column>
+          <el-table-column
+            prop="rank"
+            align="center"
+            label="顺序调整">
+            <template>
+              <span class="el-icon-sort"></span>
+            </template>
+          </el-table-column>
+          <el-table-column
+            prop="operation"
+            align="center"
+            label="操作">
+            <template slot-scope="scope">
+              <el-button @click="loadPermsDel(scope)" type="text" size="small">删除</el-button>
+            </template>
+          </el-table-column>
+        </el-table>
+      </div>
+    </myDialog>
+    <!-- <myDialog
+    slot="dialog"
+    :title="'题目选择'"
+    :aside="true"
+    @close="chooseTestClose"
+    @confirm="chooseTestConfirm"
+    v-show="isShowChooseTest">
+      <div class="chooseTest-btns" slot="dialog-btns">
+        <div>
+          <label for="input1">资源类别：</label>
+          <input type="text" name="" id="input1">
+          <label for="input2">资源名称：</label>
+          <input type="text" name="" id="input2">
+        </div>
+        <button class="search-btn">查询</button>
+      </div>
+      <div class="chooseTest-box" slot="dialog-content">
+          <el-tree
+          ref="stuTree"
+          slot="dialog-content"
+          :data="testData"
+          :props="defaultProps"
+          node-key="id"
+          @node-click="testNodeClick"
+          @check-change="testCheckChange"
+          show-checkbox>
+            <span class="custom-tree-node" slot-scope="{ node, data }">
+              <span>{{ node.label }}</span>
+              <span>
+                <el-button
+                  type="text"
+                  size="mini"
+                  @click="() => showDetails(data)"
+                  v-show="!(data.children&&data.children.length)">
+                  查看
+                </el-button>
+              </span>
+            </span>
+          </el-tree>
+      </div>
+    </myDialog> -->
+    <myDialog
+    slot="dialog"
+    v-if="isShowtestDetails"
+    :title="testContent.title"
+    :aside="true"
+    @close="testDetailsClose"
+    @confirm="testDetailsConfirm">
+      <div slot="dialog-content">
+        <p class="testOption" v-for="(testOption, index) in testContent.choose" :key="index">{{index+1}}、{{testOption}}</p>
+      </div>
+    </myDialog>
+    <myDialog
+    slot="dialog"
+    :title="'选择试卷'"
+    :aside="true"
+    @close="choosePaperClose"
+    @confirm="choosePaperConfirm"
+    v-show="isShowChoosePaper"
+    show-checkbox>
+      <div class="chooseCour-btns" slot="dialog-btns">
+        <div>
+          <label for="testInput1">所属标签：</label>
+          <input type="text" name="" v-model="belongLabel" id="testInput1">
+          <label for="testInput2">试卷名称：</label>
+          <input type="text" name="" v-model="paperName" id="testInput2">
+        </div>
+        <button class="search-btn" @click="getExamList">查询</button>
+      </div>
+      <div class="chooseCour-box" slot="dialog-content">
+        <el-tree
+        slot="dialog-content"
+        :data="paperData"
+        :props="paperProps"
+        @node-click="paperNodeClick"
+        ></el-tree>
+      </div>
     </myDialog>
   </div>
 </template>
@@ -192,6 +271,10 @@ export default {
       loading1: false,
       loading2: false,
       loading3: false,
+      isShowChooseTest: false,
+      isShowtestDetails: false,
+      testContent: null,
+      isShowChoosePaper: false,
       currentExpandedKey: 1,
       isClick: false,
       targetIndex: null,
@@ -241,6 +324,10 @@ export default {
         children: 'children',
         label: 'title'
       },
+      paperProps: {
+        children: 'children',
+        label: 'paperName'
+      },
       checked: true,
       tableData: [],
       currentIndex1: 0,
@@ -248,7 +335,11 @@ export default {
       resourseType: null,
       resourseName: null,
       resourTypeOpts: [],
-      fromState: ''
+      fromState: '',
+      belongLabel: null,
+      paperName: null,
+      paperData: [],
+      testPaper: null
     }
   },
   created () {},
@@ -480,6 +571,92 @@ export default {
       this.isShowLoadPerms = true
       this.courseId = data.courseId
       this.rowDrop()
+    },
+    // // 新增作业
+    // addTest () {
+    //   this.$api.addTest({
+    //     homeworkId: this.homeworkId,
+    //     chapterId: this.chapterId
+    //   }).then(res => {
+    //     if (res.code === 200) {}
+    //   })
+    // },
+    // // 查询作业
+    // getaAtivelist () {
+    //   this.$api.getaAtivelist({
+    //     type: this.ruleForm.testObjs[this.currentIndex].type
+    //   }).then(res => {
+    //     if (res.code === 200) {
+    //       console.log(res.data)
+    //       this.testData = res.data
+    //     }
+    //   })
+    // },
+    // // 选择作业
+    // chooseTest (index) {
+    //   this.$refs.stuTree.setCheckedKeys([])
+    //   this.isShowChooseTest = true
+    //   this.currentIndex = index
+    //   this.getaAtivelist()
+    // },
+    // 打开试卷弹窗
+    choosePaper (node, data) {
+      this.chapterId = data.menuCode
+      this.courseId = data.courseId
+      this.getExamList()
+      this.isShowChoosePaper = true
+    },
+    // 查询试卷
+    getExamList () {
+      this.$api.getExamList({
+        belongLabel: this.belongLabel,
+        paperName: this.paperName
+      }).then(res => {
+        if (res.code === 200) {
+          console.log('getExamList', res.data)
+          this.paperData = res.data
+        }
+      })
+    },
+    paperNodeClick (data) {
+      console.log(data)
+      let testArr = []
+      this.testPaper = testArr.push()
+      console.log('this.testPaper', this.testPaper)
+    },
+    choosePaperClose () {
+      this.isShowChoosePaper = false
+    },
+    choosePaperConfirm () {
+      this.$confirm('确认提交?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning',
+        cancelButtonClass: 'cancelButton',
+        confirmButtonClass: 'confirmButton',
+        showClose: false
+      }).then(() => {
+        if (this.testPaper[0].children && this.testPaper[0].children.length) {
+          this.$message.warning('请选择某一张试卷')
+          return
+        }
+        this.$api.addTest({
+          chapterId: this.chapterId,
+          homework: [this.testPaper]
+        }).then(res => {
+          if (res.code === 200) {
+            console.log(res.data)
+          }
+        })
+        this.isShowChoosePaper = false
+      }).catch((e) => {
+        console.log(e)
+        this.testPaper = null
+        this.$message({
+          type: 'info',
+          message: '已取消'
+        })
+      })
     },
     handleDragStart (node, ev) {
       console.log('drag start', node)
@@ -901,6 +1078,73 @@ export default {
       console.log(scope.$index)
       this.tableData.splice(scope.$index, 1)
     },
+    // 选择作业
+    // chooseTest (index) {
+    //   this.$refs.stuTree.setCheckedKeys([])
+    //   this.isShowChooseTest = true
+    //   this.currentIndex = index
+    //   this.getaAtivelist()
+    // },
+    // 检查选择的作业
+    getCheckedTest () {
+      console.log(this.$refs.stuTree.getCheckedNodes())
+      this.checkedTest = this.$refs.stuTree.getCheckedNodes()
+      // this.checkedTest = checkedNodes.filter(e => {
+      //   return !e.children
+      // }).map(e => {
+      //   return {
+      //     value: e.$treeNodeId,
+      //     label: e.label
+      //   }
+      // })
+      console.log(this.checkedTest)
+    },
+    // 关闭作业弹窗
+    chooseTestClose () {
+      this.isShowChooseTest = false
+      // let keys = this.$refs.stuTree.getCheckedKeys()
+      // console.log('keys', keys)
+    },
+    // 选择作业确认
+    chooseTestConfirm () {
+      this.$confirm('确认提交?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning',
+        cancelButtonClass: 'cancelButton',
+        confirmButtonClass: 'confirmButton',
+        showClose: false
+      }).then(() => {
+        this.getCheckedTest()
+        this.ruleForm.testObjs[this.currentIndex].questionlist = this.checkedTest
+        this.isShowChooseTest = false
+      }).catch((e) => {
+        console.log(e)
+        this.checkedTest = null
+        this.$message({
+          type: 'info',
+          message: '已取消'
+        })
+      })
+    },
+    // 显示作业详情
+    showDetails (data) {
+      console.log(data)
+      this.testContent = data
+      // this.isShowChooseTest = false
+      this.isShowtestDetails = true
+      this.isShowChooseTest = false
+    },
+    // 关闭作业详情
+    testDetailsClose () {
+      this.isShowChooseTest = true
+      this.isShowtestDetails = false
+    },
+    // 作业详情确认
+    testDetailsConfirm () {
+      this.isShowChooseTest = true
+      this.isShowtestDetails = false
+    },
     // 下一步
     next () {
       this.$store.state.activeName = '3'
@@ -1290,6 +1534,48 @@ export default {
       &:active{
         opacity: .6;
       }
+    }
+  }
+  .chooseCour-btns{
+    font-size:18px;
+    font-family:Microsoft YaHei;
+    font-weight:400;
+    color:rgba(51,51,51,1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    input{
+      border:1px solid rgba(221,221,221,1);
+      border-radius:4px;
+      text-indent: 10px;
+      padding: 7px 0;
+      margin-right: 30px;
+    }
+    .search-btn{
+      background:rgba(202,56,66,1);
+      border-radius:4px;
+      font-size:18px;
+      color:rgba(255,255,255,1);
+      padding: 5px 20px;
+      &:hover{
+        opacity: .8;
+      }
+      &:active{
+        opacity: .6;
+      }
+    }
+  }
+  .chooseCour-box{
+    width: 750px;
+    height: 470px;
+    border: 1px solid #DFDFE0;
+    box-sizing: border-box;
+    overflow: auto;
+    .el-tree-node__label{
+      font-size:18px;
+      font-family:Microsoft YaHei;
+      font-weight:400;
+      // color:rgba(51,51,51,1);
     }
   }
 }
