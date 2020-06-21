@@ -24,13 +24,13 @@
               <span class="nodeName" :class="{'parentNodeName': data.children && data.children.length}" v-if="!(isEdit && node.id == currentId)">{{ node.label }}</span>
               <input type="text" class="edit-box" placeholder="请输入新的名称" @blur="saveChange(node, data)" v-model="editVal" v-focus v-else>
               <span class="btn-group" v-show="isShowBtns && node.id == currentId">
-                <button @mouseover="mouseoverHandle" class="btn-item" @click="() => appendChildNode(node, data)">新增子节点</button>
+                <button class="btn-item" @click="() => appendChildNode(node, data)">新增子节点</button>
                 <button class="btn-item" @click="() => appendNode(node, data)">新增同级节点</button>
                 <button class="btn-item" @click="() => remove(node, data)">删除目录</button>
                 <button class="btn-item" @click="() => editName(node, data)">编辑目录</button>
                 <button class="btn-item" v-show="!(data.children&&data.children.length)" @click="() => editContent(node, data)">编辑内容</button>
                 <button class="btn-item" v-show="!(data.children&&data.children.length)" @click="() => editLoad(node, data)">编辑下载</button>
-                <button class="btn-item" v-show="!(data.children&&data.children.length)" @click="() => choosePaper(node, data)">编辑作业</button>
+                <button class="btn-item" :class="{'checked-btn':isPaperChecked}" v-show="!(data.children&&data.children.length)" @click="() => choosePaper(node, data)">{{isPaperChecked?'编辑作业':'新增作业'}}</button>
               </span>
               <div class="less-btn" @click="ChangeShowBtns(node.id)">
                 <i class="el-icon-setting" v-if="!(isShowBtns && node.id == currentId)"></i>
@@ -109,7 +109,12 @@
         :props="resourseProps"
         @node-click="handleNodeClick"
         @check-change="handleCheckChange"
-        show-checkbox></el-tree>
+        show-checkbox>
+          <span v-if="fromState === 'isShowEdit'" style="width: 100%; position: relative" class="resourse-tree-node" slot-scope="{ node, data }">
+            <button style="width: 100%; height: 100%; opacity: 0" @mouseover="mouseoverHandle(node, data)"></button>
+          </span>
+        </el-tree>
+        <img v-show="previewImg" style="width: 200px; height: 300px; position: absolute; left: 500px" src="../../../../../assets/photo.jpeg" alt="">
       </div>
       <div class="checkbox-box" slot="custom">
         <el-checkbox v-if="fromState === 'isShowLoadPerms'" v-model="checked">将选中项设置为学生可下载</el-checkbox>
@@ -338,8 +343,35 @@ export default {
       fromState: '',
       belongLabel: null,
       paperName: null,
-      paperData: [],
-      testPaper: null
+      paperData: [
+        {
+          paperName: 'one',
+          children: [
+            {
+              paperName: 'two'
+            }
+          ]
+        },
+        {
+          paperName: 'three',
+          children: [
+            {
+              paperName: 'four'
+            }
+          ]
+        },
+        {
+          paperName: 'five',
+          children: [
+            {
+              paperName: 'six'
+            }
+          ]
+        }
+      ],
+      testPaper: [],
+      isPaperChecked: false,
+      previewImg: ''
     }
   },
   created () {},
@@ -369,8 +401,10 @@ export default {
     }
   },
   methods: {
-    mouseoverHandle () {
-      console.log(id++)
+    mouseoverHandle (node, data) {
+      console.log('node', node)
+      console.log('data', data)
+      this.previewImg = node.url
     },
     init () {
       this.getTreeList()
@@ -618,14 +652,14 @@ export default {
         }
       })
     },
-    paperNodeClick (data) {
-      console.log(data)
-      let testArr = []
-      this.testPaper = testArr.push()
+    paperNodeClick (node, data) {
+      this.testPaper = []
+      this.testPaper.push(node)
       console.log('this.testPaper', this.testPaper)
     },
     choosePaperClose () {
       this.isShowChoosePaper = false
+      this.testPaper = []
     },
     choosePaperConfirm () {
       this.$confirm('确认提交?', '提示', {
@@ -642,13 +676,20 @@ export default {
         }
         this.$api.addTest({
           chapterId: this.chapterId,
-          homework: [this.testPaper]
+          homework: this.testPaper
         }).then(res => {
           if (res.code === 200) {
             console.log(res.data)
+            this.isShowChoosePaper = false
+            this.isPaperChecked = true
+          } else {
+            this.$message({
+              type: 'error',
+              message: res.message
+            })
           }
+          this.testPaper = []
         })
-        this.isShowChoosePaper = false
       }).catch((e) => {
         console.log(e)
         this.testPaper = null
@@ -1162,9 +1203,9 @@ export default {
     isShowChooseResour: {
       handler (val) {
         if (val && this.fromState == 'isShowEdit') {
-          this.findSourceInfo()
+          // this.findSourceInfo()
         } else if (val && this.fromState == 'isShowLoadPerms') {
-          this.getLoadPackage()
+          // this.getLoadPackage()
           this.getLoadPackageType()
         } else {
           this.resourseData = []
@@ -1278,6 +1319,15 @@ export default {
           }
           &:active{
             opacity: .7;
+          }
+        }
+        .checked-btn {
+          background-color: green;
+          color: #fff;
+          &:hover{
+            border: 1px solid green;
+            color: green;
+            background-color: #fff;
           }
         }
       }
