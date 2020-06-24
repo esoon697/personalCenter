@@ -25,7 +25,7 @@ export default new Router({
   mode: 'history',
   // base: '/personal',
   routes: [
-    { path: '/', redirect: '/centerIndex' },
+    { path: '/personal', redirect: '/centerIndex' },
     {
       title: '首页',
       path: '/centerIndex',

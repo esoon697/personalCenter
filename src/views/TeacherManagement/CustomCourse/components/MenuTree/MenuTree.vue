@@ -30,7 +30,7 @@
                 <button class="btn-item" @click="() => editName(node, data)">编辑目录</button>
                 <button class="btn-item" v-show="!(data.children&&data.children.length)" @click="() => editContent(node, data)">编辑内容</button>
                 <button class="btn-item" v-show="!(data.children&&data.children.length)" @click="() => editLoad(node, data)">编辑下载</button>
-                <button class="btn-item" :class="{'checked-btn':isPaperChecked}" v-show="!(data.children&&data.children.length)" @click="() => choosePaper(node, data)">{{isPaperChecked?'编辑作业':'新增作业'}}</button>
+                <button class="btn-item" :class="{'checked-btn':isPaperChecked&&chapterId===data.menuCode}" v-show="!(data.children&&data.children.length)" @click="() => choosePaper(node, data)">{{isPaperChecked?'编辑作业':'新增作业'}}</button>
               </span>
               <div class="less-btn" @click="ChangeShowBtns(node.id)">
                 <i class="el-icon-setting" v-if="!(isShowBtns && node.id == currentId)"></i>
@@ -94,14 +94,14 @@
           <label for="input1">资源类别：</label>
           <!-- <input type="text" name="" id="input1" v-model="resourseType"> -->
           <el-select v-model="resourseType" placeholder="请选择">
-            <el-option v-for="(resourTypeOpt, index) in resourTypeOpts" :key="index" :label="resourTypeOpt.name" :value="resourTypeOpt.typeId"></el-option>
+            <el-option v-for="(resourTypeOpt, index) in resourTypeOpts" :key="index" :label="resourTypeOpt.proTypeName" :value="resourTypeOpt.proTypeId"></el-option>
           </el-select>
           <label for="input2">资源名称：</label>
           <input type="text" name="" id="input2" v-model="resourseName">
         </div>
         <button class="search-btn" @click="searchResourse">查询</button>
       </div>
-      <div v-loading="loading1" class="ChooseResour-box" slot="dialog-content">
+      <div v-loading="loading1" class="ChooseResour-box" style="position: relative" slot="dialog-content">
         <el-tree
         ref="resourseTree"
         slot="dialog-content"
@@ -110,11 +110,15 @@
         @node-click="handleNodeClick"
         @check-change="handleCheckChange"
         show-checkbox>
-          <span v-if="fromState === 'isShowEdit'" style="width: 100%; position: relative" class="resourse-tree-node" slot-scope="{ node, data }">
-            <button style="width: 100%; height: 100%; opacity: 0" @mouseover="mouseoverHandle(node, data)"></button>
+          <span style="width: 100%; height: 100%; position: relative" class="resourse-tree-node" slot-scope="{ node, data }">
+            <span class="nodeName">{{ node.label }}</span>
+            <button v-if="fromState === 'isShowEdit'" style="width: 100%; height: 100%; opacity: 0; position: absolute; left: 0" @mouseover="mouseoverHandle(node, data)" @mouseout="mouseoutHandle"></button>
           </span>
         </el-tree>
-        <img v-show="previewImg" style="width: 200px; height: 300px; position: absolute; left: 500px" src="../../../../../assets/photo.jpeg" alt="">
+        <!-- <div v-show="previewImg" :style="{backgroundImage:`url(${previewImg})`}" style="width: 200px; height: 300px; position: absolute; left: 500px; background-size: contain; background-repeat: no-repeat">加载中</div> -->
+        <div v-if="fromState === 'isShowEdit'" class="previewImg-box">
+          <img v-lazy="previewImg" :key="previewImg">
+        </div>
       </div>
       <div class="checkbox-box" slot="custom">
         <el-checkbox v-if="fromState === 'isShowLoadPerms'" v-model="checked">将选中项设置为学生可下载</el-checkbox>
@@ -248,7 +252,7 @@
           <label for="testInput2">试卷名称：</label>
           <input type="text" name="" v-model="paperName" id="testInput2">
         </div>
-        <button class="search-btn" @click="getExamList">查询</button>
+        <button class="search-btn" @click="queryHomework">查询</button>
       </div>
       <div class="chooseCour-box" slot="dialog-content">
         <el-tree
@@ -272,10 +276,10 @@ export default {
   props: {},
   data () {
     return {
-      loading: false,
-      loading1: false,
-      loading2: false,
-      loading3: false,
+      loading: true,
+      loading1: true,
+      loading2: true,
+      loading3: true,
       isShowChooseTest: false,
       isShowtestDetails: false,
       testContent: null,
@@ -283,17 +287,8 @@ export default {
       currentExpandedKey: 1,
       isClick: false,
       targetIndex: null,
-      menuTreeData: [
-        {
-          label: '第一张'
-        }
-      ],
-      resourcesList: [
-        {
-          title: '课前',
-          children: []
-        }
-      ],
+      menuTreeData: [],
+      resourcesList: [],
       hasChlid: false,
       isShowBtns: false,
       currentId: null,
@@ -308,6 +303,7 @@ export default {
           children: [
             {
               title: '1-1',
+              url: 'http://182.148.48.236:54321/source/educationPlatform/avatar.jpeg',
               children: []
             }
           ]
@@ -331,7 +327,7 @@ export default {
       },
       paperProps: {
         children: 'children',
-        label: 'paperName'
+        label: 'description'
       },
       checked: true,
       tableData: [],
@@ -343,32 +339,7 @@ export default {
       fromState: '',
       belongLabel: null,
       paperName: null,
-      paperData: [
-        {
-          paperName: 'one',
-          children: [
-            {
-              paperName: 'two'
-            }
-          ]
-        },
-        {
-          paperName: 'three',
-          children: [
-            {
-              paperName: 'four'
-            }
-          ]
-        },
-        {
-          paperName: 'five',
-          children: [
-            {
-              paperName: 'six'
-            }
-          ]
-        }
-      ],
+      paperData: [],
       testPaper: [],
       isPaperChecked: false,
       previewImg: ''
@@ -404,7 +375,11 @@ export default {
     mouseoverHandle (node, data) {
       console.log('node', node)
       console.log('data', data)
-      this.previewImg = node.url
+      this.previewImg = data.url
+      console.log('previewImg', this.previewImg)
+    },
+    mouseoutHandle () {
+      this.previewImg = ''
     },
     init () {
       this.getTreeList()
@@ -604,6 +579,7 @@ export default {
     editLoad (node, data) {
       this.isShowLoadPerms = true
       this.courseId = data.courseId
+      console.log(data.courseId)
       this.rowDrop()
     },
     // // 新增作业
@@ -637,20 +613,22 @@ export default {
     choosePaper (node, data) {
       this.chapterId = data.menuCode
       this.courseId = data.courseId
-      this.getExamList()
+      this.queryHomework()
       this.isShowChoosePaper = true
     },
     // 查询试卷
-    getExamList () {
-      this.$api.getExamList({
+    queryHomework () {
+      this.$api.queryHomework({
         belongLabel: this.belongLabel,
         paperName: this.paperName
       }).then(res => {
         if (res.code === 200) {
-          console.log('getExamList', res.data)
+          console.log('queryHomework', res.data)
           this.paperData = res.data
         }
       })
+      this.belongLabel = ''
+      this.paperName = ''
     },
     paperNodeClick (node, data) {
       this.testPaper = []
@@ -928,7 +906,7 @@ export default {
     },
     // 自主建课-第二步-查询资源包类型
     getLoadPackageType () {
-      this.$api.getLoadPackageType({}).then(res => {
+      this.$api.getLoadPackageType().then(res => {
         if (res.code === 200) {
           console.log('getLoadPackageType', res.data)
           this.resourTypeOpts = res.data
@@ -1203,9 +1181,10 @@ export default {
     isShowChooseResour: {
       handler (val) {
         if (val && this.fromState == 'isShowEdit') {
-          // this.findSourceInfo()
+          this.findSourceInfo()
+          this.getLoadPackageType()
         } else if (val && this.fromState == 'isShowLoadPerms') {
-          // this.getLoadPackage()
+          this.getLoadPackage()
           this.getLoadPackageType()
         } else {
           this.resourseData = []
@@ -1527,6 +1506,16 @@ export default {
       font-weight:400;
       // color:rgba(51,51,51,1);
     }
+    .previewImg-box{
+      width: 200px;
+      height: 200px;
+      position: absolute;
+      right: 0;
+      top: 150px;
+      img{
+        width: 100%;
+      }
+    }
   }
   .checkbox-box{
     position: absolute;
@@ -1667,4 +1656,8 @@ export default {
   background:rgba(0,122,183,1);
   border-color: rgba(0,122,183,1);
 }
+// img[lazy=loading]{
+//   zoom: .1;
+//   width: 10px;
+// }
 </style>

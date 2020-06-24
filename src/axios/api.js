@@ -32,8 +32,10 @@ const api = {
   uploadTreeNode: data => post('/course/courseChapter/update', data),
   // 自主建课-第二步-删除目录
   deleteTreeNode: data => get('/course/courseChapter/delete', data),
+  // 查询作业/试卷
+  queryHomework: data => get('/course/homeworkChapter/queryHomework', data),
   // 自主建课第二步——新增作业
-  addTest: data => get('/course/homeworkChapter/addBatch', data),
+  addTest: data => post('/course/homeworkChapter/addBatch', data),
   // 自主建课-第二步-获取课程内容类型
   // getCourContentType: data => post('/course/processType/list', data),
   getCourContentType: data => get('/course/processInfo/listInnerProcessType', data),
@@ -104,7 +106,7 @@ const api = {
   // 课程类别管理-删除
   delCourTypeManageInfo: data => get('/course/courseType/delete', data),
   // 钉钉code免登
-  postDingLogin: data => get('http://cgh.yazhuokj.com/login/ding', data)
+  postDingLogin: data => get('/dinglogin/login/ding', data)
 }
 
 export default api

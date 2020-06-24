@@ -40,8 +40,8 @@ export default {
   computed: {},
   watch: {},
   created () {
-    this.init()
-    // this.dingdingInt()
+    // this.init()
+    this.dingdingInt()
   },
   mounted () {},
   methods: {
@@ -102,6 +102,7 @@ export default {
         })
       }
     },
+    // 钉钉免登
     dingdingInt () {
       let dd = this.$dd
       const host = window.location.host
@@ -136,7 +137,8 @@ export default {
       }).then(res => {
         if (res.code === 200) {
           console.log(res)
-          window.location.href = this.ipUrl
+          localStorage.setItem('token', res.message)
+          // window.location.href = this.ipUrl
         }
       })
     }

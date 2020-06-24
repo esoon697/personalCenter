@@ -7,6 +7,7 @@ import router from './router'
 import store from './store/index'
 import api from './axios/api'
 import * as dd from 'dingtalk-jsapi'
+import vueLazyload from 'vue-lazyload'
 // 引入工具文件
 import './utils/utils'
 // 引入element-ui相关组件
@@ -108,6 +109,13 @@ Vue.prototype.$alert = MessageBox.alert
 Vue.prototype.$confirm = MessageBox.confirm
 Vue.prototype.$prompt = MessageBox.prompt
 // Vue.prototype.$loading = Loading.service
+
+Vue.use(vueLazyload, {
+  preLoad: 1,
+  attempt: 1,
+  error: '../static/loading/loadFail.jpg',
+  loading: '../static/loading/loading.gif'
+})
 
 // vue全局注入echarts
 Vue.prototype.$echarts = echarts
